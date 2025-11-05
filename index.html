@@ -73,10 +73,9 @@
     footer{padding:60px 0; text-align:center; color:var(--muted)}
     /* Responsive */
     @media (max-width:960px){.hero-grid{grid-template-columns:1fr}.card{grid-column:span 12}}
-    /* LinkedIn Badge  */
-    .badge-card{grid-column:span 12;display:flex;justify-content:center}
-    .badge-frame{max-width:360px;width:100%;margin:auto}
-    .LI-profile-badge{width:100%;line-height:0}
+    /* LinkedIn 橫向小圖章 */
+    .cta-badge{display:inline-flex; align-items:center}
+    .LI-profile-badge{line-height:0}
     .LI-profile-badge .badge-base__link{display:none!important}
    </style>
 </head>
@@ -105,7 +104,17 @@
           <div class="cta">
             <a class="btn" href="mailto:slinceblue@gmail.com">Email</a>
             <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">GitHub</a>
-            <a class="btn" href="https://www.linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">LinkedIn</a>
+                <div class="cta-badge">
+                  <div class="badge-base LI-profile-badge"
+                   data-locale="zh_TW"
+                   data-size="small"
+                   data-theme="light"
+                   data-type="HORIZONTAL"
+                   data-vanity="bbmps-badr"
+                   data-version="v1">
+                  <a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge" aria-hidden="true" tabindex="-1">LinkedIn</a>
+                </div>
+            </div>
           </div>
         </div>
         <div class="photo">
@@ -187,22 +196,6 @@
         <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">@GitHub</a>
         <a class="btn" href="https://t.me/KERORO6262" target="_blank" rel="noopener">Telegram</a>
       </p>
-      <div class="grid" style="margin-top:18px">
-        <div class="card badge-card">
-          <div class="badge-frame">
-            <div class="badge-base LI-profile-badge"
-             data-locale="zh_TW"
-             data-size="medium"
-             data-theme="light"
-             data-type="VERTICAL"
-             data-vanity="bbmps-badr"
-             data-version="v1">
-             <a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge" aria-hidden="true" tabindex="-1">LinkedIn</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </section>
   </main>
 
