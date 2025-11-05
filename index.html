@@ -73,13 +73,12 @@
     footer{padding:60px 0; text-align:center; color:var(--muted)}
     /* Responsive */
     @media (max-width:960px){.hero-grid{grid-template-columns:1fr}.card{grid-column:span 12}}
-    /* LinkedIn Badge – 一致化外觀與置中 */
-.badge-card{ grid-column:span 12; background:var(--card); border:1px solid var(--border);
-  border-radius:16px; padding:16px; box-shadow:var(--shadow); display:flex; justify-content:center }
-.badge-frame{ max-width:360px; width:100%; display:flex; justify-content:center }
-.LI-profile-badge{ width:100% } /* 外層容器盡量撐滿，交給內層限寬 */
-
-  </style>
+    /* LinkedIn Badge  */
+    .badge-card{grid-column:span 12;display:flex;justify-content:center}
+    .badge-frame{max-width:360px;width:100%;margin:auto}
+    .LI-profile-badge{width:100%;line-height:0}
+    .LI-profile-badge .badge-base__link{display:none!important}
+   </style>
 </head>
 <body>
   <header>
@@ -198,7 +197,7 @@
              data-type="VERTICAL"
              data-vanity="bbmps-badr"
              data-version="v1">
-            <a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge">LinkedIn</a>
+             <a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge" aria-hidden="true" tabindex="-1">LinkedIn</a>
             </div>
           </div>
         </div>
