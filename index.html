@@ -191,25 +191,125 @@
     </div>
   </footer>
 
-  <!-- JSON-LD 結構化資料：Person -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Badr",
-    "url": "https://KERORO6262.github.io/",
-    "image": "https://KERORO6262.github.io/assets/img/avatar.png",
-    "sameAs": [
-      "https://github.com/KERORO6262",
-      "https://www.linkedin.com/in/bbmps-badr"
-    ],
-    "jobTitle": "電商營運|獨立的遊戲開發者",
-    "worksFor": {
+  <!-- JSON-LD 結構化資料 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://KERORO6262.github.io/#website",
+      "url": "https://KERORO6262.github.io/",
+      "name": "Badr — Silence Studio",
+      "inLanguage": "zh-Hant-TW",
+      "description": "Where silence becomes stories. A studio for games, words, and fragments of imagination.",
+      "publisher": { "@id": "https://KERORO6262.github.io/#org" },
+      "about": { "@id": "https://KERORO6262.github.io/#me" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.google.com/search?q=site:KERORO6262.github.io%20{search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": ["WebPage", "ProfilePage", "CollectionPage"],
+      "@id": "https://KERORO6262.github.io/#webpage",
+      "url": "https://KERORO6262.github.io/",
+      "name": "Badr — Silence Studio",
+      "isPartOf": { "@id": "https://KERORO6262.github.io/#website" },
+      "inLanguage": "zh-Hant-TW",
+      "description": "吳宗華（Badr）的個人主頁：Unity 原型、互動敘事、寫作與研究。",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://KERORO6262.github.io/assets/img/avatar.png"
+      },
+      "breadcrumb": { "@id": "https://KERORO6262.github.io/#breadcrumb" },
+      "mainEntity": { "@id": "https://KERORO6262.github.io/#me" }   
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://KERORO6262.github.io/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首頁",
+          "item": "https://KERORO6262.github.io/"
+        }
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://KERORO6262.github.io/#me",
+      "name": "吳宗華 (Badr)",
+      "alternateName": "Badr",
+      "url": "https://KERORO6262.github.io/",
+      "image": "https://KERORO6262.github.io/assets/img/avatar.png",
+      "jobTitle": ["電商營運", "獨立遊戲開發者"],
+      "worksFor": { "@id": "https://KERORO6262.github.io/#org" },
+      "sameAs": [
+        "https://github.com/KERORO6262",
+        "https://www.linkedin.com/in/bbmps-badr",
+        "https://t.me/KERORO6262"
+      ],
+      "knowsAbout": [
+        "Unity", "C#", "2D 遊戲原型", "互動敘事", "ScriptableObject", "物理模擬", "不織布與濾材"
+      ],
+      "contactPoint": [{
+        "@type": "ContactPoint",
+        "contactType": "聯絡",
+        "email": "mailto:slinceblue@gmail.com",
+        "availableLanguage": ["zh-Hant", "en"]
+      }],
+      "mainEntityOfPage": { "@id": "https://KERORO6262.github.io/#webpage" } 
+    },
+    {
       "@type": "Organization",
-      "name": "Acme Filter Mask Inc."
+      "@id": "https://KERORO6262.github.io/#org",
+      "name": "Acme Filter Mask Inc.",
+      "employee": { "@id": "https://KERORO6262.github.io/#me" }
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://KERORO6262.github.io/#writing",
+      "name": "寫作／研究",
+      "itemListOrder": "http://schema.org/ItemListOrderDescending",
+      "numberOfItems": 2,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Article",
+            "@id": "https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d",
+            "url": "https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d",
+            "headline": "借鑒《上古卷軸5》式經典開鎖原型設計實作──《盜夜浪漫譚》",
+            "description": "觀察《上古卷軸5》開鎖機制並實作基本原型的設計筆記。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Article",
+            "@id": "https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74",
+            "url": "https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74",
+            "headline": "差評如潮？好評如潮？",
+            "description": "解析《活俠傳》上市初期的玩家評論與社群現象。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+          }
+        }
+      ]
     }
-  }
-  </script>
+  ]
+}
+</script>
+
 
   <script>
     // 年份
