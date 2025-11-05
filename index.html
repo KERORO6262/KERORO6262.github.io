@@ -56,6 +56,7 @@
     .title{font-size:42px; line-height:1.12; margin:14px 0}
     .subtitle{color:var(--muted); margin:14px 0 24px}
     .cta{display:flex; gap:12px; flex-wrap:wrap}
+    .cta + .cta{margin-top:8px}
     .photo{border-radius:20px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow)}
     .photo img{display:block; width:100%; height:auto}
     /* Sections */
@@ -101,19 +102,19 @@
           <span class="tag">👋 Hi，我是</span>
           <h1 class="title">吳宗華（Badr）</h1>
           <p class="subtitle">在寂靜裡構築故事的開發者，以遊戲與文字記錄那些未被聽見的聲音。</p>
-          <div class="cta">
-            <a class="btn" href="mailto:slinceblue@gmail.com">Email</a>
-            <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">GitHub</a>
-                <div class="cta-badge">
-                  <div class="badge-base LI-profile-badge"
-                   data-locale="zh_TW"
-                   data-size="small"
-                   data-theme="light"
-                   data-type="HORIZONTAL"
-                   data-vanity="bbmps-badr"
-                   data-version="v1">
-                  <a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge" aria-hidden="true" tabindex="-1">LinkedIn</a>
-                </div>
+            <div class="cta">
+              <a class="btn" href="mailto:slinceblue@gmail.com">Email</a>
+              <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">GitHub</a>
+            </div>
+            <div class="cta">
+              <div class="badge-base LI-profile-badge"
+               data-locale="zh_TW"
+               data-size="small"
+               data-theme="light"
+               data-type="HORIZONTAL"
+               data-vanity="bbmps-badr"
+               data-version="v1">
+                <a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge" aria-hidden="true" tabindex="-1">LinkedIn</a>
             </div>
           </div>
         </div>
