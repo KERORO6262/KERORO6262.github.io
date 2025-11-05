@@ -73,6 +73,12 @@
     footer{padding:60px 0; text-align:center; color:var(--muted)}
     /* Responsive */
     @media (max-width:960px){.hero-grid{grid-template-columns:1fr}.card{grid-column:span 12}}
+    /* LinkedIn Badge – 一致化外觀與置中 */
+.badge-card{ grid-column:span 12; background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:16px; box-shadow:var(--shadow); display:flex; justify-content:center }
+.badge-frame{ max-width:360px; width:100%; display:flex; justify-content:center }
+.LI-profile-badge{ width:100% } /* 外層容器盡量撐滿，交給內層限寬 */
+
   </style>
 </head>
 <body>
@@ -182,8 +188,22 @@
         <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">@GitHub</a>
         <a class="btn" href="https://t.me/KERORO6262" target="_blank" rel="noopener">Telegram</a>
       </p>
+      <div class="grid" style="margin-top:18px">
+  <div class="card badge-card">
+    <div class="badge-frame">
+      <div class="badge-base LI-profile-badge"
+           data-locale="zh_TW"
+           data-size="medium"
+           data-theme="light"
+           data-type="VERTICAL"
+           data-vanity="bbmps-badr"
+           data-version="v1">
+        <a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</div>
     </section>
-    <div class="badge-base LI-profile-badge" data-locale="zh_TW" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="bbmps-badr" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge">吳佳明</a></div>
   </main>
 
   <footer>
@@ -309,6 +329,19 @@
     }
   ]
 }
+</script>
+<script>
+  // 根據裝置偏好切換 LinkedIn 圖章的深淺色
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  function applyLiTheme(){
+    const badge = document.querySelector('.LI-profile-badge');
+    if(!badge) return;
+    badge.setAttribute('data-theme', mql.matches ? 'dark' : 'light');
+    // 重新載入 LinkedIn 腳本（若已載過，通知它更新）
+    if(window.LIRenderAll) window.LIRenderAll();
+  }
+  mql.addEventListener('change', applyLiTheme);
+  applyLiTheme();
 </script>
 
 <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
