@@ -34,5 +34,39 @@
   100% { filter: drop-shadow(0 0 0 rgba(255,223,88,0)); }
 }
 
+/* === Flying Coin (特效硬幣) ================================= */
+.coin-fx {
+  position: fixed; /* 使用 viewport 座標，搭配 getBoundingClientRect */
+  width: 18px; height: 18px; border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, #ffd54a 0% 35%, transparent 36%),
+    radial-gradient(circle at 70% 70%, #ffec8a 0% 40%, transparent 41%),
+    conic-gradient(from 0deg, #f8c531, #f0a400 60%, #ffe082 95%, #f8c531);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.18), 0 4px 10px rgba(0,0,0,.25);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: left .55s cubic-bezier(.22,.8,.2,1), top .55s cubic-bezier(.22,.8,.2,1), transform .55s ease, opacity .55s ease;
+  will-change: left, top, transform, opacity;
+  z-index: 10000;
+  animation: coinFlip .55s linear;
+}
+@keyframes coinFlip {
+  0% { transform: translate(-50%, -50%) rotateY(0deg) scale(1); }
+  50% { transform: translate(-50%, -50%) rotateY(540deg) scale(1.1); }
+  100% { transform: translate(-50%, -50%) rotateY(720deg) scale(1); }
+}
+
+/* 投到位時讓投幣孔閃一下 */
+.mosaic-cover.slot-hit::after {
+  filter: drop-shadow(0 0 12px rgba(255,213,74,.55)) brightness(1.1);
+  transition: filter .25s ease;
+}
+
+/* 減少動態偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .coin-fx { animation: none; transition-duration: .001s; }
+}
+
+
 /* 無障礙：使用者偏好減少動態 */
 @media (prefers-reduced-motion: reduce) { .coin { animation: none; } }
