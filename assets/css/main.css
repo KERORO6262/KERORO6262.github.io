@@ -252,6 +252,8 @@
     .coin {
         width: 28px;
         height: 28px;
+        position: relative;
+        display: inline-block;
         border-radius: 50%;
         border: 1px solid var(--border);
         background:
@@ -347,7 +349,6 @@
     .mosaic-cover {
         position: absolute;
         inset: 0;
-        /* 讓覆蓋高度受 --mosaic-cover 控制：3→100%，2→66%，1→33%，0→0 */
         height: var(--mosaic-cover, 100%);
         pointer-events: auto;
         cursor: pointer;
@@ -522,4 +523,33 @@
             opacity: 0;
             transform: translate(-50%, -16px);
         }
+    }
+
+    /* 透明防護層：覆蓋整張卡，在覆蓋期間阻擋選取/拖曳/點選文字 */
+    .mosaic-guard {
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+        /* 高於內容、與投幣孔協作 */
+        background: transparent;
+        /* 看不見，只擋互動 */
+        cursor: pointer;
+    }
+
+    /* 完全解鎖後關閉防護層 */
+    .mosaic-cover.done+.mosaic-guard {
+        display: none;
+    }
+
+    /* 覆蓋期間：整張卡片與其子元素不可選取/不可拖曳 */
+    #about .card.masked,
+    #about .card.masked * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        -webkit-user-drag: none;
+
+        -webkit-touch-callout: none;
     }
