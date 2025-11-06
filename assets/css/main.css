@@ -429,6 +429,109 @@
         /* 原有背景/模糊/轉場請保留（你檔案已經有）；這裡只追加 slot 的偽元素 */
     }
 
+    /* === Timeline: 緊湊模式 ===================================== */
+    /* 對：.timeline 加上 .compact 時啟用 */
+    .timeline.compact {
+        margin: 2px 0 0;
+        /* 上下留白更小 */
+        padding-left: 14px;
+        /* 主線與文字更靠近 */
+        border-left: 1px solid var(--border);
+        /* 主線變細 */
+    }
+
+    /* 單一節點：縮短上下 padding */
+    .timeline.compact .tl-item {
+        padding: 6px 0 8px 2px;
+        /* 原: 14/18/6 -> 明顯更緊 */
+    }
+
+    /* 節點圓點：更小、更貼線 */
+    .timeline.compact .tl-dot {
+        left: -6px;
+        /* 貼近 1px 主線 */
+        top: 12px;
+        width: 8px;
+        height: 8px;
+        box-shadow: none;
+        /* 去掉陰影，少佔視覺重量 */
+    }
+
+    /* 年份：縮短保留寬度，字級更小、顏色更低調 */
+    .timeline.compact .tl-date {
+        min-width: 58px;
+        /* 原: 76px */
+        font-size: 13px;
+        color: var(--muted);
+        transform: translateY(-1px);
+        /* 行高微調，視覺更齊 */
+    }
+
+    /* 內容區：去卡片化（移除邊框/陰影/底色），改成文字行為主 */
+    .timeline.compact .tl-content {
+        display: inline;
+        /* 不再包一塊卡片，改成行內 */
+        margin-left: 6px;
+        padding: 0;
+        /* 移除內距 */
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    /* 標題/描述：縮小字級、縮短間距 */
+    .timeline.compact .tl-title {
+        display: inline;
+        /* 與年份同一行，減少換行佔高 */
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .timeline.compact .tl-desc {
+        display: inline;
+        margin: 0 0 0 6px;
+        /* 標題後小距離接描述 */
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    /* hover 效果仍保留一點質感，但更含蓄 */
+    .timeline.compact .tl-item:hover .tl-dot {
+        transform: none;
+        filter: none;
+    }
+
+    /* 第一/最後節點微調（避免多餘留白） */
+    .timeline.compact .tl-item:first-child {
+        padding-top: 2px;
+    }
+
+    .timeline.compact .tl-item:last-child {
+        padding-bottom: 0;
+    }
+
+    /* 手機端：維持單行優先，必要時再換行 */
+    @media (max-width:600px) {
+        .timeline.compact {
+            padding-left: 12px;
+        }
+
+        .timeline.compact .tl-date {
+            min-width: 52px;
+            font-size: 12px;
+        }
+
+        .timeline.compact .tl-title {
+            font-size: 13.5px;
+        }
+
+        .timeline.compact .tl-desc {
+            font-size: 12.5px;
+        }
+    }
+
+
     /* 投幣孔本體：置中、細長的圓角黑槽 */
     .mosaic-cover::before {
         content: "";
