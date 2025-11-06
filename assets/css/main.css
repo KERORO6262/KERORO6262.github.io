@@ -240,3 +240,286 @@
             grid-column: span 12
         }
     }
+
+    /* === 改良硬幣吸睛效果 ===================================== */
+    .coin-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+        align-items: center;
+    }
+
+    .coin {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background:
+            radial-gradient(circle at 30% 30%, #ffd54a 0% 35%, transparent 36%),
+            radial-gradient(circle at 70% 70%, #ffec8a 0% 40%, transparent 41%),
+            conic-gradient(from 0deg, #f8c531, #f0a400 60%, #ffe082 95%, #f8c531);
+        /* 多一層作為閃光掃過 */
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .15), var(--shadow);
+        cursor: pointer;
+        transform-style: preserve-3d;
+        will-change: transform, filter;
+        transition: transform .18s ease, opacity .2s ease, filter .2s ease;
+
+        /* 吸睛動畫：緩慢上下浮動 + 亮斑掃過 */
+        animation:
+            coinFloat 2.6s ease-in-out infinite,
+            coinShine 1.8s linear infinite;
+    }
+
+    /* 亮點光斑（疊一層可移動的 highlight） */
+    .coin::after {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(255, 255, 255, .45) 0 14%, transparent 15% 100%),
+            radial-gradient(circle at 80% 80%, rgba(255, 255, 255, .18) 0 12%, transparent 13% 100%);
+        mix-blend-mode: screen;
+        pointer-events: none;
+    }
+
+    /* 滑過：做輕微的 3D 翻轉，像是硬幣轉一下 */
+    .coin:hover {
+        transform: translateY(-2px) rotateY(18deg) rotateX(4deg);
+    }
+
+    /* 點下：回彈 */
+    .coin:active {
+        transform: translateY(0) rotateY(0) rotateX(0) scale(.98);
+    }
+
+    /* 收集後（你原本就有這段） */
+    .coin.collected {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(.6);
+        filter: saturate(.2);
+    }
+
+    /* 動畫關鍵影格 */
+    @keyframes coinFloat {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-3px);
+        }
+    }
+
+    @keyframes coinShine {
+        0% {
+            filter: drop-shadow(0 0 0 rgba(255, 223, 88, 0));
+        }
+
+        40% {
+            filter: drop-shadow(0 0 8px rgba(255, 223, 88, .35));
+        }
+
+        100% {
+            filter: drop-shadow(0 0 0 rgba(255, 223, 88, 0));
+        }
+    }
+
+    /* 使用者偏好「減少動態」時，自動降低效果 */
+    @media (prefers-reduced-motion: reduce) {
+        .coin {
+            animation: none;
+        }
+    }
+
+    /* === Mosaic Cover (about->歷史痕跡) ========================= */
+    /* 父層卡片需要成為定位上下文（保守處理：覆蓋容器自我定位） */
+    #about .card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* 可互動遮罩：初始覆蓋 100%，點擊/消耗金幣逐步縮小覆蓋比例 */
+    .mosaic-cover {
+        position: absolute;
+        inset: 0;
+        /* 讓覆蓋高度受 --mosaic-cover 控制：3→100%，2→66%，1→33%，0→0 */
+        height: var(--mosaic-cover, 100%);
+        pointer-events: auto;
+        cursor: pointer;
+        /* 視覺：像素格 + 模糊 + 半透明底 */
+        background:
+            repeating-linear-gradient(0deg, rgba(0, 0, 0, .25) 0 10px, rgba(0, 0, 0, .28) 10px 20px),
+            repeating-linear-gradient(90deg, rgba(0, 0, 0, .25) 0 10px, rgba(0, 0, 0, .28) 10px 20px),
+            linear-gradient(180deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .35));
+        backdrop-filter: blur(6px) saturate(.9);
+        -webkit-backdrop-filter: blur(6px) saturate(.9);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: height .28s ease, transform .12s ease;
+        z-index: 5;
+    }
+
+    /* 解鎖完成後，讓投幣孔整組淡出並停用 */
+    .mosaic-cover.done::before,
+    .mosaic-cover.done::after {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-6px);
+        filter: none;
+        transition: opacity .18s ease, transform .18s ease;
+        pointer-events: none;
+    }
+
+
+    .mosaic-cover.done {
+        height: 0%;
+        pointer-events: none;
+        border-bottom: 0;
+    }
+
+    /* 無金幣時抖動提示 */
+    @keyframes denyShake {
+        15% {
+            transform: translateX(-4px);
+        }
+
+        30% {
+            transform: translateX(4px);
+        }
+
+        45% {
+            transform: translateX(-3px);
+        }
+
+        60% {
+            transform: translateX(3px);
+        }
+
+        75% {
+            transform: translateX(-2px);
+        }
+
+        90% {
+            transform: translateX(2px);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    .mosaic-cover.deny {
+        animation: denyShake .35s ease;
+    }
+
+    /* === 投幣孔（Mosaic Cover 的視覺暗示） ===================== */
+    .mosaic-cover {
+        position: absolute;
+        inset: 0;
+        height: var(--mosaic-cover, 100%);
+        cursor: pointer;
+        z-index: 5;
+        /* 原有背景/模糊/轉場請保留（你檔案已經有）；這裡只追加 slot 的偽元素 */
+    }
+
+    /* 投幣孔本體：置中、細長的圓角黑槽 */
+    .mosaic-cover::before {
+        content: "";
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: clamp(64px, 22vw, 160px);
+        height: 10px;
+        border-radius: 999px;
+        background:
+            radial-gradient(100% 200% at 50% 10%, rgba(255, 255, 255, .25) 0 20%, transparent 21%),
+            linear-gradient(180deg, #000 0%, #1a1a1a 60%, #000 100%);
+        box-shadow:
+            inset 0 2px 3px rgba(255, 255, 255, .12),
+            inset 0 -2px 4px rgba(0, 0, 0, .6),
+            0 8px 18px rgba(0, 0, 0, .25);
+        opacity: .9;
+        pointer-events: none;
+        /* 讓點擊仍落在 .mosaic-cover 本體上 */
+    }
+
+    /* 投幣孔上方的金屬面板（微微亮面，像投幣口周圍的金屬片） */
+    .mosaic-cover::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: clamp(96px, 28vw, 220px);
+        height: 34px;
+        border-radius: 10px 10px 14px 14px;
+        background:
+            linear-gradient(145deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .02)),
+            linear-gradient(180deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, .35));
+        border: 1px solid color-mix(in srgb, var(--border) 60%, rgba(255, 255, 255, .2));
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, .15),
+            inset 0 -8px 16px rgba(0, 0, 0, .25);
+        pointer-events: none;
+        transition: filter .25s ease, transform .25s ease;
+    }
+
+    /* 有金幣時讓投幣孔更亮一些（透過 .coins-gt0 標記控制） */
+    .coins-gt0 .mosaic-cover::after {
+        filter: drop-shadow(0 0 10px rgba(255, 213, 74, .45));
+    }
+
+    /* Hover 時再微微抬起，強化「可以在這投幣」的直覺 */
+    .mosaic-cover:hover::after {
+        transform: translateX(-50%) translateY(-2px);
+    }
+
+    /* === Mosaic：無金幣提示（上浮淡出） ========================= */
+    .mosaic-tip {
+        position: absolute;
+        left: 50%;
+        top: 48px;
+        /* 出現在投幣孔下方一點 */
+        transform: translateX(-50%);
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: color-mix(in srgb, var(--bg-soft) 80%, transparent);
+        color: var(--muted);
+        font-size: 13px;
+        pointer-events: none;
+        /* 不擋點擊 */
+        opacity: 0;
+        animation: mosaicTipFloat 1.2s ease forwards;
+        z-index: 6;
+        /* 高於投幣孔 */
+    }
+
+    @keyframes mosaicTipFloat {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, 8px);
+        }
+
+        12% {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        80% {
+            opacity: 1;
+            transform: translate(-50%, -10px);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -16px);
+        }
+    }
