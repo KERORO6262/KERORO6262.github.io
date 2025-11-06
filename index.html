@@ -1,85 +1,32 @@
 <!doctype html>
 <html lang="zh-Hant-TW">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Badr — Silence Studio</title>
-  <meta name="description" content="Where silence becomes stories. A studio for games, words, and fragments of imagination.">
+  <meta name="description"
+    content="Where silence becomes stories. A studio for games, words, and fragments of imagination.">
   <meta name="google-site-verification" content="DHsbzU3Tw0KzXY3zo0IkMYkqQnBHdNRGDrvdNmBqykI" />
   <meta name="color-scheme" content="light dark">
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Badr — Silence Studio">
-  <meta property="og:description" content="Where silence becomes stories. A studio for games, words, and fragments of imagination.">
+  <meta property="og:description"
+    content="Where silence becomes stories. A studio for games, words, and fragments of imagination.">
   <meta property="og:image" content="/assets/og-image.jpg">
   <meta property="og:url" content="https://KERORO6262.github.io/">
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Badr — Silence Studio">
-  <meta name="twitter:description" content="Where silence becomes stories. A studio for games, words, and fragments of imagination.">
+  <meta name="twitter:description"
+    content="Where silence becomes stories. A studio for games, words, and fragments of imagination.">
   <meta name="twitter:image" content="/assets/og-image.jpg">
-  <link rel="icon" href="/assets/favicon.png">
-  <style>
-    :root{
-      --bg: #0b1020; /* 背景(深) */
-      --bg-soft: #11172e;
-      --text: #e6e9f2; /* 文字(亮) */
-      --muted: #a9b1c7;
-      --brand: #7aa2ff; /* 主色 */
-      --brand-2: #a07cff; /* 輔色 */
-      --card: #0f152b; /* 卡片底色 */
-      --border: #223054;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    @media (prefers-color-scheme: light){
-      :root{
-        --bg:#f7f7fb; --bg-soft:#ffffff; --text:#0d1220; --muted:#5a647a; --card:#ffffff; --border:#e6e8f0; --shadow:0 10px 30px rgba(0,0,0,.08);
-      }
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0; font:16px/1.7 system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans TC", Arial, sans-serif; background:var(--bg); color:var(--text)}
-    .container{max-width:1100px; margin:auto; padding:0 20px}
-    /* Header */
-    header{position:sticky; top:0; background:color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter:saturate(1.2) blur(10px); border-bottom:1px solid var(--border); z-index:50}
-    .nav{display:flex; align-items:center; justify-content:space-between; height:64px}
-    .brand{font-weight:800; letter-spacing:0.3px}
-    .brand a{color:var(--text); text-decoration:none}
-    nav a{color:var(--muted); text-decoration:none; margin-left:18px}
-    nav a:hover{color:var(--text)}
-    .btn{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); background:linear-gradient(180deg, var(--bg-soft), var(--card)); color:var(--text); padding:10px 14px; border-radius:12px; text-decoration:none; box-shadow:var(--shadow)}
-    .btn:hover{transform:translateY(-1px)}
-    /* Hero */
-    .hero{padding:96px 0 60px; position:relative}
-    .hero-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:32px}
-    .tag{display:inline-block; padding:6px 10px; border:1px solid var(--border); border-radius:999px; color:var(--muted); font-size:12px}
-    .title{font-size:42px; line-height:1.12; margin:14px 0}
-    .subtitle{color:var(--muted); margin:14px 0 24px}
-    .cta{display:flex; gap:12px; flex-wrap:wrap}
-    .cta + .cta{margin-top:8px}
-    .photo{border-radius:20px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow)}
-    .photo img{display:block; width:100%; height:auto}
-    /* Sections */
-    section{padding:72px 0; border-top:1px solid var(--border)}
-    h2{font-size:28px; margin:0 0 18px}
-    .muted{color:var(--muted)}
-    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:18px}
-    /* Cards */
-    .card{grid-column:span 6; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; box-shadow:var(--shadow)}
-    .card h3{margin:6px 0 6px; font-size:18px}
-    .card p{margin:0 0 10px}
-    .badge{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); color:var(--muted)}
-    .chip{display:inline-block; padding:4px 8px; border-radius:8px; border:1px solid var(--border); margin-right:6px; margin-top:6px; font-size:12px; color:var(--muted)}
-    /* Footer */
-    footer{padding:60px 0; text-align:center; color:var(--muted)}
-    /* Responsive */
-    @media (max-width:960px){.hero-grid{grid-template-columns:1fr}.card{grid-column:span 12}}
-    /* LinkedIn 橫向小圖章 */
-    .cta-badge{display:inline-flex; align-items:center}
-    .LI-profile-badge{line-height:0}
-    .LI-profile-badge .badge-base__link{display:none!important}
-   </style>
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="assets/css/main.css">
+
 </head>
+
 <body>
   <header>
     <div class="container nav">
@@ -102,25 +49,16 @@
           <span class="tag">👋 Hi，我是</span>
           <h1 class="title">吳宗華（Badr）</h1>
           <p class="subtitle">在寂靜裡構築故事的開發者，以遊戲與文字記錄那些未被聽見的聲音。</p>
-            <div class="cta">
-              <a class="btn" href="mailto:slinceblue@gmail.com">Email</a>
-              <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">GitHub</a>
-            </div>
-            <div class="cta">
-              <div class="badge-base LI-profile-badge"
-               data-locale="en_US"
-               data-size="small"
-               data-theme="light"
-               data-type="HORIZONTAL"
-               data-vanity="bbmps-badr"
-               data-version="v1">
-                <a class="badge-base__link LI-simple-link" href="https://tw.linkedin.com/in/bbmps-badr?trk=profile-badge" aria-hidden="true" tabindex="-1">LinkedIn</a>
-            </div>
+          <div class="cta">
+            <a class="btn" href="mailto:slinceblue@gmail.com">Email</a>
+            <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn" href="https://linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">Linkedin</a>
           </div>
         </div>
+
         <div class="photo">
-          <!-- 置換為頭像或作品合成圖，建議 800x600 ~ 1200x900 -->
-          <img src="/assets/img/avatar.png" alt="Badr's Representative photos">
+          <!-- 建議 800×600 ~ 1200×900 -->
+          <img src="assets/img/avatar.png" alt="Badr's Representative photos">
         </div>
       </div>
     </section>
@@ -128,17 +66,18 @@
     <!-- About -->
     <section id="about">
       <h2>關於我</h2>
-      <p class="muted">我是 Badr，一名喜歡在靜謐中構築故事的創作者。平常以 Unity 製作 2D 原型與互動敘事系統，也會撰寫世界觀與角色筆記。對我來說，遊戲與文字都是觀察世界的方式：一種讓思緒被看見的途徑。希望在這裡記錄每一次嘗試與沉默之間的靈感。</p>
+      <p class="muted">我是 Badr，一名喜歡在靜謐中構築故事的創作者。平常以 Unity 製作 2D
+        原型與互動敘事系統，也會撰寫世界觀與角色筆記。對我來說，遊戲與文字都是觀察世界的方式：一種讓思緒被看見的途徑。希望在這裡記錄每一次嘗試與沉默之間的靈感。</p>
       <div class="grid">
         <div class="card" style="grid-column:span 12">
           <strong>歷史痕跡</strong>
-        <ul>
-          <li>2025 — 任職於永猷股份有限公司（ACME FILTER MASK INC.），負責電商營運與跨市場合作。</li>
-          <li>2024 — 於大頑遊戲創作有限公司擔任品保測試，協助產品開發與問題改善。</li>
-          <li>2024 — 撰寫評論專文《差評如潮？好評如潮？》，探討《活俠傳》上市初期負評現象。</li>
-          <li>2023 — 任職於高技企業股份有限公司，擔任 OP 設計工程師，負責 PCB 製程規劃。</li>
-          <li>2019～2023 — 就讀龍華科技大學多媒體與遊戲發展科學系，主修遊戲企劃與互動設計。</li>
-        </ul>
+          <ul>
+            <li>2025 — 任職於永猷股份有限公司（ACME FILTER MASK INC.），負責電商營運與跨市場合作。</li>
+            <li>2024 — 於大頑遊戲創作有限公司擔任品保測試，協助產品開發與問題改善。</li>
+            <li>2024 — 撰寫評論專文《差評如潮？好評如潮？》，探討《活俠傳》上市初期負評現象。</li>
+            <li>2023 — 任職於高技企業股份有限公司，擔任 OP 設計工程師，負責 PCB 製程規劃。</li>
+            <li>2019～2023 — 就讀龍華科技大學多媒體與遊戲發展科學系，主修遊戲企劃與互動設計。</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -177,13 +116,15 @@
           <span class="badge">設計</span>
           <h3>借鑒《上古卷軸5》式經典開鎖原型設計實作──《盜夜浪漫譚》）</h3>
           <p>透過觀察《上古卷軸5》式基礎開鎖，實作開鎖遊戲的基本原型</p>
-          <a class="btn" href="https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d" target="_blank" rel="noopener">閱讀</a>
+          <a class="btn" href="https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d" target="_blank"
+            rel="noopener">閱讀</a>
         </div>
         <div class="card">
           <span class="badge">文章</span>
           <h3>差評如潮？好評如潮？</h3>
           <p>為何簡中玩家總是喜歡批判開發者?</p>
-          <a class="btn" href="https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74" target="_blank" rel="noopener">閱讀</a>
+          <a class="btn" href="https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74"
+            target="_blank" rel="noopener">閱讀</a>
         </div>
       </div>
     </section>
@@ -207,7 +148,7 @@
   </footer>
 
   <!-- JSON-LD 結構化資料 -->
-<script type="application/ld+json">
+  <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
@@ -324,21 +265,8 @@
   ]
 }
 </script>
-<script>
-  // 根據裝置偏好切換 LinkedIn 圖章的深淺色
-  const mql = window.matchMedia('(prefers-color-scheme: dark)');
-  function applyLiTheme(){
-    const badge = document.querySelector('.LI-profile-badge');
-    if(!badge) return;
-    badge.setAttribute('data-theme', mql.matches ? 'dark' : 'light');
-    // 重新載入 LinkedIn 腳本（若已載過，通知它更新）
-    if(window.LIRenderAll) window.LIRenderAll();
-  }
-  mql.addEventListener('change', applyLiTheme);
-  applyLiTheme();
-</script>
 
-<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+
   <script>
     // 年份
     document.getElementById('y').textContent = new Date().getFullYear();
@@ -347,4 +275,5 @@
   </script>
 
 </body>
+
 </html>
