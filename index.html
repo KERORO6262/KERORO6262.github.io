@@ -51,6 +51,11 @@
             <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">GitHub</a>
             <a class="btn" href="https://linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">Linkedin</a>
           </div>
+          <div class="coin-row" aria-label="可收集硬幣">
+            <button class="coin" aria-label="收集硬幣 1" data-coin></button>
+            <button class="coin" aria-label="收集硬幣 2" data-coin></button>
+            <button class="coin" aria-label="收集硬幣 3" data-coin></button>
+          </div>
         </div>
 
         <div class="photo">
@@ -71,6 +76,9 @@
       </p>
       <div class="grid">
         <div class="card" style="grid-column:span 12">
+          <!-- 馬賽克遮罩（可互動解鎖） -->
+          <div class="mosaic-cover" id="mosaicCover" role="button" aria-label="解鎖覆蓋層"></div>
+
           <strong>歷史痕跡</strong>
           <ul>
             <li>2025 — 任職於永猷股份有限公司（ACME FILTER MASK INC.），負責電商營運與跨市場合作。</li>
@@ -266,6 +274,84 @@
   ]
 }
 </script>
+
+  <!-- Coin Counter 浮動計數 -->
+  <div id="coinFloat" class="coin-float" aria-live="polite" title="目前金幣"></div>
+
+  <script>
+    (function () {
+      // --- 狀態 ---
+      let coins = 0;                  // 目前金幣
+      let stage = 3;                  // 馬賽克階段：3=100%遮，2=66%，1=33%，0=完全解鎖
+      const $counter = document.getElementById('coinFloat');
+      const $mosaic = document.getElementById('mosaicCover');
+      const $coins = document.querySelectorAll('[data-coin]');
+
+      // 初始畫面
+      updateCounter();
+      applyMosaicStage();
+
+      // --- 收集硬幣：點擊後該硬幣消失 +1 ---
+      $coins.forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.disabled) return;
+          btn.disabled = true;
+          btn.classList.add('collected'); // 動畫 & 消失
+          coins += 1;
+          updateCounter();
+        });
+      });
+
+      // --- 使用金幣解鎖馬賽克：每點一次（需 coins>0）→ 階段 -1 ---
+      if ($mosaic) {
+        $mosaic.addEventListener('click', () => {
+          if (stage <= 0) return;         // 已全解
+          if (coins <= 0) {
+            // 無金幣：抖動提示
+            $mosaic.classList.remove('deny'); void $mosaic.offsetWidth; $mosaic.classList.add('deny');
+
+            // ★ 上浮文字提示（1.2s 自動消失；多次點擊會重置動畫）
+            const exists = document.querySelector('.mosaic-tip');
+            if (exists) {
+              // 重新觸發動畫
+              exists.remove();
+            }
+            const tip = document.createElement('div');
+            tip.className = 'mosaic-tip';
+            tip.setAttribute('aria-hidden', 'true');
+            tip.textContent = '需要閃亮的物件才可以揭示隱藏的內容';
+            // 放在卡片容器上，避免被縮小的遮罩裁切
+            const card = $mosaic.closest('#about .card') || $mosaic.parentElement;
+            card.appendChild(tip);
+            // 動畫結束後移除
+            setTimeout(() => tip.remove(), 1200);
+
+            return;
+          }
+
+          coins -= 1;
+          stage -= 1;
+          updateCounter();
+          applyMosaicStage();
+        });
+      }
+
+      function updateCounter() {
+        $counter.textContent = `🪙 ${coins}`;
+        document.documentElement.classList.toggle('coins-gt0', coins > 0);
+      }
+
+      function applyMosaicStage() {
+        // 3→100%, 2→66.666%, 1→33.333%, 0→0%
+        const coverPct = (stage / 3) * 100;
+        document.documentElement.style.setProperty('--mosaic-cover', coverPct + '%');
+        // 解鎖完成時，讓遮罩不可點
+        if (stage <= 0) {
+          $mosaic?.classList.add('done');
+        }
+      }
+    })();
+  </script>
 
 
   <script>
