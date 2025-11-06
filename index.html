@@ -20,7 +20,23 @@
   <meta name="twitter:description" content="互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。">
   <meta name="twitter:image" content="/assets/og-image.jpg">
   <link rel="icon" href="assets/favicon.png">
-  <link rel="stylesheet" href="./assets/css/main.css">
+  <!-- CSS order matters -->
+  <!-- ① 主題變數（色票、陰影、共用 token；深/淺色模式） -->
+  <link rel="stylesheet" href="./assets/css/theme.css">
+  <!-- ② 基礎層（reset、html/body、字體、容器 .container 等） -->
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <!-- ③ 版面層（Header、Hero、Section、Grid、通用版面配置） -->
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <!-- ④ 元件層（.btn、.card、.badge、.chip、.photo 等可重用 UI） -->
+  <link rel="stylesheet" href="./assets/css/components.css">
+  <!-- ⑤ 特色模組：硬幣互動（閃爍/浮動/收集狀態） -->
+  <link rel="stylesheet" href="./assets/css/features/coin.css">
+  <!-- ⑤ 特色模組：馬賽克遮罩、投幣孔視覺、上浮提示、防選取/複製 -->
+  <link rel="stylesheet" href="./assets/css/features/mosaic.css">
+  <!-- ⑤ 特色模組：時間線（compact 版本：點、日期、標題、描述） -->
+  <link rel="stylesheet" href="./assets/css/features/timeline.css">
+  <!-- ⑥ 響應式（共用斷點：Hero 改單欄、卡片跨欄等） -->
+  <link rel="stylesheet" href="./assets/css/responsive.css">
 
 </head>
 
@@ -97,7 +113,7 @@
               <div class="tl-dot" aria-hidden="true"></div>
               <time class="tl-date" datetime="2024">2024</time>
               <div class="tl-content">
-                <h4 class="tl-title">遠端 | 大頑遊戲創作有限公司 — 品保測試</h4>
+                <h4 class="tl-title">遠端 | 大頑遊戲創作有限公司 — (專案)品保測試</h4>
                 <p class="tl-desc">撰寫測試案例、回報與追蹤問題，支援迭代與穩定釋出。</p>
               </div>
             </article>
