@@ -1,0 +1,89 @@
+/* 父層卡片需定位上下文 */
+#about .card { position: relative; overflow: hidden; }
+
+/* 遮罩本體：覆蓋比例用 --mosaic-cover */
+.mosaic-cover {
+  position: absolute; inset: 0; height: var(--mosaic-cover, 100%);
+  cursor: pointer; pointer-events: auto; z-index: 5;
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 10px, rgba(0,0,0,.28) 10px 20px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.25) 0 10px, rgba(0,0,0,.28) 10px 20px),
+    linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.35));
+  backdrop-filter: blur(6px) saturate(.9);
+  -webkit-backdrop-filter: blur(6px) saturate(.9);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  transition: height .28s ease, transform .12s ease;
+}
+
+/* 完成解鎖：收起遮罩與投幣孔視覺 */
+.mosaic-cover.done { height: 0%; pointer-events: none; border-bottom: 0; }
+.mosaic-cover.done::before,
+.mosaic-cover.done::after {
+  opacity: 0; transform: translateX(-50%) translateY(-6px); filter: none;
+  transition: opacity .18s ease, transform .18s ease; pointer-events: none;
+}
+
+/* 無金幣抖動提示 */
+@keyframes denyShake {
+  15%{transform:translateX(-4px);} 30%{transform:translateX(4px);}
+  45%{transform:translateX(-3px);} 60%{transform:translateX(3px);}
+  75%{transform:translateX(-2px);} 90%{transform:translateX(2px);}
+  100%{transform:translateX(0);}
+}
+.mosaic-cover.deny { animation: denyShake .35s ease; }
+
+/* 投幣孔（黑槽） */
+.mosaic-cover::before {
+  content: ""; position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  width: clamp(64px, 22vw, 160px); height: 10px; border-radius: 999px;
+  background:
+    radial-gradient(100% 200% at 50% 10%, rgba(255,255,255,.25) 0 20%, transparent 21%),
+    linear-gradient(180deg, #000 0%, #1a1a1a 60%, #000 100%);
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,.12),
+    inset 0 -2px 4px rgba(0,0,0,.6),
+    0 8px 18px rgba(0,0,0,.25);
+  opacity: .9; pointer-events: none;
+}
+
+/* 投幣孔上方金屬面板 */
+.mosaic-cover::after {
+  content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: clamp(96px, 28vw, 220px); height: 34px; border-radius: 10px 10px 14px 14px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.18), rgba(255,255,255,.02)),
+    linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.35));
+  border: 1px solid color-mix(in srgb, var(--border) 60%, rgba(255,255,255,.2));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.15), inset 0 -8px 16px rgba(0,0,0,.25);
+  pointer-events: none; transition: filter .25s ease, transform .25s ease;
+}
+/* 有金幣時發光（由 JS 切換 body/.coins-gt0） */
+.coins-gt0 .mosaic-cover::after { filter: drop-shadow(0 0 10px rgba(255, 213, 74, .45)); }
+.mosaic-cover:hover::after { transform: translateX(-50%) translateY(-2px); }
+
+/* 浮動提示（無金幣點擊時上浮淡出） */
+.mosaic-tip {
+  position: absolute; left: 50%; top: 48px; transform: translateX(-50%);
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 12px;
+  background: color-mix(in srgb, var(--bg-soft) 80%, transparent);
+  color: var(--muted); font-size: 13px; pointer-events: none; opacity: 0;
+  animation: mosaicTipFloat 1.2s ease forwards; z-index: 6;
+}
+@keyframes mosaicTipFloat {
+  0%{opacity:0; transform:translate(-50%, 8px);}
+  12%{opacity:1; transform:translate(-50%, 0);}
+  80%{opacity:1; transform:translate(-50%, -10px);}
+  100%{opacity:0; transform:translate(-50%, -16px);}
+}
+
+/* 透明防護層：覆蓋期間阻擋選取/拖曳/複製 */
+.mosaic-guard { position: absolute; inset: 0; z-index: 6; background: transparent; cursor: pointer; }
+.mosaic-cover.done + .mosaic-guard { display: none; }
+
+/* 覆蓋期間禁止選取/拖曳（只作用於 #about 區） */
+#about .card.masked,
+#about .card.masked * {
+  -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+  -webkit-user-drag: none; -webkit-touch-callout: none;
+}
