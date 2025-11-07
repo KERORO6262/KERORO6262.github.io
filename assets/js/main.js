@@ -430,4 +430,34 @@
       }
     });
   }
+  
+  // === 餵食互動：點擊 🐟 計數餵貓 =========================
+  let feedingLock = false;
+  if ($fish) {
+    $fish.style.cursor = 'pointer';
+    $fish.setAttribute('title', '點我餵食（每次消耗 1 🐟，恢復體力 +5）');
+    $fish.setAttribute('role', 'button');
+    $fish.addEventListener('click', () => {
+      if (feedingLock) return;          // 外層防連點
+      if (fish <= 0) {
+        // 視覺回饋：抖一下
+        $fish.classList.remove('deny'); void $fish.offsetWidth; $fish.classList.add('deny');
+        setTimeout(() => $fish.classList.remove('deny'), 300);
+        return;
+      }
+
+      // 餵食：呼叫貓的 API；成功才扣 1
+      if (window.__cat && typeof window.__cat.feedFish === 'function') {
+        feedingLock = true;
+        const ok = window.__cat.feedFish(5);  // 每次 +5 體力
+        if (ok) {
+          fish = Math.max(0, fish - 1);
+          updateStats();
+        }
+        // 內外雙鎖：0.5s 冷卻避免連點
+        setTimeout(() => feedingLock = false, 500);
+      }
+    });
+  }
+
 })();
