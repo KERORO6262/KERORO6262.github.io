@@ -31,6 +31,8 @@
   <link rel="stylesheet" href="./assets/css/components.css">
   <!-- ⑤ 特色模組：硬幣互動（閃爍/浮動/收集狀態） -->
   <link rel="stylesheet" href="./assets/css/features/coin.css">
+  <!-- ⑤ 特色模組：釣魚（釣魚的互動繪製） -->
+  <link rel="stylesheet" href="./assets/css/features/fishing.css">
   <!-- ⑤ 特色模組：馬賽克遮罩、投幣孔視覺、上浮提示、防選取/複製 -->
   <link rel="stylesheet" href="./assets/css/features/mosaic.css">
   <!-- ⑤ 特色模組：時間線（compact 版本：點、日期、標題、描述） -->
@@ -72,11 +74,15 @@
             <button class="coin" aria-label="收集硬幣 2" data-coin></button>
             <button class="coin" aria-label="收集硬幣 3" data-coin></button>
           </div>
+          <div class="stat-row" aria-live="polite" style="margin-top:8px; display:flex; gap:8px;">
+            <span class="chip" id="fishCount" title="漁獲數量">🐟 0</span>
+            <span class="chip" id="trashCount" title="釣上的垃圾數">🗑️ 0</span>
+          </div>
         </div>
 
         <div class="photo">
           <!-- 建議 800×600 ~ 1200×900 -->
-          <img src="assets/img/avatar.png" alt="Badr's Representative photos">
+          <img id="avatar" src="assets/img/avatar.png" alt="Badr's Representative photos" style="cursor:pointer;">
         </div>
       </div>
     </section>
