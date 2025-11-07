@@ -1,14 +1,24 @@
 /* Button */
 .btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 10px 14px; border-radius: 12px;
-  color: var(--text); text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: var(--text);
+  text-decoration: none;
   border: 1px solid var(--border);
   background: linear-gradient(180deg, var(--bg-soft), var(--card));
   box-shadow: var(--shadow);
 }
-.btn:hover { transform: translateY(-1px); }
-.cta .btn { gap: .5em; }
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.cta .btn {
+  gap: .5em;
+}
 
 /* Card */
 .card {
@@ -19,19 +29,77 @@
   padding: 18px;
   box-shadow: var(--shadow);
 }
-.card h3 { margin: 6px 0 6px; font-size: 18px; }
-.card p { margin: 0 0 10px; }
+
+.card h3 {
+  margin: 6px 0 6px;
+  font-size: 18px;
+}
+
+.card p {
+  margin: 0 0 10px;
+}
 
 /* Badge & Chip */
 .badge {
-  font-size: 12px; padding: 4px 8px; border-radius: 999px;
-  border: 1px solid var(--border); color: var(--muted);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
 }
+
 .chip {
-  display: inline-block; padding: 4px 8px; border-radius: 8px;
-  border: 1px solid var(--border); margin-right: 6px; margin-top: 6px;
-  font-size: 12px; color: var(--muted);
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-right: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
 }
 
 /* Footer */
-footer { padding: 60px 0; text-align: center; color: var(--muted); }
+footer {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* === 通用：清單分頁控制 (list-pager) =================== */
+.list-pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.list-pager .btn[disabled] {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* 對被 JS 管控分頁的區塊加上視覺限制（避免整串滑動） */
+.section-paginated .grid {
+  position: relative;
+}
+
+.section-paginated[data-scroll-lock="true"] .grid {
+  overflow: hidden;
+}
+
+/* 可選的提示（預設顯示；手機關閉） */
+.section-paginated .grid::after {
+  content: "使用滑鼠滾輪或 ↑/↓ 切換";
+  position: absolute;
+  right: 8px;
+  bottom: -20px;
+  font-size: 12px;
+  color: var(--muted, #888);
+}
+
+@media (max-width: 640px) {
+  .section-paginated .grid::after {
+    display: none;
+  }
+}
