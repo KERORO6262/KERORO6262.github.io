@@ -170,4 +170,264 @@
     card.addEventListener('copy', e => { if (shouldBlock()) e.preventDefault(); });
     card.addEventListener('cut', e => { if (shouldBlock()) e.preventDefault(); });
   })();
+
+
+})();
+
+// === 釣魚互動模組 ==========================================================
+(function FishingMiniGame() {
+  // 狀態
+  let fish = 0;
+  let trash = 0;
+
+  // DOM
+  const $avatar = document.getElementById('avatar');
+  const $photo = $avatar?.closest('.photo');
+  const $fish = document.getElementById('fishCount');
+  const $trash = document.getElementById('trashCount');
+  const $statRow = document.querySelector('.stat-row');
+
+  // 動畫控制
+  let rafId = 0;
+  let playing = false;         // 是否正在一輪釣魚循環
+  let resolving = false; // ★ 是否正在結算結果（浮字期間上鎖）
+  let pointer = 0;             // 0~100 的進度（在條上來回跑）
+  let dir = +1;                // 方向：+1 向右，-1 向左
+  let startedAt = 0;           // 本輪開始時間（ms）
+  const ROUND_MS = 5000;       // 一輪自動結束時間（毫秒）
+  const SPEED_PPS = 160;       // 每秒移動百分比（%/s），越大越快
+
+  // 命中區間設定（每輪隨機）
+  let zoneStart = 30;   // %
+  let zoneWidth = 18;   // %
+
+  // UI 節點（在開始時動態建立）
+  let wrap = null, bar = null, zone = null, needle = null, hint = null;
+
+  if ($statRow) $statRow.style.display = 'none';
+  let statsRevealed = false;
+  function revealStatsOnce() {
+    if (!$statRow || statsRevealed) return;
+    $statRow.style.display = 'flex';
+    statsRevealed = true;
+  }
+
+  function updateStats() {
+    if ($fish) $fish.textContent = `🐟 ${fish}`;
+    if ($trash) $trash.textContent = `🗑️ ${trash}`;
+  }
+  updateStats();
+
+  function withinZone(pct) {
+    return pct >= zoneStart && pct <= (zoneStart + zoneWidth);
+  }
+
+  function randomZone() {
+    // 區間寬 10~25%；起點 5~(95-寬)
+    zoneWidth = Math.floor(10 + Math.random() * 16);
+    const maxStart = 95 - zoneWidth;
+    zoneStart = Math.floor(5 + Math.random() * (maxStart - 5));
+  }
+
+  function buildUI() {
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.className = 'fishing-wrap';
+      $photo.appendChild(wrap);
+    } else {
+      wrap.innerHTML = '';
+    }
+
+    bar = document.createElement('div');
+    bar.className = 'fishing-bar';
+
+    // 保底樣式
+    bar.style.position = 'relative';
+    bar.style.height = '12px';
+    bar.style.border = '1px solid var(--border, #999)';
+    bar.style.borderRadius = '999px';
+    bar.style.background = 'rgba(0,0,0,0.06)';
+    bar.style.overflow = 'hidden';
+
+    // 與 avatar 同寬
+    const r = $avatar.getBoundingClientRect();
+    bar.style.width = Math.round(r.width) + 'px';
+
+    // 命中區塊
+    zone = document.createElement('div');
+    zone.className = 'fishing-zone';
+    zone.style.position = 'absolute';
+    zone.style.top = '0';
+    zone.style.bottom = '0';
+    zone.style.left = `${zoneStart}%`;
+    zone.style.width = `${zoneWidth}%`;
+    zone.style.background = 'rgba(0, 128, 255, 0.25)';
+    zone.style.outline = '1px dashed rgba(0, 128, 255, 0.6)';
+    zone.style.outlineOffset = '-2px';
+
+    // 指針
+    needle = document.createElement('div');
+    needle.className = 'fishing-pointer';
+    needle.style.position = 'absolute';
+    needle.style.top = '-2px';
+    needle.style.bottom = '-2px';
+    needle.style.width = '2px';
+    needle.style.background = 'rgb(0, 128, 255)';
+    needle.style.boxShadow = '0 0 6px rgba(0, 128, 255, 0.9)';
+    needle.style.left = `0%`;
+
+    bar.appendChild(zone);
+    bar.appendChild(needle);
+
+    // 只放進度條（不再建立/插入 hint）
+    wrap.appendChild(bar);
+  }
+
+
+
+  function destroyUI() {
+    if (wrap && wrap.parentNode) {
+      wrap.remove();
+    }
+    wrap = bar = zone = needle = hint = null;
+  }
+
+  function endRound() {
+    playing = false;
+    cancelAnimationFrame(rafId);
+    rafId = 0;
+    destroyUI();
+  }
+
+  function tick(ts) {
+    if (!startedAt) startedAt = ts;
+
+    // 檢查自動結束
+    if (ts - startedAt >= ROUND_MS) {
+      endRound(); // 沒點就作廢
+      return;
+    }
+
+    // 根據時間推進指針
+    // 使用「固定速度 × 幀間隔」換算移動量，並在 0-100 來回
+    const dt = (ts - (tick.prev || ts)) / 1000; // 秒
+    tick.prev = ts;
+
+    pointer += dir * SPEED_PPS * dt;
+    if (pointer >= 100) { pointer = 100; dir = -1; }
+    if (pointer <= 0) { pointer = 0; dir = +1; }
+
+    if (needle) needle.style.left = `${pointer}%`;
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function startRound() {
+    if (playing || !$avatar || !$photo) return;
+    revealStatsOnce();
+    playing = true;
+    pointer = 0;
+    dir = +1;
+    startedAt = 0;
+    tick.prev = 0;
+
+    randomZone();
+    buildUI();
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function tryCatch() {
+    if (!playing || resolving) return;
+
+    const hit = withinZone(pointer);
+    let text = '沒釣到';
+    let gained = 0;
+    let isFish = true;
+
+    if (hit) {
+      gained = 1 + Math.floor(Math.random() * 3);
+      isFish = Math.random() < 0.6;
+      if (isFish) { fish += gained; text = `+${gained} 🐟`; }
+      else { trash += gained; text = `+${gained} 🗑️`; }
+      updateStats();
+
+      if (zone) { zone.style.transition = 'filter .15s'; zone.style.filter = 'brightness(1.6)'; setTimeout(() => zone && (zone.style.filter = ''), 200); }
+      if (needle) { needle.style.transition = 'box-shadow .15s'; needle.style.boxShadow = '0 0 10px var(--primary)'; setTimeout(() => needle && (needle.style.boxShadow = ''), 200); }
+    }
+
+    // ★ 同步作法：立刻結束一輪（條消失），同時秀結果泡泡
+    resolving = true;
+    endRound(); // ← 先把進度條關掉
+    showResultBubble(text, () => {
+      resolving = false; // 泡泡動畫結束 → 才能再釣
+    });
+  }
+
+
+  function showResultBubble(text, onDone) {
+    // 以 viewport 定位到頭像上方
+    const r = $avatar.getBoundingClientRect();
+    const pop = document.createElement('div');
+    pop.className = 'fish-pop';
+    pop.textContent = text;
+
+    // 初始位置：頭像正上方微偏上
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height * 0.25;
+
+    Object.assign(pop.style, {
+      position: 'fixed',
+      left: (x) + 'px',
+      top: (y) + 'px',
+      transform: 'translate(-50%, 0)',
+      pointerEvents: 'none',
+      zIndex: 9999,
+      // 保底樣式（若外部 CSS 沒載入）
+      padding: '4px 8px',
+      borderRadius: '999px',
+      fontWeight: '600',
+      fontSize: '14px',
+      background: 'rgba(0,0,0,.75)',
+      color: '#fff',
+      opacity: '0',
+      transition: 'transform .5s ease, opacity .5s ease'
+    });
+
+    document.body.appendChild(pop);
+
+    // 觸發進場 → 往上浮、淡入
+    requestAnimationFrame(() => {
+      pop.style.opacity = '1';
+      pop.style.transform = 'translate(-50%, -24px)';
+    });
+
+    // 於 650ms 後淡出並移除
+    setTimeout(() => {
+      pop.style.opacity = '0';
+      pop.style.transform = 'translate(-50%, -42px)';
+      pop.addEventListener('transitionend', () => {
+        pop.remove();
+        onDone && onDone();
+      }, { once: true });
+    }, 650);
+  }
+
+
+  if ($avatar && $photo) {
+    // 第一次點擊：開始一輪釣魚；再次點擊：判定收穫
+    $avatar.addEventListener('click', () => {
+      if (resolving) return;        // ★ 結算浮字期間，忽略點擊
+      if (!playing) startRound();   // 開始一輪
+      else tryCatch();              // 進行判定（只吃一次）
+    });
+
+    // 視窗尺寸改變時，若條存在則跟著 avatar 更新寬度
+    window.addEventListener('resize', () => {
+      if (playing && bar && $avatar) {
+        const r = $avatar.getBoundingClientRect();
+        bar.style.width = Math.round(r.width) + 'px';
+      }
+    });
+  }
 })();
