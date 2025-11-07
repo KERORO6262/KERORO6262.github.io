@@ -1,36 +1,174 @@
 /* Header */
 header {
-  position: sticky; top: 0; z-index: 50;
+  position: sticky;
+  top: 0;
+  z-index: 50;
   background: color-mix(in srgb, var(--bg) 85%, transparent);
   backdrop-filter: saturate(1.2) blur(10px);
   border-bottom: 1px solid var(--border);
 }
+
 .nav {
-  display: flex; align-items: center; justify-content: space-between; height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
 }
-.brand { font-weight: 800; letter-spacing: 0.3px; }
-.brand a { color: var(--text); text-decoration: none; }
-nav a { color: var(--muted); text-decoration: none; margin-left: 18px; }
-nav a:hover { color: var(--text); }
+
+.brand {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.brand a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  margin-left: 18px;
+}
+
+nav a:hover {
+  color: var(--text);
+}
 
 /* Hero */
-.hero { padding: 96px 0 60px; position: relative; }
+.hero {
+  padding: 96px 0 60px;
+  position: relative;
+}
+
 .hero-grid {
-  display: grid; gap: 32px;
+  display: grid;
+  gap: 32px;
   grid-template-columns: 1.2fr 0.8fr;
 }
-.tag { display: inline-block; padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: 12px; }
-.title { font-size: 42px; line-height: 1.12; margin: 14px 0; }
-.subtitle { color: var(--muted); margin: 14px 0 24px; }
-.cta { display: flex; gap: 12px; flex-wrap: wrap; }
-.cta + .cta { margin-top: 8px; }
-.photo { border-radius: 20px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); }
-.photo img { display: block; width: 100%; height: auto; }
+
+.tag {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.title {
+  font-size: 42px;
+  line-height: 1.12;
+  margin: 14px 0;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin: 14px 0 24px;
+}
+
+.cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cta+.cta {
+  margin-top: 8px;
+}
+
+.photo {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
 /* Sections */
-section { padding: 72px 0; border-top: 1px solid var(--border); }
-h2 { font-size: 28px; margin: 0 0 18px; }
-.muted { color: var(--muted); }
+section {
+  padding: 72px 0;
+  border-top: 1px solid var(--border);
+}
+
+h2 {
+  font-size: 28px;
+  margin: 0 0 18px;
+}
+
+.muted {
+  color: var(--muted);
+}
 
 /* Grid */
-.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 18px;
+}
+
+/* === Mobile Nav Fix: 保證四個錨點可見 === */
+@media (max-width: 640px) {
+  header .nav {
+    height: auto;
+    /* 允許高度隨內容撐開 */
+    padding: 8px 0;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  /* 品牌過長時截斷成單行省略號，避免擠掉導覽 */
+  header .brand {
+    max-width: 62vw;
+    /* 預留 ~38% 給導覽 */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+
+  /* 導覽列做成水平可捲動、不換行的分頁條 */
+  header nav {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    max-width: 100%;
+    scrollbar-width: none;
+    /* Firefox 隱藏捲軸 */
+  }
+
+  header nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* WebKit 隱藏捲軸 */
+
+  /* 連結縮小間距、提高可點性 */
+  header nav a {
+    margin-left: 0;
+    /* 取消桌面版的左邊距 */
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 90%, transparent);
+  }
+
+  /* 小螢幕隱藏「下載履歷」按鈕，避免擠壓 */
+  header nav .btn {
+    display: none;
+  }
+}
+
+/* iOS 瀏海安全區域（可選） */
+@supports (padding: max(0px)) {
+  header {
+    padding-top: max(0px, env(safe-area-inset-top));
+  }
+}
