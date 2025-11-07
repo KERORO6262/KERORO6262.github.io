@@ -37,10 +37,11 @@
   <link rel="stylesheet" href="./assets/css/features/mosaic.css">
   <!-- ⑤ 特色模組：時間線（compact 版本：點、日期、標題、描述） -->
   <link rel="stylesheet" href="./assets/css/features/timeline.css">
+  <!-- ⑤ 特色模組：網頁寵物貓（寵物貓的繪製） -->
+  <link rel="stylesheet" href="./assets/css/features/cat.css">
   <!-- ⑥ 響應式（共用斷點：Hero 改單欄、卡片跨欄等） -->
   <link rel="stylesheet" href="./assets/css/responsive.css">
-
-</head>
+  </head>
 
 <body>
   <header>
@@ -360,8 +361,12 @@
 
   <!-- Coin Counter 浮動計數 -->
   <div id="coinFloat" class="coin-float" aria-live="polite" title="目前金幣"></div>
-
+  <!-- Web Pet: CSS Cat -->
+  <div id="catPet" class="css-cat is-idle" role="img" aria-label="網頁寵物：一隻在頁面活動的貓" data-say=""></div>
+    
+  <script defer src="./assets/js/webcat.js"></script>
   <script src="./assets/js/main.js" defer></script>
+
 </body>
 
 </html>
