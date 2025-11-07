@@ -112,63 +112,62 @@ h2 {
   gap: 18px;
 }
 
-/* === Mobile Nav Fix: 保證四個錨點可見 === */
-@media (max-width: 640px) {
-  header .nav {
-    height: auto;
-    /* 允許高度隨內容撐開 */
-    padding: 8px 0;
-    gap: 8px;
-    align-items: flex-start;
+/* 漢堡鍵預設隱藏（桌機） */
+.nav-toggle {
+  display: none;
+}
+
+/* 手機版導覽 */
+@media (max-width: 768px) {
+  .nav {
+    height: 56px;
   }
 
-  /* 品牌過長時截斷成單行省略號，避免擠掉導覽 */
-  header .brand {
-    max-width: 62vw;
-    /* 預留 ~38% 給導覽 */
+  /* 顯示漢堡鍵 */
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-left: 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+  }
+
+  /* 品牌太長時截斷，避免擠掉選單 */
+  .brand {
+    max-width: 55vw;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    line-height: 1.2;
   }
 
-  /* 導覽列做成水平可捲動、不換行的分頁條 */
-  header nav {
+  /* 把 nav 變成下拉面板 */
+  header .nav nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 56px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px 14px;
+  }
+
+  header .nav nav.is-open {
     display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
-    max-width: 100%;
-    scrollbar-width: none;
-    /* Firefox 隱藏捲軸 */
   }
 
-  header nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* WebKit 隱藏捲軸 */
-
-  /* 連結縮小間距、提高可點性 */
-  header nav a {
-    margin-left: 0;
-    /* 取消桌面版的左邊距 */
-    padding: 6px 8px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: color-mix(in srgb, var(--bg) 90%, transparent);
-  }
-
-  /* 小螢幕隱藏「下載履歷」按鈕，避免擠壓 */
-  header nav .btn {
-    display: none;
-  }
-}
-
-/* iOS 瀏海安全區域（可選） */
-@supports (padding: max(0px)) {
-  header {
-    padding-top: max(0px, env(safe-area-inset-top));
+  /* 手機版的連結排版 */
+  header .nav nav a {
+    margin: 0;
+    padding: 10px 0;
+    font-size: 16px;
   }
 }
