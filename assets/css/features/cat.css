@@ -1,6 +1,6 @@
 /* ========== Emoji Cat (文字版) ========== */
 :root{
-  --cat-emoji-size: 28px;   /* 貓的大小（字體大小） */
+  --cat-emoji-size: 28px;
 }
 
 .css-cat{
@@ -11,11 +11,10 @@
   z-index: 100;
   cursor: pointer;
   user-select: none;
-  white-space: pre;         /* 保留左右尾巴字元 */
-  /* 文字版就不需要水平鏡像了（不再使用 --dir 翻轉） */
+  white-space: pre;
 }
 
-/* 小對話泡泡（沿用舊版 data-say） */
+/* 小對話泡泡 */
 .css-cat[data-say]:not([data-say=""])::after{
   content: attr(data-say);
   position: absolute;
