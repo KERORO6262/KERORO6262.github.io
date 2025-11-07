@@ -19,7 +19,7 @@
   <meta name="twitter:title" content="遊戲原型設計 & 互動敘事 | Badr — Silence Studio">
   <meta name="twitter:description" content="互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。">
   <meta name="twitter:image" content="/assets/og-image.jpg">
-  <link rel="icon" href="assets/favicon.png">
+  <link rel="icon" href="./assets/img/favicon.ico">
   <!-- CSS order matters -->
   <!-- ① 主題變數（色票、陰影、共用 token；深/淺色模式） -->
   <link rel="stylesheet" href="./assets/css/theme.css">
@@ -41,7 +41,7 @@
   <link rel="stylesheet" href="./assets/css/features/cat.css">
   <!-- ⑥ 響應式（共用斷點：Hero 改單欄、卡片跨欄等） -->
   <link rel="stylesheet" href="./assets/css/responsive.css">
-  </head>
+</head>
 
 <body>
   <header>
@@ -176,8 +176,13 @@
 
     <!-- Projects -->
     <section id="sharing">
-      <h2>近期分享</h2>
+      <h2>作品分享</h2>
       <p class="muted">記錄正在做的東西、學到的技巧、還在試驗的點子。</p>
+      <div class="list-pager" aria-label="清單分頁控制">
+        <button class="btn" data-pager="prev" aria-label="上一頁" disabled>↑</button>
+        <span class="muted" data-pager="status" aria-live="polite">1 / 1</span>
+        <button class="btn" data-pager="next" aria-label="下一頁" disabled>↓</button>
+      </div>
       <div class="grid">
         <article class="card">
           <img src="/assets/p1.jpg" alt="分享一縮圖" style="width:100%; border-radius:12px; border:1px solid var(--border)">
@@ -203,6 +208,11 @@
     <!-- Writing -->
     <section id="writing">
       <h2>寫作／研究</h2>
+      <div class="list-pager" aria-label="清單分頁控制">
+        <button class="btn" data-pager="prev" aria-label="上一頁" disabled>↑</button>
+        <span class="muted" data-pager="status" aria-live="polite">1 / 1</span>
+        <button class="btn" data-pager="next" aria-label="下一頁" disabled>↓</button>
+      </div>
       <div class="grid">
         <div class="card">
           <span class="badge">設計</span>
@@ -363,7 +373,7 @@
   <div id="coinFloat" class="coin-float" aria-live="polite" title="目前金幣"></div>
   <!-- Web Pet: CSS Cat -->
   <div id="catPet" class="css-cat is-idle" role="img" aria-label="網頁寵物：一隻在頁面活動的貓" data-say=""></div>
-    
+
   <script defer src="./assets/js/webcat.js"></script>
   <script src="./assets/js/main.js" defer></script>
 
