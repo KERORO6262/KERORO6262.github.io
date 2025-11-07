@@ -1,0 +1,52 @@
+  /* 釣魚條容器：會被動態插在 .photo 內、貼在 avatar 下方 */
+  .fishing-wrap {
+    position: relative;
+    margin-top: 8px;
+  }
+
+  .fishing-bar {
+    position: relative;
+    height: 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    overflow: hidden;
+  }
+
+  .fishing-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: color-mix(in srgb, var(--primary) 35%, transparent);
+    outline: 1px dashed color-mix(in srgb, var(--primary) 60%, black 0%);
+    outline-offset: -2px;
+  }
+
+  .fishing-pointer {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 2px;
+    background: var(--primary);
+    box-shadow: 0 0 6px var(--primary);
+  }
+
+  .fishing-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    user-select: none;
+  }
+
+  /* 釣魚結果浮字 */
+  .fish-pop {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    background: linear-gradient(180deg,
+        color-mix(in srgb, var(--primary) 65%, black),
+        color-mix(in srgb, var(--primary) 50%, black));
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+  }
