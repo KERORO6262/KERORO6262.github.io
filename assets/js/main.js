@@ -220,6 +220,7 @@
       prevBtn?.addEventListener('click', () => go(-1));
       nextBtn?.addEventListener('click', () => go(1));
 
+
       // 初始繪製
       render();
     }
@@ -230,6 +231,33 @@
 
   })();
 
+})();
+// === Mobile Nav Toggle ===
+(() => {
+  const btn = document.querySelector('.nav-toggle');
+  const nav = document.querySelector('header .nav nav');
+  if (!btn || !nav) return;
+
+  btn.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // 點了連結就收合
+  nav.addEventListener('click', (e) => {
+    if (e.target.closest('a')) {
+      nav.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // 回到桌機尺寸時自動收起
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      nav.classList.remove('is-open');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
 })();
 
 // === 釣魚互動模組 ==========================================================
