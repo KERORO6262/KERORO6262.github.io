@@ -171,6 +171,64 @@
     card.addEventListener('cut', e => { if (shouldBlock()) e.preventDefault(); });
   })();
 
+  // ===== 通用分頁顯示（每頁 N 張；預設 4） ==================
+  (function () {
+
+    function initPager(sectionEl, pageSize = 4) {
+      if (!sectionEl) return;
+
+      const grid = sectionEl.querySelector('.grid');
+      if (!grid) return;
+
+      const cards = Array.from(grid.querySelectorAll('.card'));
+      const prevBtn = sectionEl.querySelector('[data-pager="prev"]');
+      const nextBtn = sectionEl.querySelector('[data-pager="next"]');
+      const statusEl = sectionEl.querySelector('[data-pager="status"]');
+
+      // 若卡片小於等於一頁，隱藏控制列並略過
+      if (cards.length <= pageSize) {
+        sectionEl.querySelector('.list-pager')?.setAttribute('hidden', 'hidden');
+        return;
+      }
+
+      // 標記這個 section 為「被分頁管控」
+      sectionEl.classList.add('section-paginated');
+      sectionEl.setAttribute('data-scroll-lock', 'true');
+      sectionEl.setAttribute('tabindex', '0'); // 讓 section 可接鍵盤事件
+
+      let page = 0; // 0-based
+      const totalPages = Math.max(1, Math.ceil(cards.length / pageSize));
+
+      function render() {
+        const start = page * pageSize;
+        const end = start + pageSize;
+
+        cards.forEach((el, i) => {
+          el.style.display = (i >= start && i < end) ? '' : 'none';
+        });
+
+        if (prevBtn) prevBtn.disabled = (page === 0);
+        if (nextBtn) nextBtn.disabled = (page >= totalPages - 1);
+        if (statusEl) statusEl.textContent = `${page + 1} / ${totalPages}`;
+      }
+
+      function go(delta) {
+        const newPage = Math.min(Math.max(0, page + delta), totalPages - 1);
+        if (newPage !== page) { page = newPage; render(); }
+      }
+
+      prevBtn?.addEventListener('click', () => go(-1));
+      nextBtn?.addEventListener('click', () => go(1));
+
+      // 初始繪製
+      render();
+    }
+
+    // 套用到 sharing 與 writing（可依需要擴增）
+    initPager(document.querySelector('#sharing'), 4);
+    initPager(document.querySelector('#writing'), 4);
+
+  })();
 
 })();
 
@@ -430,7 +488,7 @@
       }
     });
   }
-  
+
   // === 餵食互動：點擊 🐟 計數餵貓 =========================
   let feedingLock = false;
   if ($fish) {
