@@ -156,6 +156,8 @@
 
     el.style.left = x + 'px';
     el.style.bottom = y + 'px';
+    el.style.touchAction = 'none';
+    el.style.userSelect = 'none';
 
     // --- 工具 ---
     const isSleep = () => el.classList.contains('is-sleep');
@@ -405,7 +407,7 @@
     }
 
 
-    el.addEventListener('pointerdown', onPointerDown);
+    el.addEventListener('pointerdown', onPointerDown, { passive: false });
     window.addEventListener('pointermove', onPointerMove, { passive: false });
     window.addEventListener('pointerup', onPointerUp);
     window.addEventListener('pointercancel', onPointerUp);
