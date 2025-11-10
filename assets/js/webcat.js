@@ -115,6 +115,15 @@
     let regenBlockedUntil = 0;
     let eatingUntil = 0;
 
+    let isDragging = false;        // 是否正在拖拽
+    let dragMoved = false;         // 本次拖拽是否有超過閾值
+    let suppressNextClick = false; // 用來吃掉拖拽後冒出的 click
+    let dragPointerId = null;      // 指紋鎖定哪根指標
+    let dragStart = { x: 0, y: 0, px: 0, py: 0 }; // 起點（貓座標與指標座標）
+    let preDragBaseMood = null;
+    const DRAG_CLICK_EPS = 6;      // px：小於等於此距離視為點擊，不算拖
+
+
     // 體力
     let stamina = STAMINA_MAX;
 
@@ -122,6 +131,11 @@
     let baseMood = 'normal', mood = baseMood, moodUntil = 0;
     let tailChar = opts.tailChar ?? '~';
     let wagTick = 0;
+
+    // 逃脫機率：每秒 10%，用節流間隔換算為單次判定概率
+    const ESCAPE_PROB_PER_S = 0.1;       // 每秒 0.1 機率
+    const ESCAPE_CHECK_INTERVAL_MS = 400; // 每 400ms 才判定一次（省資源）
+    let lastEscapeCheck = 0;              // 上次判定時間戳（ms）
 
     // 邊界/速度
     const PAD = opts.padding ?? 8;
@@ -211,6 +225,7 @@
 
     // --- 滑鼠靠近會追你（也扣體力） ---
     function onMouseMove(e) {
+      if (isDragging) return;
       if (isEating()) return;
       if (isSleep()) return;
       if (stamina <= LOW_STAMINA_THRESH) return;
@@ -249,6 +264,152 @@
       say('喵～');
       pause(800);
     }
+
+    // --- 拖拽處理（Pointer 事件：同時支援滑鼠/觸控/手寫筆） ---
+    function toBottomY(my, H) {
+      // 不允許把貓拖進頂部固定列（no-go）
+      const ty = Math.max(my, noGoTop + SAFE_TOP_PAD + H / 2);
+      const vh = window.innerHeight;
+      return clamp(vh - ty + H / 2, PAD, vh - H - PAD);
+    }
+
+    function onPointerDown(e) {
+      // 僅主鍵或觸控；避免右鍵
+      if (e.button !== undefined && e.button !== 0) return;
+      if (dragPointerId !== null) return; // 已有一根指標在拖
+
+      el.setPointerCapture?.(e.pointerId);
+      dragPointerId = e.pointerId ?? 'mouse';
+      isDragging = true;
+      dragMoved = false;
+      isChasing = false;      // 拖拽時停止追鼠
+      targetPoint = null;     // 暫停自動導航
+      el.classList.add('is-drag');
+
+      // 表情改為慌張
+      preDragBaseMood = baseMood;
+      setMoodTemp('fear', 0, false);
+
+      // 三組隨機語句，間隔節流
+      const dragSayList = ['放開我啦～', '別抓我呀！', '喵嗚嗚嗚嗚～'];
+      let lastSayTime = 0;
+      const SAY_INTERVAL = 1200; // 每1.2秒才可能說一次
+
+      // 拖拽說話監聽器：用 requestAnimationFrame 節流
+      (function dragSpeechLoop() {
+        if (!isDragging) return;
+        const nowTs = performance.now();
+        if (nowTs - lastSayTime > SAY_INTERVAL) {
+          lastSayTime = nowTs;
+          if (Math.random() < 0.4) { // 約4成機率說話
+            say(dragSayList[Math.floor(Math.random() * dragSayList.length)], 900);
+          }
+        }
+        requestAnimationFrame(dragSpeechLoop);
+      })();
+
+      // 記錄起點
+      const r = el.getBoundingClientRect();
+      dragStart.x = x; dragStart.y = y;
+      dragStart.px = e.clientX; dragStart.py = e.clientY;
+
+      // 立刻渲染一次（給「抓起來」的即時感）
+      render();
+
+      // 避免選取文字/拖圖
+      e.preventDefault();
+    }
+
+
+
+
+    // 強制從拖拽中逃脫
+    function forceEscapeFromDrag() {
+      if (!isDragging) return;
+
+      // 釋放指標捕獲（僅當 pointerId 是數字時）
+      if (typeof dragPointerId === 'number') {
+        el.releasePointerCapture?.(dragPointerId);
+      }
+      dragPointerId = null;
+      isDragging = false;
+      el.classList.remove('is-drag');
+
+      // 不觸發 click 愛心/不開心
+      suppressNextClick = true;
+
+      // 視覺與文字回饋
+      setMoodTemp(preDragBaseMood || 'normal', 0, true);
+      preDragBaseMood = null;
+      say('就憑你也想抓住本貓', 1500);
+
+      // 立刻選一個新目標「逃走」
+      targetPoint = null;
+      chooseNewTarget();
+
+      // 微暫停防止瞬移違和
+      pause(300);
+    }
+
+
+    function onPointerMove(e) {
+      if (!isDragging || (dragPointerId !== (e.pointerId ?? 'mouse'))) return;
+
+      const W = (el.getBoundingClientRect().width || 32);
+      const H = (el.getBoundingClientRect().height || 24);
+
+      // 以指標置中：left 用 clientX - W/2；bottom 需轉成視窗座標系
+      const nx = clamp(e.clientX - W / 2, PAD, window.innerWidth - W - PAD);
+      const ny = toBottomY(e.clientY, H);
+
+      // 判斷是否超過拖拽閾值
+      if (!dragMoved) {
+        const dx = e.clientX - dragStart.px;
+        const dy = e.clientY - dragStart.py;
+        if (Math.hypot(dx, dy) > DRAG_CLICK_EPS) dragMoved = true;
+      }
+
+      // 更新朝向與位置
+      dir = (nx - x) >= 0 ? 1 : -1;
+      x = nx; y = ny;
+      el.classList.add('is-walk');
+      render();
+      el.style.left = (x | 0) + 'px';
+      el.style.bottom = (y | 0) + 'px';
+
+      // 拖拽不扣體力：視為「被搬動」，不算自己的行走
+    }
+
+    function onPointerUp(e) {
+      if (dragPointerId !== (e.pointerId ?? 'mouse')) return;
+      el.releasePointerCapture?.(e.pointerId);
+      dragPointerId = null;
+
+      // 結束拖拽
+      isDragging = false;
+      el.classList.remove('is-drag');
+      setMoodTemp(preDragBaseMood || 'normal', 0, true);
+      preDragBaseMood = null;
+
+      if (dragMoved) {
+        // 真的拖過：吃掉下一個 click 事件，不觸發愛心/不開心
+        suppressNextClick = true;
+        // 小表情回饋
+        setMoodTemp('smirk', 400);
+        // 停 0.4s 再恢復自走
+        pause(400);
+      } else {
+        // 幾乎沒移動：視為點擊 -> 走原本點擊流程
+        onClick();
+      }
+    }
+
+    el.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove, { passive: false });
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
+
+
 
     // --- 視窗滾動/縮放：只標註，rAF 內統一處理 ---
     function flagViewportUpdate() { needViewportUpdate = true; }
@@ -384,6 +545,28 @@
         return;
       }
 
+      // ★拖拽期間：完全不選目標、不移動，但要低頻率判斷是否逃脫
+      if (isDragging) {
+        // 以節流間隔做一次機率判定（等價每秒 10% 左右）
+        if (!lastEscapeCheck) lastEscapeCheck = ts;
+        if ((ts - lastEscapeCheck) >= ESCAPE_CHECK_INTERVAL_MS) {
+          lastEscapeCheck = ts;
+          // 把每秒機率換算成「單次判定」機率：1 - exp(-λΔt)
+          const intervalSec = ESCAPE_CHECK_INTERVAL_MS / 1000;
+          const p = 1 - Math.exp(-ESCAPE_PROB_PER_S * intervalSec);
+          if (Math.random() < p) {
+            forceEscapeFromDrag();
+          }
+        }
+
+        // 仍需刷新當前座標樣式即可（位置由 pointermove 決定）
+        el.style.left = (x | 0) + 'px';
+        el.style.bottom = (y | 0) + 'px';
+        rafId = requestAnimationFrame(loop);
+        return;
+      }
+
+
       // 沒目標就挑一個（圖片/文字優先，避開頂部固定列）
       if (!targetPoint) {
         chooseNewTarget();
@@ -439,7 +622,13 @@
     window.addEventListener('resize', flagViewportUpdate, { passive: true });
     window.addEventListener('scroll', flagViewportUpdate, { passive: true });
     window.addEventListener('mousemove', onMouseMove);
-    el.addEventListener('click', onClick);
+    el.addEventListener('click', (e) => {
+      // 若剛結束拖拽就會冒出一次 click，這裡吃掉
+      if (suppressNextClick) { suppressNextClick = false; e.stopPropagation(); e.preventDefault(); return; }
+      // 正常點擊
+      onClick(e);
+    });
+
 
     // 啟動
     render();
