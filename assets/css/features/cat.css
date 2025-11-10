@@ -1,26 +1,31 @@
 /* ========== Emoji Cat (文字版) ========== */
-:root{
+:root {
   --cat-emoji-size: 28px;
+  /* 貓的大小（字體大小） */
 }
 
-.css-cat{
+.css-cat {
   position: fixed;
-  left: 16px; bottom: 16px;
+  left: 16px;
+  bottom: 16px;
   font-size: var(--cat-emoji-size);
   line-height: 1;
   z-index: 100;
   cursor: pointer;
   user-select: none;
   white-space: pre;
+  /* 保留左右尾巴字元 */
+  /* 文字版就不需要水平鏡像了（不再使用 --dir 翻轉） */
 }
 
-/* 小對話泡泡 */
-.css-cat[data-say]:not([data-say=""])::after{
+/* 小對話泡泡（沿用舊版 data-say） */
+.css-cat[data-say]:not([data-say=""])::after {
   content: attr(data-say);
   position: absolute;
-  left: 50%; bottom: 100%;
-  transform: translate(-50%,-6px);
-  background: rgba(0,0,0,.75);
+  left: 50%;
+  bottom: 100%;
+  transform: translate(-50%, -6px);
+  background: rgba(0, 0, 0, .75);
   color: #fff;
   font-size: 12px;
   padding: 4px 8px;
@@ -30,4 +35,14 @@
   opacity: .95;
 }
 
-.css-cat:hover{ filter: brightness(1.05); }
+.css-cat {
+  cursor: grab;
+}
+
+.css-cat.is-drag {
+  cursor: grabbing;
+}
+
+.css-cat:hover {
+  filter: brightness(1.05);
+}
