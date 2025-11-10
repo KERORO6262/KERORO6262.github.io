@@ -274,51 +274,23 @@
     }
 
     function onPointerDown(e) {
-      // 僅主鍵或觸控；避免右鍵
       if (e.button !== undefined && e.button !== 0) return;
-      if (dragPointerId !== null) return; // 已有一根指標在拖
+      if (dragPointerId !== null) return;
 
       el.setPointerCapture?.(e.pointerId);
       dragPointerId = e.pointerId ?? 'mouse';
-      isDragging = true;
+
       dragMoved = false;
-      isChasing = false;      // 拖拽時停止追鼠
-      targetPoint = null;     // 暫停自動導航
-      el.classList.add('is-drag');
+      isChasing = false;
+      targetPoint = null;
 
-      // 表情改為慌張
-      preDragBaseMood = baseMood;
-      setMoodTemp('fear', 0, false);
-
-      // 三組隨機語句，間隔節流
-      const dragSayList = ['放開我啦～', '別抓我呀！', '喵嗚嗚嗚嗚～'];
-      let lastSayTime = 0;
-      const SAY_INTERVAL = 1200; // 每1.2秒才可能說一次
-
-      // 拖拽說話監聽器：用 requestAnimationFrame 節流
-      (function dragSpeechLoop() {
-        if (!isDragging) return;
-        const nowTs = performance.now();
-        if (nowTs - lastSayTime > SAY_INTERVAL) {
-          lastSayTime = nowTs;
-          if (Math.random() < 0.4) { // 約4成機率說話
-            say(dragSayList[Math.floor(Math.random() * dragSayList.length)], 900);
-          }
-        }
-        requestAnimationFrame(dragSpeechLoop);
-      })();
-
-      // 記錄起點
       const r = el.getBoundingClientRect();
       dragStart.x = x; dragStart.y = y;
       dragStart.px = e.clientX; dragStart.py = e.clientY;
 
-      // 立刻渲染一次（給「抓起來」的即時感）
-      render();
-
-      // 避免選取文字/拖圖
       e.preventDefault();
     }
+
 
 
 
@@ -353,56 +325,85 @@
 
 
     function onPointerMove(e) {
-      if (!isDragging || (dragPointerId !== (e.pointerId ?? 'mouse'))) return;
+      if (dragPointerId !== (e.pointerId ?? 'mouse')) return;
 
       const W = (el.getBoundingClientRect().width || 32);
       const H = (el.getBoundingClientRect().height || 24);
 
-      // 以指標置中：left 用 clientX - W/2；bottom 需轉成視窗座標系
-      const nx = clamp(e.clientX - W / 2, PAD, window.innerWidth - W - PAD);
-      const ny = toBottomY(e.clientY, H);
+      // 尚未進入拖拽時，先看是否超過閾值 → 才「正式」進入拖拽
+      if (!isDragging) {
+        const dx0 = e.clientX - dragStart.px;
+        const dy0 = e.clientY - dragStart.py;
+        if (Math.hypot(dx0, dy0) > DRAG_CLICK_EPS) {
+          isDragging = true;
+          dragMoved = true;               // 已確定是拖拽
+          el.classList.add('is-drag');
 
-      // 判斷是否超過拖拽閾值
-      if (!dragMoved) {
-        const dx = e.clientX - dragStart.px;
-        const dy = e.clientY - dragStart.py;
-        if (Math.hypot(dx, dy) > DRAG_CLICK_EPS) dragMoved = true;
+          // 拖拽才套慌張情緒
+          preDragBaseMood = baseMood;
+          setMoodTemp('fear', 0, false);
+
+          // 拖拽隨機語句（輕量節流）
+          const dragSayList = ['放開我啦～', '別抓我呀！', '喵嗚嗚嗚嗚～'];
+          let lastSayTime = 0;
+          const SAY_INTERVAL = 1200;
+          (function dragSpeechLoop() {
+            if (!isDragging) return;
+            const t = performance.now();
+            if (t - lastSayTime > SAY_INTERVAL) {
+              lastSayTime = t;
+              if (Math.random() < 0.4) {
+                say(dragSayList[Math.floor(Math.random() * dragSayList.length)], 900);
+              }
+            }
+            requestAnimationFrame(dragSpeechLoop);
+          })();
+        } else {
+          // 仍未達閾值就先回傳，避免把單純連點當拖拽
+          return;
+        }
       }
 
-      // 更新朝向與位置
+      // --- 以下為「已是拖拽」時的位置更新 ---
+      const nx = clamp(e.clientX - W / 2, PAD, window.innerWidth - W - PAD);
+      const ny = toBottomY(e.clientY, H);
       dir = (nx - x) >= 0 ? 1 : -1;
       x = nx; y = ny;
       el.classList.add('is-walk');
       render();
       el.style.left = (x | 0) + 'px';
       el.style.bottom = (y | 0) + 'px';
-
-      // 拖拽不扣體力：視為「被搬動」，不算自己的行走
     }
+
 
     function onPointerUp(e) {
       if (dragPointerId !== (e.pointerId ?? 'mouse')) return;
       el.releasePointerCapture?.(e.pointerId);
       dragPointerId = null;
 
-      // 結束拖拽
-      isDragging = false;
-      el.classList.remove('is-drag');
-      setMoodTemp(preDragBaseMood || 'normal', 0, true);
-      preDragBaseMood = null;
+      if (isDragging) {
+        // 結束拖拽
+        isDragging = false;
+        el.classList.remove('is-drag');
 
-      if (dragMoved) {
-        // 真的拖過：吃掉下一個 click 事件，不觸發愛心/不開心
+        // 放開恢復初始基底情緒（若有暫存）
+        if (preDragBaseMood !== null) {
+          setMoodTemp(preDragBaseMood || 'normal', 0, true);
+          preDragBaseMood = null;
+        }
+
+        // 曾經拖拽過 → 吃掉下一個 click，不觸發愛心/不開心
         suppressNextClick = true;
-        // 小表情回饋
+
+        // 小回饋
         setMoodTemp('smirk', 400);
-        // 停 0.4s 再恢復自走
         pause(400);
       } else {
-        // 幾乎沒移動：視為點擊 -> 走原本點擊流程
+        // 沒進入拖拽（純點擊）：走原本點擊流程
         onClick();
       }
     }
+
 
     el.addEventListener('pointerdown', onPointerDown);
     window.addEventListener('pointermove', onPointerMove, { passive: false });
