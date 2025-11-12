@@ -50,3 +50,42 @@
         color-mix(in srgb, var(--primary) 50%, black));
     box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
   }
+
+  /* 商店下拉：進場 */
+  .shop-menu {
+    animation: shopFadeIn 0.18s ease-out;
+  }
+
+  @keyframes shopFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 關閉按鈕：小圓形、懸浮可見 */
+  .shop-menu__close {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    border-radius: 999px;
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .shop-menu__close:hover {
+    filter: brightness(1.06);
+  }
+
+  .shop-menu__close:active {
+    transform: translateY(1px);
+  }
