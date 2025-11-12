@@ -545,5 +545,137 @@
       }
     });
   }
+  // === 賣垃圾功能 ==============================
+  let money = 0;
+  const $money = document.createElement('span');
+  $money.className = 'chip';
+  $money.id = 'moneyCount';
+  $money.textContent = '💰 0';
+  $money.title = '點我打開商店';
+  $money.style.cursor = 'pointer';
+  if ($statRow) $statRow.appendChild($money);
+
+  function updateMoney() {
+    $money.textContent = `💰 ${money}`;
+  }
+
+  // 點按垃圾可賣出
+  if ($trash) {
+    $trash.style.cursor = 'pointer';
+    $trash.setAttribute('title', '點我出售垃圾（每個3💰）');
+    $trash.addEventListener('click', () => {
+      if (trash <= 0) {
+        // 視覺提示：抖動動畫
+        $trash.classList.remove('deny'); void $trash.offsetWidth; $trash.classList.add('deny');
+        setTimeout(() => $trash.classList.remove('deny'), 300);
+        return;
+      }
+      const sold = trash;
+      const gain = sold * 3;
+      trash = 0;
+      money += gain;
+      updateStats();
+      updateMoney();
+      showResultBubble(`+${gain} 💰`);
+    });
+  }
+
+  // === 商店下拉選單（含關閉按鈕／外部點擊／ESC） ============================
+  let shopOpen = false;     // 商店是否開啟
+  let $shopMenu = null;     // 商店DOM節點
+  let onDocClick = null;    // 外部點擊監聽器（開啟時才掛）
+  let onEscKey = null;      // ESC 監聽器（開啟時才掛）
+
+  // 關閉商店（集中處理）
+  function closeShopMenu() {
+    if (!shopOpen) return;
+    $shopMenu?.remove();
+    $shopMenu = null;
+    shopOpen = false;
+
+    // 移除臨時事件監聽
+    if (onDocClick) {
+      document.removeEventListener('click', onDocClick, true);
+      onDocClick = null;
+    }
+    if (onEscKey) {
+      document.removeEventListener('keydown', onEscKey, true);
+      onEscKey = null;
+    }
+  }
+
+  // 切換商店顯示
+  function toggleShopMenu() {
+    if (shopOpen) {
+      closeShopMenu();
+      return;
+    }
+
+    // 建立容器
+    $shopMenu = document.createElement('div');
+    $shopMenu.className = 'shop-menu';
+    Object.assign($shopMenu.style, {
+      position: 'absolute',
+      background: 'var(--surface)',
+      border: '1px solid var(--border)',
+      borderRadius: '10px',
+      padding: '8px 8px 10px 8px',
+      fontSize: '14px',
+      top: '28px',
+      right: '0',
+      zIndex: 10000,
+      minWidth: '200px',
+      boxShadow: '0 8px 18px rgba(0,0,0,.22)'
+    });
+
+    // 內容（加上標題列與關閉按鈕）
+    $shopMenu.innerHTML = `
+      <div class="shop-menu__header" style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span aria-hidden="true">🛍️</span>
+          <strong>商店</strong>
+        </div>
+        <button class="shop-menu__close" aria-label="關閉商店" title="關閉" type="button">×</button>
+      </div>
+      <div class="shop-menu__body" style="color:var(--muted);font-size:13px;line-height:1.5;">
+        尚未開放販售內容（保留給你日後擴充）
+      </div>
+    `;
+
+    // 將清單掛在 stat-row（並確保其為定位容器）
+    $statRow.style.position = 'relative';
+    $statRow.appendChild($shopMenu);
+    shopOpen = true;
+
+    // 綁定關閉按鈕
+    const $closeBtn = $shopMenu.querySelector('.shop-menu__close');
+    if ($closeBtn) {
+      $closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeShopMenu();
+      });
+    }
+
+    // 點擊外部關閉（捕獲階段，優先攔截）
+    onDocClick = (ev) => {
+      // 若點擊發生在選單或 money 計數上，則不關閉
+      const insideMenu = $shopMenu?.contains(ev.target);
+      const onMoney = ev.target === $money || $money.contains(ev.target);
+      if (!insideMenu && !onMoney) closeShopMenu();
+    };
+    document.addEventListener('click', onDocClick, true);
+
+    // 按下 ESC 關閉
+    onEscKey = (ev) => {
+      if (ev.key === 'Escape') closeShopMenu();
+    };
+    document.addEventListener('keydown', onEscKey, true);
+  }
+
+  // money 點擊 → 開/關商店
+  $money.addEventListener('click', (e) => {
+    e.stopPropagation(); // 避免立刻被「文件外部點擊」關閉
+    toggleShopMenu();
+  });
 
 })();
