@@ -638,7 +638,7 @@
         <button class="shop-menu__close" aria-label="關閉商店" title="關閉" type="button">×</button>
       </div>
       <div class="shop-menu__body" style="color:var(--muted);font-size:13px;line-height:1.5;">
-        尚未開放販售內容（保留給你日後擴充）
+        尚未開放販售內容（日後擴充）
       </div>
     `;
 
