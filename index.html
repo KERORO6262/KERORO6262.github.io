@@ -186,6 +186,23 @@
       </div>
       <div class="grid">
         <article class="card">
+          <div
+            style="width:100%; height:160px; background:var(--surface-2); border-radius:12px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
+            <span style="color:var(--text-muted);">建議放入網站截圖 (800x400)</span>
+          </div>
+          <h3>Unit Power Scorer 40K</h3>
+          <p>戰鎚 40K 單位戰力計算工具。專為桌遊玩家設計的網頁應用，可快速計算與評估單位強度分數。</p>
+          <div>
+            <span class="chip">Web Tool</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">Warhammer 40K</span>
+          </div>
+          <p>
+            <a class="btn" href="https://keroro6262.github.io/unit-power-scorer-40k.github.io/" target="_blank"
+              rel="noopener">前往使用</a>
+          </p>
+        </article>
+        <article class="card">
           <img src="./assets/img/sharing/fvttMod_dnd5e.png" alt="FVTT中DND5E的MOD: NPC生成器banner"
             style="width:100%; border-radius:12px; border:1px solid var(--border)">
           <h3>FVTT MOD：DND5E NPC生成器</h3>
@@ -272,7 +289,7 @@
       "name": "遊戲設計 & 互動敘事 | Badr — Silence Studio",
       "inLanguage": "zh-Hant-TW",
       "description": "吳宗華（Badr）的個人主頁：互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。",
-      "publisher": { "@id": "https://KERORO6262.github.io/#org" },
+      "publisher": { "@id": "https://KERORO6262.github.io/#silence_studio" },
       "about": { "@id": "https://KERORO6262.github.io/#me" },
       "potentialAction": {
         "@type": "SearchAction",
@@ -281,7 +298,14 @@
       }
     },
     {
-      "@type": ["WebPage", "ProfilePage", "CollectionPage"],
+      "@type": "Organization",
+      "@id": "https://KERORO6262.github.io/#silence_studio",
+      "name": "Silence Studio",
+      "url": "https://KERORO6262.github.io/",
+      "founder": { "@id": "https://KERORO6262.github.io/#me" }
+    },
+    {
+      "@type": ["WebPage", "ProfilePage"],
       "@id": "https://KERORO6262.github.io/#webpage",
       "url": "https://KERORO6262.github.io/",
       "name": "遊戲原型設計 & 互動敘事 | Badr — Silence Studio",
@@ -293,7 +317,7 @@
         "url": "https://KERORO6262.github.io/assets/img/avatar.png"
       },
       "breadcrumb": { "@id": "https://KERORO6262.github.io/#breadcrumb" },
-      "mainEntity": { "@id": "https://KERORO6262.github.io/#me" }   
+      "mainEntity": { "@id": "https://KERORO6262.github.io/#me" }
     },
     {
       "@type": "BreadcrumbList",
@@ -315,7 +339,8 @@
       "url": "https://KERORO6262.github.io/",
       "image": "https://KERORO6262.github.io/assets/img/avatar.png",
       "jobTitle": ["電商營運", "獨立遊戲開發者"],
-      "worksFor": { "@id": "https://KERORO6262.github.io/#org" },
+      "worksFor": { "@id": "https://KERORO6262.github.io/#org_acme" },
+      "affiliation": { "@id": "https://KERORO6262.github.io/#silence_studio" },
       "sameAs": [
         "https://github.com/KERORO6262",
         "https://www.linkedin.com/in/bbmps-badr",
@@ -330,11 +355,11 @@
         "email": "mailto:slinceblue@gmail.com",
         "availableLanguage": ["zh-Hant", "en"]
       }],
-      "mainEntityOfPage": { "@id": "https://KERORO6262.github.io/#webpage" } 
+      "mainEntityOfPage": { "@id": "https://KERORO6262.github.io/#webpage" }
     },
     {
       "@type": "Organization",
-      "@id": "https://KERORO6262.github.io/#org",
+      "@id": "https://KERORO6262.github.io/#org_acme",
       "name": "Acme Filter Mask Inc.",
       "employee": { "@id": "https://KERORO6262.github.io/#me" }
     },
@@ -343,7 +368,7 @@
       "@id": "https://KERORO6262.github.io/#writing",
       "name": "寫作／研究",
       "itemListOrder": "http://schema.org/ItemListOrderDescending",
-      "numberOfItems": 2,
+      "numberOfItems": 3,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -371,18 +396,37 @@
             "inLanguage": "zh-Hant",
             "author": { "@id": "https://KERORO6262.github.io/#me" },
             "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
-          },
-          {
+          }
+        },
+        {
           "@type": "ListItem",
           "position": 3,
           "item": {
-            "@type": "Article",
+            "@type": "SoftwareSourceCode",
             "@id": "https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/",
             "url": "https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/",
-            "headline": "FVTT MOD：DND5E NPC生成器",
+            "name": "FVTT MOD：DND5E NPC生成器",
             "description": "一個FoundryVTT模組，可快速生成帶有名字、背景、個性、怪癖、外觀、年齡與裝備的D&D 5e NPC。",
             "inLanguage": "zh-Hant",
             "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "codeRepository": "https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/",
+            "programmingLanguage": "JavaScript",
+            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": "WebApplication",
+            "@id": "https://keroro6262.github.io/unit-power-scorer-40k.github.io/",
+            "url": "https://keroro6262.github.io/unit-power-scorer-40k.github.io/",
+            "name": "Unit Power Scorer 40K",
+            "description": "戰鎚 40K 單位戰力計算工具，用於評估戰棋單位強度。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "applicationCategory": "GameUtility",
+            "operatingSystem": "Web",
             "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
           }
         }
