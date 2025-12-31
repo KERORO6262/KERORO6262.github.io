@@ -1,0 +1,283 @@
+/* Shop + Inventory UI (獨立檔，方便維護)
+*/
+
+:root{
+  --ui-z-base: 20000;
+  --ui-z-menu: 20010;
+  --ui-z-modal: 20020;
+  --ui-shadow: 0 10px 26px rgba(0,0,0,.24);
+
+  /* ===== UI Panel Color System (Default: follow dark-ish neutral) ===== */
+  --ui-panel-bg: rgba(18, 18, 20, 0.92);
+  --ui-panel-text: rgba(255, 255, 255, 0.92);
+  --ui-panel-muted: rgba(255, 255, 255, 0.66);
+  --ui-panel-border: rgba(255, 255, 255, 0.16);
+
+  --ui-item-bg: rgba(255, 255, 255, 0.06);
+  --ui-item-border: rgba(255, 255, 255, 0.12);
+
+  --ui-btn-bg: rgba(255, 255, 255, 0.10);
+  --ui-btn-hover: rgba(255, 255, 255, 0.14);
+
+  --ui-accent: var(--primary, #4aa3ff);
+  --ui-accent-weak: rgba(74, 163, 255, 0.22);
+
+  --ui-overlay-bg: rgba(0,0,0,.45);
+}
+
+/* Light scheme: 更乾淨、玻璃感少一點，字更深 */
+@media (prefers-color-scheme: light){
+  :root{
+    --ui-panel-bg: rgba(255, 255, 255, 0.94);
+    --ui-panel-text: rgba(18, 18, 20, 0.92);
+    --ui-panel-muted: rgba(18, 18, 20, 0.62);
+    --ui-panel-border: rgba(18, 18, 20, 0.14);
+
+    --ui-item-bg: rgba(18, 18, 20, 0.04);
+    --ui-item-border: rgba(18, 18, 20, 0.10);
+
+    --ui-btn-bg: rgba(18, 18, 20, 0.06);
+    --ui-btn-hover: rgba(18, 18, 20, 0.10);
+
+    --ui-overlay-bg: rgba(0,0,0,.34);
+  }
+}
+
+/* ===== 商店：下拉選單（實際用 fixed 置於 body） ===== */
+.shop-menu{
+  position: fixed;
+  z-index: var(--ui-z-menu);
+  min-width: 240px;
+  max-width: min(320px, calc(100vw - 16px));
+  padding: 10px;
+
+  /* 顏色 */
+  border: 1px solid var(--ui-panel-border);
+  border-radius: 12px;
+  background: var(--ui-panel-bg);
+  color: var(--ui-panel-text);
+
+  box-shadow: var(--ui-shadow);
+  backdrop-filter: blur(10px);
+  animation: shopFadeIn .18s ease-out;
+}
+
+@keyframes shopFadeIn{
+  from{ opacity: 0; transform: translateY(-4px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+.shop-menu__header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom: 8px;
+}
+
+.shop-menu__title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight: 800;
+}
+
+.shop-menu__close{
+  appearance:none;
+  border: 1px solid var(--ui-item-border);
+  background: var(--ui-btn-bg);
+  color: var(--ui-panel-text);
+
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  line-height: 24px;
+  text-align:center;
+  cursor:pointer;
+  font-weight: 900;
+}
+
+.shop-menu__close:hover{ background: var(--ui-btn-hover); }
+.shop-menu__close:active{ transform: translateY(1px); }
+
+.shop-menu__meta{
+  font-size: 12px;
+  color: var(--ui-panel-muted);
+  margin-bottom: 8px;
+}
+
+.shop-menu__list{
+  display:flex;
+  flex-direction:column;
+  gap: 8px;
+  max-height: min(46vh, 360px);
+  overflow:auto;
+  padding-right: 2px; /* 讓 scrollbar 不擠壓文字 */
+}
+
+.shop-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 8px;
+
+  border: 1px solid var(--ui-item-border);
+  border-radius: 10px;
+  background: var(--ui-item-bg);
+}
+
+.shop-item__name{
+  font-weight: 750;
+  line-height: 1.2;
+  color: var(--ui-panel-text);
+}
+
+.shop-item__sub{
+  font-size: 12px;
+  color: var(--ui-panel-muted);
+  margin-top: 2px;
+}
+
+.shop-item__buy{
+  appearance:none;
+  border: 1px solid var(--ui-item-border);
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-btn-bg) 65%, var(--ui-accent-weak)),
+    var(--ui-btn-bg)
+  );
+  color: var(--ui-panel-text);
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.shop-item__buy:hover{
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-btn-hover) 65%, var(--ui-accent-weak)),
+    var(--ui-btn-hover)
+  );
+}
+
+.shop-item__buy:active{ transform: translateY(1px); }
+.shop-item__buy[disabled]{ opacity: .5; cursor:not-allowed; }
+
+.shop-tag{
+  display:inline-block;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+
+  border: 1px solid var(--ui-item-border);
+  background: color-mix(in srgb, var(--ui-accent-weak) 55%, transparent);
+  color: var(--ui-panel-muted);
+
+  margin-left: 6px;
+}
+
+/* ===== 儲物欄：遮罩 + 面板 ===== */
+.inv-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: var(--ui-z-modal);
+
+  background: var(--ui-overlay-bg);
+  backdrop-filter: blur(2px);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 12px;
+}
+
+.inv-panel{
+  width: min(520px, 100%);
+  border-radius: 16px;
+
+  border: 1px solid var(--ui-panel-border);
+  background: var(--ui-panel-bg);
+  color: var(--ui-panel-text);
+
+  box-shadow: var(--ui-shadow);
+  overflow:hidden;
+}
+
+.inv-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 12px 14px;
+
+  border-bottom: 1px solid var(--ui-item-border);
+}
+
+.inv-title{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  font-weight: 900;
+}
+
+.inv-body{
+  padding: 12px 14px 14px 14px;
+}
+
+.inv-empty{
+  color: var(--ui-panel-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.inv-list{
+  display:flex;
+  flex-direction:column;
+  gap: 8px;
+}
+
+.inv-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+
+  padding: 10px;
+  border-radius: 12px;
+
+  border: 1px solid var(--ui-item-border);
+  background: var(--ui-item-bg);
+}
+
+.inv-row__name{
+  font-weight: 800;
+  color: var(--ui-panel-text);
+}
+
+.inv-row__meta{
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ui-panel-muted);
+}
+
+.inv-row__count{
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+/* 若你原本就有 .deny 動畫，這段會被覆蓋；沒有的話就當保底 */
+.chip.deny{
+  animation: chipDeny .26s ease-in-out;
+}
+
+@keyframes chipDeny{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-3px); }
+  50%{ transform: translateX(3px); }
+  75%{ transform: translateX(-2px); }
+  100%{ transform: translateX(0); }
+}
