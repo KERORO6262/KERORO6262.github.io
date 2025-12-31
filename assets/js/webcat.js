@@ -49,16 +49,33 @@
     return false;
   }
   // 推估頂部固定列高度
+  // 避免把全螢幕 modal/overlay 當成頂部固定列
   function measureTopBarHeight() {
+    const vh = window.innerHeight;
+
     const cand = Array.from(document.querySelectorAll('*')).filter(n => {
+      // 1) 主動排除：任何被標記 data-cat-ignore 的 UI
+      if (n.closest?.('[data-cat-ignore]')) return false;
+
       const cs = getComputedStyle(n);
       if (!(cs.position === 'fixed' || cs.position === 'sticky')) return false;
+
       const r = n.getBoundingClientRect();
-      return r.top <= 1 && r.height > 20 && r.width >= window.innerWidth * 0.6;
+
+      // 2) 只把「貼頂」的東西當候選
+      if (!(r.top <= 1 && r.height > 20 && r.width >= window.innerWidth * 0.6)) return false;
+
+      // 3) 關鍵防護：全螢幕遮罩通常高度很大，直接排除
+      //    這個比例依站內 UI 調整，例如 0.35~0.45
+      if (r.height >= vh * 0.45) return false;
+
+      return true;
     });
+
     if (!cand.length) return 0;
     return cand.reduce((m, n) => Math.max(m, n.getBoundingClientRect().bottom), 0);
   }
+
 
   // 取可見元素清單（加權 + 避開頂部固定列）
   function collectTargets(noGoTopPx) {
