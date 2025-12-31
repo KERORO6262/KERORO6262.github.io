@@ -33,6 +33,8 @@
   <link rel="stylesheet" href="./assets/css/features/coin.css">
   <!-- ⑤ 特色模組：釣魚（釣魚的互動繪製） -->
   <link rel="stylesheet" href="./assets/css/features/fishing.css">
+  <!-- ⑤ 特色模組：商店與儲物欄（從 fishing.css 拆出，方便維護） -->
+  <link rel="stylesheet" href="./assets/css/features/shop-inventory.css">
   <!-- ⑤ 特色模組：馬賽克遮罩、投幣孔視覺、上浮提示、防選取/複製 -->
   <link rel="stylesheet" href="./assets/css/features/mosaic.css">
   <!-- ⑤ 特色模組：時間線（compact 版本：點、日期、標題、描述） -->
@@ -43,14 +45,14 @@
   <link rel="stylesheet" href="./assets/css/responsive.css">
 
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SJJLC4XGHE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SJJLC4XGHE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-SJJLC4XGHE');
-</script>
+    gtag('config', 'G-SJJLC4XGHE');
+  </script>
 </head>
 
 <body>
@@ -63,7 +65,7 @@
         <a href="#sharing">分享</a>
         <a href="#writing">寫作</a>
         <a href="#contact">聯絡</a>
-        <a class="btn" href="" target="_blank" rel="noopener">下載履歷(暫無)</a>
+        <a class="btn" href="#" id="resumeBtn">下載履歷</a>
       </nav>
     </div>
   </header>
@@ -236,7 +238,7 @@
         </article>
 
         <article class="card">
-          <h3>Lock‑Eye / Chain‑Break(待填入)</h3>
+          <h3>Lock-Eye / Chain-Break(待填入)</h3>
           <p>2D 旋轉與連結機制的原型</p>
           <div>
             <span class="chip">Unity Physics2D</span><span class="chip">Events</span><span class="chip">Modular</span>
@@ -458,7 +460,9 @@
   <div id="catPet" class="css-cat is-idle" role="img" aria-label="網頁寵物：一隻在頁面活動的貓" data-say=""></div>
 
   <script defer src="./assets/js/webcat.js"></script>
-  <script src="./assets/js/main.js" defer></script>
+  <script defer src="./assets/js/inventory.js"></script>
+  <script defer src="./assets/js/shop.js"></script>
+  <script defer src="./assets/js/main.js"></script>
 
 </body>
 
