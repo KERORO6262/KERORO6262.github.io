@@ -1,0 +1,24 @@
+:root {
+  --bg: #0b1020;           /* 背景(深) */
+  --bg-soft: #11172e;
+  --text: #e6e9f2;         /* 文字(亮) */
+  --muted: #a9b1c7;
+  --brand: #7aa2ff;        /* 主色 */
+  --brand-2: #a07cff;      /* 輔色 */
+  --card: #0f152b;         /* 卡片底色 */
+  --border: #223054;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+}
+
+/* 系統偏好：淺色系 */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7f7fb;
+    --bg-soft: #ffffff;
+    --text: #0d1220;
+    --muted: #5a647a;
+    --card: #ffffff;
+    --border: #e6e8f0;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .08);
+  }
+}

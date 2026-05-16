@@ -1,0 +1,34 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Claude Code
+.claude/settings.local.json
+
+# Secrets / local config
+*.env
+.env*
+*.pem
+*.key
+
+# Node (if ever used)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Build output (if ever used)
+dist/
+build/
+
+# Temp / backup
+*.tmp
+*.bak
+*.swp
+*~

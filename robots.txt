@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+# Avoid indexing common build artifacts or dotfiles (defensive; GH Pages usually doesn't serve these)
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /node_modules/
+Disallow: /vendor/
+Disallow: /*.map$
+Disallow: /*.lock$
+Disallow: /*.config$
+# Sitemap location
+Sitemap: https://keroro6262.github.io/sitemap.xml

@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="DHsbzU3Tw0KzXY3zo0IkMYkqQnBHdNRGDrvdNmBqykI" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>遊戲設計 & 互動敘事 | Badr — Silence Studio</title>
+  <meta name="description" content="互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。">
+  <meta name="color-scheme" content="light dark">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="遊戲設計 & 互動敘事 | Badr — Silence Studio">
+  <meta property="og:description" content="互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。">
+  <meta property="og:image" content="/assets/og-image.jpg">
+  <meta property="og:url" content="https://KERORO6262.github.io/">
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="遊戲設計 & 互動敘事 | Badr — Silence Studio">
+  <meta name="twitter:description" content="互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。">
+  <meta name="twitter:image" content="/assets/og-image.jpg">
+  <link rel="icon" href="./assets/img/favicon.ico">
+  <!-- CSS order matters -->
+  <!-- ① 主題變數（色票、陰影、共用 token；深/淺色模式） -->
+  <link rel="stylesheet" href="./assets/css/theme.css">
+  <!-- ② 基礎層（reset、html/body、字體、容器 .container 等） -->
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <!-- ③ 版面層（Header、Hero、Section、Grid、通用版面配置） -->
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <!-- ④ 元件層（.btn、.card、.badge、.chip、.photo 等可重用 UI） -->
+  <link rel="stylesheet" href="./assets/css/components.css">
+  <!-- ⑤ 特色模組：硬幣互動（閃爍/浮動/收集狀態） -->
+  <link rel="stylesheet" href="./assets/css/features/coin.css">
+  <!-- ⑤ 特色模組：釣魚（釣魚的互動繪製） -->
+  <link rel="stylesheet" href="./assets/css/features/fishing.css">
+  <!-- ⑤ 特色模組：商店與儲物欄（從 fishing.css 拆出，方便維護） -->
+  <link rel="stylesheet" href="./assets/css/features/shop-inventory.css">
+  <!-- ⑤ 特色模組：馬賽克遮罩、投幣孔視覺、上浮提示、防選取/複製 -->
+  <link rel="stylesheet" href="./assets/css/features/mosaic.css">
+  <!-- ⑤ 特色模組：時間線（compact 版本：點、日期、標題、描述） -->
+  <link rel="stylesheet" href="./assets/css/features/timeline.css">
+  <!-- ⑤ 特色模組：網頁寵物貓（寵物貓的繪製） -->
+  <link rel="stylesheet" href="./assets/css/features/cat.css">
+  <!-- ⑥ 響應式（共用斷點：Hero 改單欄、卡片跨欄等） -->
+  <link rel="stylesheet" href="./assets/css/responsive.css">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SJJLC4XGHE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-SJJLC4XGHE');
+  </script>
+</head>
+
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand"><a href="#top">遊戲設計 & 互動敘事 | Badr — Silence Studio</a></div>
+      <button class="nav-toggle" aria-label="開啟選單" aria-expanded="false">☰</button>
+      <nav>
+        <a href="#about">關於</a>
+        <a href="#sharing">分享</a>
+        <a href="#writing">寫作</a>
+        <a href="#contact">聯絡</a>
+        <a class="btn" href="#" id="resumeBtn">下載履歷</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top" class="container">
+    <!-- Hero / Intro -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="tag">👋 Hi，我是</span>
+          <h1 class="title">吳宗華（Badr）</h1>
+          <p class="subtitle">在寂靜裡構築故事的開發者，以遊戲與文字記錄那些未被聽見的聲音。</p>
+          <div class="cta">
+            <a class="btn" href="mailto:slinceblue@gmail.com">Email</a>
+            <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn" href="https://linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">Linkedin</a>
+          </div>
+          <div class="coin-row" aria-label="可收集硬幣">
+            <button class="coin" aria-label="收集硬幣 1" data-coin></button>
+            <button class="coin" aria-label="收集硬幣 2" data-coin></button>
+            <button class="coin" aria-label="收集硬幣 3" data-coin></button>
+          </div>
+          <div class="stat-row" aria-live="polite" style="margin-top:8px; display:flex; gap:8px;">
+            <span class="chip" id="fishCount" title="漁獲數量">🐟 0</span>
+            <span class="chip" id="trashCount" title="釣上的垃圾數">🗑️ 0</span>
+          </div>
+        </div>
+
+        <div class="photo">
+          <!-- 建議 800×600 ~ 1200×900 -->
+          <img id="avatar" src="assets/img/avatar.png" alt="Badr's Representative photos" style="cursor:pointer;">
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about">
+      <h2>關於我</h2>
+      <p class="muted">
+        我主要使用Unity進行遊戲開發、互動敘事系統設計與C#遊戲邏輯撰寫。擬定原型製作流程、撰寫企劃文檔與QA測試標準，並在原型階段快速驗證遊戲機制與敘事節奏。
+      </p>
+      <p class="muted">
+        同時，我也是一名在寂靜中構築故事的創作者。遊戲與文字讓我得以記錄那些細小卻真實的想法，也讓開發過程不只是技術，更是觀察、感受與表達的延伸。
+      </p>
+      <div class="grid">
+        <div class="card" style="grid-column:span 12">
+          <!-- 馬賽克遮罩（可互動解鎖） -->
+          <div class="mosaic-cover" id="mosaicCover" role="button" aria-label="解鎖覆蓋層"></div>
+          <!-- 透明互動防護層：覆蓋整張卡片，阻擋選取/拖曳/複製 -->
+          <div class="mosaic-guard" id="mosaicGuard" aria-hidden="true"></div>
+          <!-- 你想直接用原始碼查看我也是沒辦法阻止你啦 -->
+          <strong>歷史痕跡</strong>
+          <div class="timeline compact" role="list" aria-label="工作與學習里程">
+            <!-- 每個節點一個 .tl-item；用 time 搭配 datetime 便於機器理解 -->
+            <article class="tl-item" role="listitem">
+              <div class="tl-dot" aria-hidden="true"></div>
+              <time class="tl-date" datetime="2025">2025</time>
+              <div class="tl-content">
+                <h4 class="tl-title">新北 | 永猷股份有限公司（ACME FILTER MASK INC.）</h4>
+                <p class="tl-desc">電商營運與跨市場合作；建立和宣發跨站商品資料流與合作商機安排。</p>
+              </div>
+            </article>
+
+            <article class="tl-item" role="listitem">
+              <div class="tl-dot" aria-hidden="true"></div>
+              <time class="tl-date" datetime="2024">2024</time>
+              <div class="tl-content">
+                <h4 class="tl-title">遠端 | 大頑遊戲創作有限公司 — (專案)品保測試</h4>
+                <p class="tl-desc">撰寫測試案例、回報與追蹤問題，支援迭代與穩定釋出。</p>
+              </div>
+            </article>
+
+            <article class="tl-item" role="listitem">
+              <div class="tl-dot" aria-hidden="true"></div>
+              <time class="tl-date" datetime="2024">2024</time>
+              <div class="tl-content">
+                <h4 class="tl-title">桃園 | 評論專文：《差評如潮？好評如潮？》</h4>
+                <p class="tl-desc">分析《活俠傳》上市初期的負評現象與社群動態。</p>
+              </div>
+            </article>
+
+            <article class="tl-item" role="listitem">
+              <div class="tl-dot" aria-hidden="true"></div>
+              <time class="tl-date" datetime="2023">2023</time>
+              <div class="tl-content">
+                <h4 class="tl-title">桃園 | 高技企業股份有限公司 — OP 設計工程師</h4>
+                <p class="tl-desc">參與PCB製程規劃與設計優化。</p>
+              </div>
+            </article>
+
+            <article class="tl-item" role="listitem">
+              <div class="tl-dot" aria-hidden="true"></div>
+              <time class="tl-date" datetime="2022">2022</time>
+              <div class="tl-content">
+                <h4 class="tl-title">台北 | 瘋玩科技有限公司 — 遊戲測試員</h4>
+                <p class="tl-desc">規劃與測試成人遊戲開發進程所發生的問題，並參酌市面競品給予開發方向建議。</p>
+              </div>
+            </article>
+
+            <article class="tl-item" role="listitem">
+              <div class="tl-dot" aria-hidden="true"></div>
+              <time class="tl-date" datetime="2022">2022</time>
+              <div class="tl-content">
+                <h4 class="tl-title">台北 | 遊戲橘子股份有限公司 — 營運企劃(暑期實習)</h4>
+                <p class="tl-desc">於天堂部門實習營運企劃職務，規劃與宣發活動頁，歷練跨部門作業能力。</p>
+              </div>
+            </article>
+
+            <article class="tl-item" role="listitem">
+              <div class="tl-dot" aria-hidden="true"></div>
+              <time class="tl-date" datetime="2019">2019–2023</time>
+              <div class="tl-content">
+                <h4 class="tl-title">桃園 | 龍華科技大學 — 多媒體與遊戲發展科學系</h4>
+                <p class="tl-desc">主修遊戲企劃與互動設計。</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="sharing">
+      <h2>作品分享</h2>
+      <p class="muted">記錄正在做的東西、學到的技巧、還在試驗的點子。</p>
+
+      <div class="list-pager" aria-label="清單分頁控制">
+        <button class="btn" data-pager="prev" aria-label="上一頁" disabled>↑</button>
+        <span class="muted" data-pager="status" aria-live="polite">1 / 1</span>
+        <button class="btn" data-pager="next" aria-label="下一頁" disabled>↓</button>
+      </div>
+
+      <div class="grid">
+
+        <article class="card">
+          <img src="./assets/img/sharing/banner.png" alt="戰鎚 40K 單位戰力計算工具"
+            style="width:100%; border-radius:12px; border:1px solid var(--border)">
+          <h3>Unit Power Scorer 40K</h3>
+          <p>戰鎚 40K 單位戰力計算工具。專為桌遊玩家設計的網頁應用，可快速計算與評估單位強度分數。</p>
+          <div>
+            <span class="chip">Web Tool</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">Warhammer 40K</span>
+          </div>
+          <p>
+            <a class="btn" href="https://keroro6262.github.io/unit-power-scorer-40k.github.io/" target="_blank"
+              rel="noopener">前往使用</a>
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>WAROGAN PDF Model Parser</h3>
+          <p>將 WAROGAN 匯出的戰鎚 40K 名冊 PDF 解析為可搜尋的結構化資料。支援雙視圖模式（群組／個別）、跨欄位搜尋，以及多格式匯出（JSON、CSV、HTML、表格複製）。完全在瀏覽器端執行，免安裝、免帳號。</p>
+          <div>
+            <span class="chip">Web Tool</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">Warhammer 40K</span>
+            <span class="chip">PDF Parser</span>
+          </div>
+          <p>
+            <a class="btn" href="https://keroro6262.github.io/40k-WAROGAN-PDF-Model-Parser/" target="_blank" rel="noopener">前往使用</a>
+            <a class="btn" href="https://github.com/KERORO6262/40k-WAROGAN-PDF-Model-Parser" target="_blank" rel="noopener">GitHub</a>
+          </p>
+        </article>
+
+        <article class="card">
+          <img src="./assets/img/sharing/fvttMod_dnd5e.png" alt="FVTT中DND5E的MOD: NPC生成器banner"
+            style="width:100%; border-radius:12px; border:1px solid var(--border)">
+          <h3>FVTT MOD：DND5E NPC生成器</h3>
+          <p>一個FoundryVTT模組，可快速生成帶有名字、背景、個性、怪癖、外觀、年齡與裝備的D&D 5e NPC。</p>
+          <div>
+            <span class="chip">FoundryVTT</span><span class="chip">js</span><span class="chip">MOD</span><span
+              class="chip">DND5E</span>
+          </div>
+          <p><a class="btn" href="https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/" target="_blank"
+              rel="noopener">查看</a></p>
+        </article>
+
+        <article class="card">
+          <h3>詞靈冒險者(待填入)</h3>
+          <p>文字驅動Rogue-lite：以詞彙卡片與句子拼裝為核心戰鬥循環，模組化資料驅動。</p>
+          <div>
+            <span class="chip">Unity</span><span class="chip">C#</span><span class="chip">ScriptableObject</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Lock-Eye / Chain-Break(待填入)</h3>
+          <p>2D 旋轉與連結機制的原型</p>
+          <div>
+            <span class="chip">Unity Physics2D</span><span class="chip">Events</span><span class="chip">Modular</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Writing -->
+    <section id="writing">
+      <h2>寫作／研究</h2>
+      <div class="list-pager" aria-label="清單分頁控制">
+        <button class="btn" data-pager="prev" aria-label="上一頁" disabled>↑</button>
+        <span class="muted" data-pager="status" aria-live="polite">1 / 1</span>
+        <button class="btn" data-pager="next" aria-label="下一頁" disabled>↓</button>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <span class="badge">設計</span>
+          <img src="./assets/img/writing/ES5_lock.png" alt="上古卷軸5開鎖分析圖"
+            style="width:100%; border-radius:12px; border:1px solid var(--border)">
+          <h3>借鑒《上古卷軸5》式經典開鎖原型設計實作</h3>
+          <p>透過觀察《上古卷軸5》式基礎開鎖，實作開鎖遊戲的基本原型</p>
+          <a class="btn" href="https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d" target="_blank"
+            rel="noopener">閱讀</a>
+        </div>
+        <div class="card">
+          <span class="badge">文章</span>
+          <h3>差評如潮？好評如潮？</h3>
+          <p>為何簡中玩家總是喜歡批判開發者?</p>
+          <a class="btn" href="https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74"
+            target="_blank" rel="noopener">閱讀</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <h2>聯絡我</h2>
+      <p class="muted">有合作、工作機會或單純聊天，歡迎來信！</p>
+      <p>
+        <a class="btn" href="mailto:slinceblue@gmail.com">slinceblue@gmail.com</a>
+        <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">@GitHub</a>
+        <a class="btn" href="https://t.me/KERORO6262" target="_blank" rel="noopener">Telegram</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <small>© <span id="y"></span> Badr — Built with GitHub Pages</small>
+    </div>
+  </footer>
+
+  <!-- JSON-LD 結構化資料 -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://KERORO6262.github.io/#website",
+      "url": "https://KERORO6262.github.io/",
+      "name": "遊戲設計 & 互動敘事 | Badr — Silence Studio",
+      "inLanguage": "zh-Hant-TW",
+      "description": "吳宗華（Badr）的個人主頁：互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。",
+      "publisher": { "@id": "https://KERORO6262.github.io/#silence_studio" },
+      "about": { "@id": "https://KERORO6262.github.io/#me" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.google.com/search?q=site:KERORO6262.github.io%20{search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://KERORO6262.github.io/#silence_studio",
+      "name": "Silence Studio",
+      "url": "https://KERORO6262.github.io/",
+      "founder": { "@id": "https://KERORO6262.github.io/#me" }
+    },
+    {
+      "@type": ["WebPage", "ProfilePage"],
+      "@id": "https://KERORO6262.github.io/#webpage",
+      "url": "https://KERORO6262.github.io/",
+      "name": "遊戲原型設計 & 互動敘事 | Badr — Silence Studio",
+      "isPartOf": { "@id": "https://KERORO6262.github.io/#website" },
+      "inLanguage": "zh-Hant-TW",
+      "description": "吳宗華（Badr）的個人主頁：互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://KERORO6262.github.io/assets/img/avatar.png"
+      },
+      "breadcrumb": { "@id": "https://KERORO6262.github.io/#breadcrumb" },
+      "mainEntity": { "@id": "https://KERORO6262.github.io/#me" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://KERORO6262.github.io/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首頁",
+          "item": "https://KERORO6262.github.io/"
+        }
+      ]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://KERORO6262.github.io/#me",
+      "name": "吳宗華 (Badr)",
+      "alternateName": "Badr",
+      "url": "https://KERORO6262.github.io/",
+      "image": "https://KERORO6262.github.io/assets/img/avatar.png",
+      "jobTitle": ["電商營運", "獨立遊戲開發者"],
+      "worksFor": { "@id": "https://KERORO6262.github.io/#org_acme" },
+      "affiliation": { "@id": "https://KERORO6262.github.io/#silence_studio" },
+      "sameAs": [
+        "https://github.com/KERORO6262",
+        "https://www.linkedin.com/in/bbmps-badr",
+        "https://t.me/KERORO6262"
+      ],
+      "knowsAbout": [
+        "Unity", "C#", "2D 遊戲原型", "互動敘事", "ScriptableObject", "物理模擬", "不織布與濾材"
+      ],
+      "contactPoint": [{
+        "@type": "ContactPoint",
+        "contactType": "聯絡",
+        "email": "mailto:slinceblue@gmail.com",
+        "availableLanguage": ["zh-Hant", "en"]
+      }],
+      "mainEntityOfPage": { "@id": "https://KERORO6262.github.io/#webpage" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://KERORO6262.github.io/#org_acme",
+      "name": "Acme Filter Mask Inc.",
+      "employee": { "@id": "https://KERORO6262.github.io/#me" }
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://KERORO6262.github.io/#writing",
+      "name": "寫作／研究",
+      "itemListOrder": "http://schema.org/ItemListOrderDescending",
+      "numberOfItems": 5,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Article",
+            "@id": "https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d",
+            "url": "https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d",
+            "headline": "借鑒《上古卷軸5》式經典開鎖原型設計實作",
+            "description": "觀察《上古卷軸5》開鎖機制並實作基本原型的設計筆記。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Article",
+            "@id": "https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74",
+            "url": "https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74",
+            "headline": "差評如潮？好評如潮？",
+            "description": "解析《活俠傳》上市初期的玩家評論與社群現象。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/",
+            "url": "https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/",
+            "name": "FVTT MOD：DND5E NPC生成器",
+            "description": "一個FoundryVTT模組，可快速生成帶有名字、背景、個性、怪癖、外觀、年齡與裝備的D&D 5e NPC。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "codeRepository": "https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/",
+            "programmingLanguage": "JavaScript",
+            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": "WebApplication",
+            "@id": "https://keroro6262.github.io/unit-power-scorer-40k.github.io/",
+            "url": "https://keroro6262.github.io/unit-power-scorer-40k.github.io/",
+            "name": "Unit Power Scorer 40K",
+            "description": "戰鎚 40K 單位戰力計算工具，用於評估戰棋單位強度。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "applicationCategory": "GameUtility",
+            "operatingSystem": "Web",
+            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "item": {
+            "@type": "WebApplication",
+            "@id": "https://keroro6262.github.io/40k-WAROGAN-PDF-Model-Parser/",
+            "url": "https://keroro6262.github.io/40k-WAROGAN-PDF-Model-Parser/",
+            "name": "WAROGAN PDF Model Parser",
+            "description": "將 WAROGAN 匯出的戰鎚 40K 名冊 PDF 解析為可搜尋結構化資料，支援雙視圖、跨欄搜尋與多格式匯出，完全在瀏覽器端執行。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "codeRepository": "https://github.com/KERORO6262/40k-WAROGAN-PDF-Model-Parser",
+            "applicationCategory": "GameUtility",
+            "operatingSystem": "Web",
+            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+
+  <!-- Coin Counter 浮動計數 -->
+  <div id="coinFloat" class="coin-float" aria-live="polite" title="目前金幣"></div>
+  <!-- Web Pet: CSS Cat -->
+  <div id="catPet" class="css-cat is-idle" role="img" aria-label="網頁寵物：一隻在頁面活動的貓" data-say=""></div>
+
+  <script defer src="./assets/js/webcat.js"></script>
+  <script defer src="./assets/js/inventory.js"></script>
+  <script defer src="./assets/js/shop.js"></script>
+  <script defer src="./assets/js/main.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+@media (max-width:960px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .card { grid-column: span 12; }
+}
