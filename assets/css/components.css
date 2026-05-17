@@ -26,17 +26,212 @@
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 18px;
+  padding: 24px;
   box-shadow: var(--shadow);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+  border-color: color-mix(in srgb, var(--brand) 50%, var(--border));
+}
+
+@media (prefers-color-scheme: light) {
+  .card:hover {
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .card h3 {
-  margin: 6px 0 6px;
-  font-size: 18px;
+  margin: 0 0 12px;
+  font-size: 20px;
+  line-height: 1.4;
+  font-weight: 700;
 }
 
 .card p {
-  margin: 0 0 10px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+/* Card Image Wrapper */
+.card-img-wrapper {
+  margin: -24px -24px 20px -24px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.card-img-wrapper img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card:hover .card-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.card-actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* Slim editorial text links — override chunky .btn inside card-actions */
+.card-actions .btn {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  gap: 0;
+  transition: color 0.2s ease;
+}
+
+.card-actions .btn::after {
+  content: '→';
+  display: inline-block;
+  margin-left: 6px;
+  transition: transform 0.25s ease;
+}
+
+.card-actions .btn:hover {
+  color: var(--brand);
+  transform: none;
+}
+
+.card-actions .btn:hover::after {
+  transform: translateX(5px);
+}
+
+/* Contact Grid (legacy — kept for fallback) */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+/* =====================================================
+   聯絡我 — Editorial Row Style
+====================================================== */
+.contact-list {
+  margin-top: 32px;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: padding-left 0.22s ease;
+}
+
+.contact-row:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.contact-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 0%;
+  background: linear-gradient(180deg, var(--brand), var(--brand-2));
+  border-radius: 1px;
+  transition: height 0.22s ease;
+}
+
+.contact-row:hover {
+  padding-left: 14px;
+}
+
+.contact-row:hover::before {
+  height: 60%;
+}
+
+.contact-platform {
+  font-size: 21px;
+  font-weight: 700;
+  min-width: 130px;
+  letter-spacing: -0.02em;
+  transition: color 0.2s ease;
+}
+
+.contact-handle {
+  flex: 1;
+  font-size: 13px;
+  color: var(--muted);
+  font-family: ui-monospace, 'SF Mono', 'Fira Code', monospace;
+  letter-spacing: 0.03em;
+  transition: color 0.2s ease;
+}
+
+.contact-arrow {
+  font-size: 18px;
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: transform 0.25s ease, color 0.2s ease;
+}
+
+.contact-row:hover .contact-platform {
+  color: var(--brand);
+}
+
+.contact-row:hover .contact-handle {
+  color: var(--text);
+}
+
+.contact-row:hover .contact-arrow {
+  transform: translateX(8px);
+  color: var(--brand);
+}
+
+/* =====================================================
+   Section 標題 Accent Bar — 分享 / 寫作 / 聯絡
+====================================================== */
+#sharing h2,
+#writing h2,
+#contact h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#sharing h2::before,
+#writing h2::before,
+#contact h2::before {
+  content: '';
+  width: 3px;
+  height: 1.1em;
+  background: linear-gradient(180deg, var(--brand), var(--brand-2));
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 /* Badge & Chip */
@@ -70,13 +265,39 @@ footer {
 .list-pager {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.list-pager .btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  justify-content: center;
+  font-size: 13px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+}
+
+.list-pager .btn:hover:not([disabled]) {
+  background: var(--brand);
+  color: var(--bg);
+  border-color: var(--brand);
+  transform: none;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--brand) 50%, transparent);
 }
 
 .list-pager .btn[disabled] {
-  opacity: .5;
+  opacity: .35;
   cursor: not-allowed;
+}
+
+.list-pager [data-pager="status"] {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* 對被 JS 管控分頁的區塊加上視覺限制（避免整串滑動） */
@@ -101,5 +322,155 @@ footer {
 @media (max-width: 640px) {
   .section-paginated .grid::after {
     display: none;
+  }
+}
+
+/* =====================================================
+   頁籤 (Tabs) — 作品分享 / 寫作研究
+====================================================== */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+
+.tab-btn {
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  margin-bottom: -1px;
+  position: relative;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+  background: var(--bg-soft);
+}
+
+.tab-btn[aria-selected="true"] {
+  background: var(--card);
+  color: var(--brand);
+  border-color: var(--border);
+  border-bottom-color: var(--card);
+  font-weight: 600;
+  z-index: 1;
+}
+
+.tab-panel {
+  display: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  padding: 28px;
+  animation: tabFadeIn 0.2s ease;
+}
+
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tab-panel.is-active {
+  display: block;
+}
+
+.tab-panel-header {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.tab-panel-cover {
+  width: 220px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.tab-panel-cover img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.tab-panel-meta {
+  flex: 1;
+}
+
+.tab-panel-meta h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.tab-panel-desc {
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0 0 20px;
+  font-size: 15px;
+}
+
+.tab-update-box {
+  padding: 14px 16px;
+  background: var(--bg-soft);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.tab-update-box strong {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.tab-update-box p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.tab-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .tab-btn {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .tab-panel {
+    padding: 20px 16px;
+  }
+
+  .tab-panel-header {
+    flex-direction: column;
+  }
+
+  .tab-panel-cover {
+    width: 100%;
   }
 }

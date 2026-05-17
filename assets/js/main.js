@@ -232,6 +232,28 @@
   })();
 
 })();
+// === 頁籤切換 (Tabs) ===
+(() => {
+  document.querySelectorAll('[role="tablist"]').forEach(tablist => {
+    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    const section = tablist.closest('section');
+    if (!section) return;
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.getAttribute('aria-controls');
+
+        tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+        tab.setAttribute('aria-selected', 'true');
+
+        section.querySelectorAll('[role="tabpanel"]').forEach(p => p.classList.remove('is-active'));
+        const target = document.getElementById(targetId);
+        if (target) target.classList.add('is-active');
+      });
+    });
+  });
+})();
+
 // === Mobile Nav Toggle ===
 (() => {
   const btn = document.querySelector('.nav-toggle');

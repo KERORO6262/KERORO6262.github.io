@@ -192,114 +192,169 @@
       <h2>作品分享</h2>
       <p class="muted">記錄正在做的東西、學到的技巧、還在試驗的點子。</p>
 
-      <div class="list-pager" aria-label="清單分頁控制">
-        <button class="btn" data-pager="prev" aria-label="上一頁" disabled>↑</button>
-        <span class="muted" data-pager="status" aria-live="polite">1 / 1</span>
-        <button class="btn" data-pager="next" aria-label="下一頁" disabled>↓</button>
+      <div class="tabs" role="tablist" aria-label="作品分享清單">
+        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="sp-ups40k" id="tb-ups40k">Unit Power Scorer 40K</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="sp-warogan" id="tb-warogan">WAROGAN PDF Parser</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="sp-fvtt" id="tb-fvtt">FVTT NPC生成器</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="sp-lexad" id="tb-lexad">詞靈冒險者</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="sp-lockeye" id="tb-lockeye">Lock-Eye</button>
       </div>
 
-      <div class="grid">
-
-        <article class="card">
-          <img src="./assets/img/sharing/banner.png" alt="戰鎚 40K 單位戰力計算工具"
-            style="width:100%; border-radius:12px; border:1px solid var(--border)">
-          <h3>Unit Power Scorer 40K</h3>
-          <p>戰鎚 40K 單位戰力計算工具。專為桌遊玩家設計的網頁應用，可快速計算與評估單位強度分數。</p>
-          <div>
-            <span class="chip">Web Tool</span>
-            <span class="chip">JavaScript</span>
-            <span class="chip">Warhammer 40K</span>
+      <div class="tab-panel is-active" id="sp-ups40k" role="tabpanel" aria-labelledby="tb-ups40k">
+        <div class="tab-panel-header">
+          <div class="tab-panel-cover">
+            <img src="./assets/img/sharing/banner.png" alt="戰鎚 40K 單位戰力計算工具">
           </div>
-          <p>
-            <a class="btn" href="https://keroro6262.github.io/unit-power-scorer-40k.github.io/" target="_blank"
-              rel="noopener">前往使用</a>
-          </p>
-        </article>
+          <div class="tab-panel-meta">
+            <h3>Unit Power Scorer 40K</h3>
+            <div><span class="chip">Web Tool</span><span class="chip">JavaScript</span><span class="chip">Warhammer 40K</span></div>
+          </div>
+        </div>
+        <p class="tab-panel-desc">戰鎚 40K 單位戰力計算工具。專為桌遊玩家設計的網頁應用，可快速計算與評估單位強度分數。</p>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>依據遊戲版本持續維護資料表，目前穩定運行中。</p>
+        </div>
+        <div class="tab-links">
+          <a class="btn" href="https://keroro6262.github.io/unit-power-scorer-40k.github.io/" target="_blank" rel="noopener">前往使用</a>
+        </div>
+      </div>
 
-        <article class="card">
+      <div class="tab-panel" id="sp-warogan" role="tabpanel" aria-labelledby="tb-warogan">
+        <div class="tab-panel-meta">
           <h3>WAROGAN PDF Model Parser</h3>
-          <p>將 WAROGAN 匯出的戰鎚 40K 名冊 PDF 解析為可搜尋的結構化資料。支援雙視圖模式（群組／個別）、跨欄位搜尋，以及多格式匯出（JSON、CSV、HTML、表格複製）。完全在瀏覽器端執行，免安裝、免帳號。</p>
-          <div>
-            <span class="chip">Web Tool</span>
-            <span class="chip">JavaScript</span>
-            <span class="chip">Warhammer 40K</span>
-            <span class="chip">PDF Parser</span>
-          </div>
-          <p>
-            <a class="btn" href="https://keroro6262.github.io/40k-WAROGAN-PDF-Model-Parser/" target="_blank" rel="noopener">前往使用</a>
-            <a class="btn" href="https://github.com/KERORO6262/40k-WAROGAN-PDF-Model-Parser" target="_blank" rel="noopener">GitHub</a>
-          </p>
-        </article>
-
-        <article class="card">
-          <img src="./assets/img/sharing/fvttMod_dnd5e.png" alt="FVTT中DND5E的MOD: NPC生成器banner"
-            style="width:100%; border-radius:12px; border:1px solid var(--border)">
-          <h3>FVTT MOD：DND5E NPC生成器</h3>
-          <p>一個FoundryVTT模組，可快速生成帶有名字、背景、個性、怪癖、外觀、年齡與裝備的D&D 5e NPC。</p>
-          <div>
-            <span class="chip">FoundryVTT</span><span class="chip">js</span><span class="chip">MOD</span><span
-              class="chip">DND5E</span>
-          </div>
-          <p><a class="btn" href="https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/" target="_blank"
-              rel="noopener">查看</a></p>
-        </article>
-
-        <article class="card">
-          <h3>詞靈冒險者(待填入)</h3>
-          <p>文字驅動Rogue-lite：以詞彙卡片與句子拼裝為核心戰鬥循環，模組化資料驅動。</p>
-          <div>
-            <span class="chip">Unity</span><span class="chip">C#</span><span class="chip">ScriptableObject</span>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3>Lock-Eye / Chain-Break(待填入)</h3>
-          <p>2D 旋轉與連結機制的原型</p>
-          <div>
-            <span class="chip">Unity Physics2D</span><span class="chip">Events</span><span class="chip">Modular</span>
-          </div>
-        </article>
-
+          <div><span class="chip">Web Tool</span><span class="chip">JavaScript</span><span class="chip">Warhammer 40K</span><span class="chip">PDF Parser</span></div>
+        </div>
+        <p class="tab-panel-desc">將 WAROGAN 匯出的戰鎚 40K 名冊 PDF 解析為可搜尋的結構化資料。支援雙視圖模式（群組／個別）、跨欄位搜尋，以及多格式匯出（JSON、CSV、HTML、表格複製）。完全在瀏覽器端執行，免安裝、免帳號。</p>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>持續修復 PDF 解析相容性問題，改善跨版本名冊的識別準確率。</p>
+        </div>
+        <div class="tab-links">
+          <a class="btn" href="https://keroro6262.github.io/40k-WAROGAN-PDF-Model-Parser/" target="_blank" rel="noopener">前往使用</a>
+          <a class="btn" href="https://github.com/KERORO6262/40k-WAROGAN-PDF-Model-Parser" target="_blank" rel="noopener">GitHub</a>
+        </div>
       </div>
+
+      <div class="tab-panel" id="sp-fvtt" role="tabpanel" aria-labelledby="tb-fvtt">
+        <div class="tab-panel-header">
+          <div class="tab-panel-cover">
+            <img src="./assets/img/sharing/fvttMod_dnd5e.png" alt="FVTT中DND5E的MOD: NPC生成器banner">
+          </div>
+          <div class="tab-panel-meta">
+            <h3>FVTT MOD：DND5E NPC生成器</h3>
+            <div><span class="chip">FoundryVTT</span><span class="chip">JavaScript</span><span class="chip">MOD</span><span class="chip">DND5E</span></div>
+          </div>
+        </div>
+        <p class="tab-panel-desc">一個 FoundryVTT 模組，可快速生成帶有名字、背景、個性、怪癖、外觀、年齡與裝備的 D&D 5e NPC。</p>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>目前以 GitHub 為主要發佈管道，歡迎提交 Issue 或 PR。</p>
+        </div>
+        <div class="tab-links">
+          <a class="btn" href="https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/" target="_blank" rel="noopener">查看 GitHub</a>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="sp-lexad" role="tabpanel" aria-labelledby="tb-lexad">
+        <div class="tab-panel-meta">
+          <h3>詞靈冒險者</h3>
+          <div><span class="chip">Unity</span><span class="chip">C#</span><span class="chip">ScriptableObject</span></div>
+        </div>
+        <p class="tab-panel-desc">文字驅動 Rogue-lite：以詞彙卡片與句子拼裝為核心戰鬥循環，模組化資料驅動。</p>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>開發中，核心機制原型驗證階段。詳細連結待補充。</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="sp-lockeye" role="tabpanel" aria-labelledby="tb-lockeye">
+        <div class="tab-panel-meta">
+          <h3>Lock-Eye / Chain-Break</h3>
+          <div><span class="chip">Unity Physics2D</span><span class="chip">Events</span><span class="chip">Modular</span></div>
+        </div>
+        <p class="tab-panel-desc">2D 旋轉與連結機制的原型，探索物理碰撞與模組化事件系統的整合可能性。</p>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>原型階段，核心機制研究中。詳細連結待補充。</p>
+        </div>
+      </div>
+
     </section>
 
     <!-- Writing -->
     <section id="writing">
       <h2>寫作／研究</h2>
-      <div class="list-pager" aria-label="清單分頁控制">
-        <button class="btn" data-pager="prev" aria-label="上一頁" disabled>↑</button>
-        <span class="muted" data-pager="status" aria-live="polite">1 / 1</span>
-        <button class="btn" data-pager="next" aria-label="下一頁" disabled>↓</button>
+
+      <div class="tabs" role="tablist" aria-label="寫作與研究清單">
+        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="wr-lockpick" id="tb-lockpick">開鎖原型設計實作</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="wr-review" id="tb-review">差評如潮？好評如潮？</button>
       </div>
-      <div class="grid">
-        <div class="card">
-          <span class="badge">設計</span>
-          <img src="./assets/img/writing/ES5_lock.png" alt="上古卷軸5開鎖分析圖"
-            style="width:100%; border-radius:12px; border:1px solid var(--border)">
-          <h3>借鑒《上古卷軸5》式經典開鎖原型設計實作</h3>
-          <p>透過觀察《上古卷軸5》式基礎開鎖，實作開鎖遊戲的基本原型</p>
-          <a class="btn" href="https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d" target="_blank"
-            rel="noopener">閱讀</a>
+
+      <div class="tab-panel is-active" id="wr-lockpick" role="tabpanel" aria-labelledby="tb-lockpick">
+        <div class="tab-panel-header">
+          <div class="tab-panel-cover">
+            <img src="./assets/img/writing/ES5_lock.png" alt="上古卷軸5開鎖分析圖">
+          </div>
+          <div class="tab-panel-meta">
+            <h3>借鑒《上古卷軸5》式經典開鎖原型設計實作</h3>
+            <div><span class="badge">設計</span></div>
+          </div>
         </div>
-        <div class="card">
-          <span class="badge">文章</span>
+        <p class="tab-panel-desc">透過觀察《上古卷軸5》式基礎開鎖，實作開鎖遊戲的基本原型。探討玩家反饋、技巧進步感與失敗懲罰的設計平衡。</p>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>已發佈完整設計筆記，包含原型截圖與分析說明。</p>
+        </div>
+        <div class="tab-links">
+          <a class="btn" href="https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d" target="_blank" rel="noopener">閱讀文章</a>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="wr-review" role="tabpanel" aria-labelledby="tb-review">
+        <div class="tab-panel-meta">
           <h3>差評如潮？好評如潮？</h3>
-          <p>為何簡中玩家總是喜歡批判開發者?</p>
-          <a class="btn" href="https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74"
-            target="_blank" rel="noopener">閱讀</a>
+          <div><span class="badge">文章</span></div>
+        </div>
+        <p class="tab-panel-desc">為何簡中玩家總是喜歡批判開發者？以《活俠傳》上市初期的負評現象為例，分析社群動態與評論文化。</p>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>基於 2024 年觀察撰寫，已在 Notion 發佈完整評論文。</p>
+        </div>
+        <div class="tab-links">
+          <a class="btn" href="https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74" target="_blank" rel="noopener">閱讀文章</a>
         </div>
       </div>
+
     </section>
 
     <!-- Contact -->
     <section id="contact">
       <h2>聯絡我</h2>
       <p class="muted">有合作、工作機會或單純聊天，歡迎來信！</p>
-      <p>
-        <a class="btn" href="mailto:slinceblue@gmail.com">slinceblue@gmail.com</a>
-        <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">@GitHub</a>
-        <a class="btn" href="https://t.me/KERORO6262" target="_blank" rel="noopener">Telegram</a>
-      </p>
+      
+      <div class="contact-list">
+        <a class="contact-row" href="mailto:slinceblue@gmail.com">
+          <span class="contact-platform">Email</span>
+          <span class="contact-handle">slinceblue@gmail.com</span>
+          <span class="contact-arrow">→</span>
+        </a>
+        <a class="contact-row" href="https://github.com/KERORO6262" target="_blank" rel="noopener">
+          <span class="contact-platform">GitHub</span>
+          <span class="contact-handle">@KERORO6262</span>
+          <span class="contact-arrow">→</span>
+        </a>
+        <a class="contact-row" href="https://linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">
+          <span class="contact-platform">LinkedIn</span>
+          <span class="contact-handle">bbmps-badr</span>
+          <span class="contact-arrow">→</span>
+        </a>
+        <a class="contact-row" href="https://t.me/KERORO6262" target="_blank" rel="noopener">
+          <span class="contact-platform">Telegram</span>
+          <span class="contact-handle">@KERORO6262</span>
+          <span class="contact-arrow">→</span>
+        </a>
+      </div>
     </section>
   </main>
 
