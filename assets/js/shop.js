@@ -430,7 +430,7 @@
       const raw = localStorage.getItem(key);
       if (raw == null) return fallback;
       const n = parseInt(raw, 10);
-      return Number.isFinite(n) ? n : fallback;
+      return Number.isSafeInteger(n) && n >= 0 ? n : fallback;
     } catch (err) {
       return fallback;
     }

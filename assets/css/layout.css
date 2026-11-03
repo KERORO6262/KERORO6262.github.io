@@ -3,9 +3,8 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  background: color-mix(in srgb, var(--sky) 92%, transparent);
   backdrop-filter: saturate(1.2) blur(10px);
-  border-bottom: 1px solid var(--border);
 }
 
 .nav {
@@ -39,19 +38,21 @@ nav a:hover {
 /* Hero */
 .hero {
   position: relative;
+  padding: clamp(32px, 6vw, 56px) 0 0;
 }
 
 .hero-grid {
   display: grid;
   gap: 32px;
   grid-template-columns: 1.2fr 0.8fr;
+  align-items: end;
 }
 
 .tag {
   display: inline-block;
   padding: 6px 10px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  background: var(--sky);
   color: var(--muted);
   font-size: 12px;
 }
@@ -60,8 +61,27 @@ nav a:hover {
   margin: 14px 0;
 }
 
+/* 姓名與章節標題是像素字圖片，由 tools/make_scene.py 產生 */
+.title img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+section > h2 img {
+  display: block;
+  image-rendering: pixelated;
+}
+
+@media (max-width: 640px) {
+  .title img {
+    width: 326px;
+  }
+}
+
 .subtitle {
-  color: var(--muted);
+  color: var(--text);
   margin: 14px 0 24px;
 }
 
@@ -71,14 +91,9 @@ nav a:hover {
   flex-wrap: wrap;
 }
 
-.cta+.cta {
-  margin-top: 8px;
-}
-
 /* Sections */
 section {
   padding: clamp(48px, 8vw, 72px) 0;
-  border-top: 1px solid var(--border);
   /* 錨點跳轉時不要被黏性 Header 蓋住標題 */
   scroll-margin-top: var(--header-h);
 }
@@ -115,7 +130,6 @@ h2 {
     height: 40px;
     margin-left: 8px;
     border: 1px solid var(--border);
-    border-radius: 10px;
     background: var(--card);
     color: var(--text);
   }

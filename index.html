@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="google-site-verification" content="DHsbzU3Tw0KzXY3zo0IkMYkqQnBHdNRGDrvdNmBqykI" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>遊戲設計 & 互動敘事 | Badr — Silence Studio</title>
@@ -29,7 +30,7 @@
   <link rel="icon" href="./assets/img/favicon.ico" sizes="48x48">
   <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
   <!-- CSS order matters -->
-  <!-- ① 主題變數（色票、陰影、共用 token；深/淺色模式） -->
+  <!-- ① 主題變數（色票、陰影、共用 token） -->
   <link rel="stylesheet" href="./assets/css/theme.css">
   <!-- ② 基礎層（reset、html/body、字體、容器 .container 等） -->
   <link rel="stylesheet" href="./assets/css/base.css">
@@ -51,19 +52,17 @@
   <link rel="stylesheet" href="./assets/css/features/timeline.css">
   <!-- ⑤ 特色模組：網頁寵物貓（寵物貓的繪製） -->
   <link rel="stylesheet" href="./assets/css/features/cat.css">
-  <!-- ⑥ 響應式（共用斷點：Hero 改單欄、卡片跨欄等） -->
+  <!-- ⑤ 特色模組：聯絡我（釣竿、釣線、魚標） -->
+  <link rel="stylesheet" href="./assets/css/features/contact.css">
+  <!-- ⑤ 特色模組：頁面動態視效（捲動淡入、點擊漣漪、3D 傾斜） -->
+  <link rel="stylesheet" href="./assets/css/features/effects.css">
+  <!-- ⑥ 響應式與減少動態（放最後才蓋得過前面的規則） -->
   <link rel="stylesheet" href="./assets/css/responsive.css">
   <noscript><style>.mosaic-cover, .mosaic-guard, .coin-row { display: none; }</style></noscript>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SJJLC4XGHE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-SJJLC4XGHE');
-  </script>
+  <script defer src="./assets/js/analytics.js"></script>
 </head>
 
 <body>
@@ -85,6 +84,12 @@
   <main id="top" class="container" tabindex="-1">
     <!-- Hero / Intro -->
     <section class="hero">
+      <div class="scene" aria-hidden="true">
+        <div class="scene__sky"></div>
+        <div class="scene__far"></div>
+        <div class="scene__near"></div>
+        <canvas class="scene__wave"></canvas>
+      </div>
       <div class="hero-grid">
         <div>
           <span class="tag">👋 Hi，我是</span>
@@ -119,13 +124,13 @@
     <section id="about">
       <h2 data-cat-ignore><img src="assets/img/scene/h-about.png" width="94" height="32" alt="關於我"></h2>
       <p class="muted">
-        我主要使用Unity進行遊戲開發、互動敘事系統設計與C#遊戲邏輯撰寫。擬定原型製作流程、撰寫企劃文檔與QA測試標準，並在原型階段快速驗證遊戲機制與敘事節奏。
+        我主要從事遊戲開發與互動敘事系統設計。擬定原型製作流程、撰寫企劃文檔與QA測試標準，並在原型階段快速驗證遊戲機制與敘事節奏。
       </p>
       <p class="muted">
         同時，我也是一名在寂靜中構築故事的創作者。遊戲與文字讓我得以記錄那些細小卻真實的想法，也讓開發過程不只是技術，更是觀察、感受與表達的延伸。
       </p>
       <div class="grid">
-        <div class="card" style="grid-column:span 12">
+        <div class="card">
           <!-- 馬賽克遮罩（可互動解鎖） -->
           <button class="mosaic-cover" id="mosaicCover" type="button" data-cat-ignore aria-label="投入硬幣，揭開被遮住的經歷"></button>
           <!-- 透明互動防護層：覆蓋整張卡片，阻擋選取/拖曳/複製 -->
@@ -207,14 +212,44 @@
       <p class="muted">記錄正在做的東西、學到的技巧、還在試驗的點子。</p>
 
       <div class="tabs" role="tablist" aria-label="作品分享清單">
-        <button class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="sp-ups40k" id="tb-ups40k">Unit Power Scorer 40K</button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="sp-fvtt" id="tb-fvtt">FVTT NPC生成器</button>
+        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-ups40k" id="tb-ups40k">Unit Power Scorer 40K</button>
         <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-warogan" id="tb-warogan">WAROGAN PDF Parser</button>
-        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-fvtt" id="tb-fvtt">FVTT NPC生成器</button>
-        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-lexad" id="tb-lexad">詞靈冒險者</button>
-        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-lockeye" id="tb-lockeye">Lock-Eye</button>
+        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-ru" id="tb-ru">俄語字母學習</button>
       </div>
 
-      <div class="tab-panel is-active" id="sp-ups40k" role="tabpanel" tabindex="0" aria-labelledby="tb-ups40k">
+      <div class="tab-panels">
+      <div class="tab-panel is-active" id="sp-fvtt" role="tabpanel" tabindex="0" aria-labelledby="tb-fvtt">
+        <div class="tab-panel-header">
+          <div class="tab-panel-cover">
+            <img src="./assets/img/sharing/fvttMod_dnd5e.webp" width="505" height="336" loading="lazy" decoding="async" alt="FVTT 中 DND5E 的 MOD：NPC 生成器橫幅">
+          </div>
+          <div class="tab-panel-meta">
+            <h3>FVTT MOD：DND5E NPC生成器</h3>
+            <div><span class="chip">FoundryVTT</span><span class="chip">JavaScript</span><span class="chip">MOD</span><span class="chip">DND5E</span></div>
+          </div>
+        </div>
+        <p class="tab-panel-desc">一個 FoundryVTT 模組，可快速生成帶有名字、背景、個性、怪癖、外觀、年齡與裝備的 D&amp;D 5e NPC。</p>
+        <ul class="tab-features">
+          <li>在聊天框輸入 <code>/npc</code> 就能生成，也可以依序指定種族、類型與性別</li>
+          <li>年齡依各種族的壽命分布抽選，外貌組合體型、髮色、瞳色與種族特徵</li>
+          <li>裝備與法術依 NPC 類型從 JSON 檔載入</li>
+          <li>支援 FoundryVTT v13.351 與 dnd5e 5.3.0</li>
+        </ul>
+        <div class="tab-update-box">
+          <strong>設計取捨</strong>
+          <p>NPC 資料全部放在外部的 TXT 與 JSON 檔，不會寫程式的 GM 也能修改或擴充；代價是這些檔案的內容與格式要靠使用者自己維護。</p>
+        </div>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>目前以 GitHub 為主要發佈管道，歡迎提交 Issue 或 PR。</p>
+        </div>
+        <div class="tab-links">
+          <a class="btn" href="https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/" target="_blank" rel="noopener">查看 GitHub</a>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="sp-ups40k" role="tabpanel" tabindex="0" aria-labelledby="tb-ups40k">
         <div class="tab-panel-header">
           <div class="tab-panel-cover">
             <img src="./assets/img/sharing/banner.webp" width="800" height="436" loading="lazy" decoding="async" alt="戰鎚 40K 單位戰力計算工具">
@@ -225,6 +260,16 @@
           </div>
         </div>
         <p class="tab-panel-desc">戰鎚 40K 單位戰力計算工具。專為桌遊玩家設計的網頁應用，可快速計算與評估單位強度分數。</p>
+        <ul class="tab-features">
+          <li>輸入單位屬性、多組武器與領袖、光環加成</li>
+          <li>加總整支軍隊的點數，以及攻擊、防禦與戰術權重</li>
+          <li>支援 1000、2000、3000 分三種對戰規模</li>
+          <li>軍隊資料可用 JSON 匯入與匯出</li>
+        </ul>
+        <div class="tab-update-box">
+          <strong>設計取捨</strong>
+          <p>屬性、武器與加成都拆成獨立欄位，能組合出各種規則情境；代價是建立一個單位要填比較多欄。</p>
+        </div>
         <div class="tab-update-box">
           <strong>更新說明</strong>
           <p>依據遊戲版本持續維護資料表，目前穩定運行中。</p>
@@ -239,7 +284,17 @@
           <h3>WAROGAN PDF Model Parser</h3>
           <div><span class="chip">Web Tool</span><span class="chip">JavaScript</span><span class="chip">Warhammer 40K</span><span class="chip">PDF Parser</span></div>
         </div>
-        <p class="tab-panel-desc">將 WAROGAN 匯出的戰鎚 40K 名冊 PDF 解析為可搜尋的結構化資料。支援雙視圖模式（群組／個別）、跨欄位搜尋，以及多格式匯出（JSON、CSV、HTML、表格複製）。完全在瀏覽器端執行，免安裝、免帳號。</p>
+        <p class="tab-panel-desc">將 WAROGAN 匯出的戰鎚 40K 名冊 PDF 解析為可搜尋的結構化資料。完全在瀏覽器端執行，免安裝、免帳號。</p>
+        <ul class="tab-features">
+          <li>可切換群組與個別兩種檢視</li>
+          <li>跨模型名稱、裝備、能力與關鍵字搜尋</li>
+          <li>匯出 JSON、CSV、獨立 HTML，或直接複製表格</li>
+          <li>目前限制：掃描版、沒有文字層的 PDF 無法解析</li>
+        </ul>
+        <div class="tab-update-box">
+          <strong>設計取捨</strong>
+          <p>能力、關鍵字與裝備用規則比對，不建資料庫，工具因此不含任何官方資料；代價是 WAROGAN 匯出格式改變時要更新規則，歸屬不確定的項目會標示警告，請使用者確認。</p>
+        </div>
         <div class="tab-update-box">
           <strong>更新說明</strong>
           <p>持續修復 PDF 解析相容性問題，改善跨版本名冊的識別準確率。</p>
@@ -250,48 +305,21 @@
         </div>
       </div>
 
-      <div class="tab-panel" id="sp-fvtt" role="tabpanel" tabindex="0" aria-labelledby="tb-fvtt">
-        <div class="tab-panel-header">
-          <div class="tab-panel-cover">
-            <img src="./assets/img/sharing/fvttMod_dnd5e.webp" width="505" height="336" loading="lazy" decoding="async" alt="FVTT 中 DND5E 的 MOD：NPC 生成器橫幅">
-          </div>
-          <div class="tab-panel-meta">
-            <h3>FVTT MOD：DND5E NPC生成器</h3>
-            <div><span class="chip">FoundryVTT</span><span class="chip">JavaScript</span><span class="chip">MOD</span><span class="chip">DND5E</span></div>
-          </div>
+      <div class="tab-panel" id="sp-ru" role="tabpanel" tabindex="0" aria-labelledby="tb-ru">
+        <div class="tab-panel-meta">
+          <h3>俄語字母學習</h3>
+          <div><span class="chip">Web Tool</span><span class="chip">JavaScript</span><span class="chip">語音合成</span></div>
         </div>
-        <p class="tab-panel-desc">一個 FoundryVTT 模組，可快速生成帶有名字、背景、個性、怪癖、外觀、年齡與裝備的 D&D 5e NPC。</p>
-        <div class="tab-update-box">
-          <strong>更新說明</strong>
-          <p>目前以 GitHub 為主要發佈管道，歡迎提交 Issue 或 PR。</p>
-        </div>
+        <p class="tab-panel-desc">純前端的俄語互動學習小站，列出 33 個西里爾字母的大小寫，點一下字母就會念出字母名稱。</p>
+        <ul class="tab-features">
+          <li>使用瀏覽器語音合成，優先選用俄語語音</li>
+          <li>可調整語速與音高</li>
+        </ul>
         <div class="tab-links">
-          <a class="btn" href="https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/" target="_blank" rel="noopener">查看 GitHub</a>
+          <a class="btn" href="https://keroro6262.github.io/ru-learning.github.io/" target="_blank" rel="noopener">前往使用</a>
+          <a class="btn" href="https://github.com/KERORO6262/ru-learning.github.io" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
-
-      <div class="tab-panel" id="sp-lexad" role="tabpanel" tabindex="0" aria-labelledby="tb-lexad">
-        <div class="tab-panel-meta">
-          <h3>詞靈冒險者</h3>
-          <div><span class="chip">Unity</span><span class="chip">C#</span><span class="chip">ScriptableObject</span></div>
-        </div>
-        <p class="tab-panel-desc">文字驅動 Rogue-lite：以詞彙卡片與句子拼裝為核心戰鬥循環，模組化資料驅動。</p>
-        <div class="tab-update-box">
-          <strong>更新說明</strong>
-          <p>開發中，核心機制原型驗證階段。詳細連結待補充。</p>
-        </div>
-      </div>
-
-      <div class="tab-panel" id="sp-lockeye" role="tabpanel" tabindex="0" aria-labelledby="tb-lockeye">
-        <div class="tab-panel-meta">
-          <h3>Lock-Eye / Chain-Break</h3>
-          <div><span class="chip">Unity Physics2D</span><span class="chip">Events</span><span class="chip">Modular</span></div>
-        </div>
-        <p class="tab-panel-desc">2D 旋轉與連結機制的原型，探索物理碰撞與模組化事件系統的整合可能性。</p>
-        <div class="tab-update-box">
-          <strong>更新說明</strong>
-          <p>原型階段，核心機制研究中。詳細連結待補充。</p>
-        </div>
       </div>
 
     </section>
@@ -305,6 +333,7 @@
         <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="wr-review" id="tb-review">差評如潮？好評如潮？</button>
       </div>
 
+      <div class="tab-panels">
       <div class="tab-panel is-active" id="wr-lockpick" role="tabpanel" tabindex="0" aria-labelledby="tb-lockpick">
         <div class="tab-panel-header">
           <div class="tab-panel-cover">
@@ -339,6 +368,7 @@
           <a class="btn" href="https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74" target="_blank" rel="noopener">閱讀文章</a>
         </div>
       </div>
+      </div>
 
     </section>
 
@@ -349,24 +379,28 @@
       
       <div class="contact-list">
         <a class="contact-row" href="mailto:slinceblue@gmail.com">
-          <span class="contact-platform">Email</span>
-          <span class="contact-handle">slinceblue@gmail.com</span>
-          <span class="contact-arrow" aria-hidden="true">→</span>
+          <span class="contact-card">
+            <span class="contact-platform">Email</span>
+            <span class="contact-handle">slinceblue@gmail.com</span>
+          </span>
         </a>
         <a class="contact-row" href="https://github.com/KERORO6262" target="_blank" rel="noopener">
-          <span class="contact-platform">GitHub</span>
-          <span class="contact-handle">@KERORO6262</span>
-          <span class="contact-arrow" aria-hidden="true">→</span>
+          <span class="contact-card">
+            <span class="contact-platform">GitHub</span>
+            <span class="contact-handle">@KERORO6262</span>
+          </span>
         </a>
         <a class="contact-row" href="https://linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">
-          <span class="contact-platform">LinkedIn</span>
-          <span class="contact-handle">bbmps-badr</span>
-          <span class="contact-arrow" aria-hidden="true">→</span>
+          <span class="contact-card">
+            <span class="contact-platform">LinkedIn</span>
+            <span class="contact-handle">bbmps-badr</span>
+          </span>
         </a>
         <a class="contact-row" href="https://t.me/KERORO6262" target="_blank" rel="noopener">
-          <span class="contact-platform">Telegram</span>
-          <span class="contact-handle">@KERORO6262</span>
-          <span class="contact-arrow" aria-hidden="true">→</span>
+          <span class="contact-card">
+            <span class="contact-platform">Telegram</span>
+            <span class="contact-handle">@KERORO6262</span>
+          </span>
         </a>
       </div>
     </section>
@@ -374,7 +408,8 @@
 
   <footer>
     <div class="container">
-      <small>© <span id="y"></span> Badr — Built with GitHub Pages</small>
+      <small>© <span id="y"></span> Badr — Built with GitHub Pages</small><br>
+      <small class="privacy-note">本站使用 Google Analytics 統計瀏覽量，會設定 Cookie。遊戲進度只有在你勾選保存後，才會存在你自己的瀏覽器裡。</small>
     </div>
   </footer>
 
@@ -462,9 +497,9 @@
     {
       "@type": "ItemList",
       "@id": "https://keroro6262.github.io/#writing",
-      "name": "寫作／研究",
+      "name": "作品與寫作",
       "itemListOrder": "http://schema.org/ItemListOrderDescending",
-      "numberOfItems": 5,
+      "numberOfItems": 6,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -542,6 +577,23 @@
             "operatingSystem": "Web",
             "isPartOf": { "@id": "https://keroro6262.github.io/#website" }
           }
+        },
+        {
+          "@type": "ListItem",
+          "position": 6,
+          "item": {
+            "@type": "WebApplication",
+            "@id": "https://keroro6262.github.io/ru-learning.github.io/",
+            "url": "https://keroro6262.github.io/ru-learning.github.io/",
+            "name": "俄語字母學習",
+            "description": "純前端的俄語互動學習小站，點字母就會念出字母名稱。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://keroro6262.github.io/#me" },
+            "codeRepository": "https://github.com/KERORO6262/ru-learning.github.io",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Web",
+            "isPartOf": { "@id": "https://keroro6262.github.io/#website" }
+          }
         }
       ]
     }
@@ -560,7 +612,10 @@
   <script defer src="./assets/js/webcat.js"></script>
   <script defer src="./assets/js/inventory.js"></script>
   <script defer src="./assets/js/shop.js"></script>
-  <script defer src="./assets/js/main.js"></script>
+  <script defer src="./assets/js/site.js"></script>
+  <script defer src="./assets/js/mosaic.js"></script>
+  <script defer src="./assets/js/fishing.js"></script>
+  <script defer src="./assets/js/effects.js"></script>
 
 </body>
 

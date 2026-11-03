@@ -1,147 +1,186 @@
 # ENGINEERING.md — KERORO6262.github.io 工程文件
 
-> 本文件描述個人網站的技術架構、檔案規範與開發約定，供未來維護或協作參考。
+> 想改東西先看「常見修改」，大多數情況不用讀完整份文件。
 
 ---
 
 ## 專案概覽
 
 - **網址**：`https://keroro6262.github.io/`
-- **部署方式**：GitHub Pages（branch: `main`，靜態站點）
-- **無框架、無建置步驟**：純 HTML + CSS + Vanilla JavaScript，直接部署。
+- **部署方式**：推到 `main` 後由 GitHub Actions 自動部署到 GitHub Pages，只上傳網站需要的檔案（見 `.github/workflows/static.yml`）。
+- **無框架、無建置步驟**：純 HTML + CSS + Vanilla JavaScript。
 - **語言**：繁體中文（`lang="zh-Hant-TW"`）
-- **視覺**：夜釣湖畔場景，整頁是同一片湖（固定夜色，不分深淺色模式）。色票取自頭像，定義於 `theme.css`。
+- **視覺**：夜釣湖畔場景，整頁是同一片湖，固定夜色，沒有淺色模式。
+
+---
+
+## 常見修改
+
+每次改完都先跑檢查（只要幾秒）：
+
+```
+python tools/check_site.py
+```
+
+### 修改作品或文章的文字
+
+直接改 `index.html` 裡對應的 `tab-panel` 區塊。
+
+### 新增一個作品
+
+1. 在 `index.html` 的 `#sharing` 頁籤列加一個按鈕，把 `xxx` 換成新的代號：
+
+   ```html
+   <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-xxx" id="tb-xxx">作品名稱</button>
+   ```
+
+2. 在同一區的 `tab-panels` 裡加一個面板（代號要和上面一樣）：
+
+   ```html
+   <div class="tab-panel" id="sp-xxx" role="tabpanel" tabindex="0" aria-labelledby="tb-xxx">
+     <div class="tab-panel-meta">
+       <h3>作品名稱</h3>
+       <div><span class="chip">標籤</span></div>
+     </div>
+     <p class="tab-panel-desc">一句話說明。</p>
+     <ul class="tab-features">
+       <li>功能重點，最多 4 點</li>
+     </ul>
+     <div class="tab-update-box">
+       <strong>設計取捨</strong>
+       <p>做了什麼選擇、代價是什麼。</p>
+     </div>
+     <div class="tab-links">
+       <a class="btn" href="網址" target="_blank" rel="noopener">前往使用</a>
+     </div>
+   </div>
+   ```
+
+3. 想放封面圖：把約 800px 寬的 WebP 放進 `assets/img/sharing/`，再把 `tab-panel-meta` 包進下面的結構。`width`、`height`、`alt` 都要填：
+
+   ```html
+   <div class="tab-panel-header">
+     <div class="tab-panel-cover">
+       <img src="./assets/img/sharing/檔名.webp" width="800" height="450" loading="lazy" decoding="async" alt="圖片說明">
+     </div>
+     <!-- 原本的 tab-panel-meta 放這裡 -->
+   </div>
+   ```
+
+4. 到 `index.html` 下方的結構化資料（`ItemList`）加一筆，並更新 `numberOfItems`。
+5. 如果作品有自己的網站，加進 `sitemap.xml` 和本文件的「已發佈子站點」。
+
+頁籤不用寫程式，新增後會自動運作。
+
+### 修改章節標題或姓名
+
+標題是像素字圖片，要重新產生（需要 Windows 和 Pillow）：
+
+1. 改 `tools/make_scene.py` 最下面的文字。
+2. 執行 `python tools/make_scene.py`，它會印出可以直接貼上的 `<img>`。
+3. 把 `index.html` 裡對應的 `<img>` 換掉。`h1`、`h2` 上的 `data-cat-ignore` 要留著。
+4. 改姓名時，`assets/css/layout.css` 裡手機版的 `.title img` 寬度也要改（圖片原始寬度 × 2）。
+
+### 修改顏色
+
+只要改 `assets/css/theme.css`，所有共用顏色都在那裡。兩個例外：
+
+- 人物與場景圖片的顏色在 `tools/make_scene.py`。
+- `--sky` 如果改了，`index.html` 的 `theme-color` 要一起改。
+
+### 調整動態效果
+
+全部在 `assets/js/effects.js`，每個效果一個區塊。不想要某個效果，刪掉那個區塊就好。
+
+---
+
+## 檢查與測試
+
+| 指令 | 內容 | 時間 |
+|------|------|------|
+| `python tools/check_site.py` | 頁籤配對、檔案是否存在、圖片屬性、結構化資料 | 幾秒 |
+| `python tools/run_checks.py` | 上面的檢查，加上遊戲、貓咪、鍵盤、效果、聯絡區、CSP 的瀏覽器測試 | 約 3 分鐘 |
+| `python tools/run_checks.py --long` | 再加上貓咪走到累、睡著、自己醒來 | 約多 1 分鐘 |
+
+**推上線前一定要跑 `run_checks.py --long`。** 瀏覽器測試需要 Node.js 和 Playwright，安裝方式寫在 `tools/run_checks.py` 開頭。
 
 ---
 
 ## 檔案結構
 
 ```
-KERORO6262.github.io-main/
-├── index.html                  # 唯一頁面（SPA 式單頁）
-├── sitemap.xml                 # Google Search Console sitemap
-├── robots.txt                  # 爬蟲規則
-├── ENGINEERING.md              # 本文件
-├── README.md                   # 專案簡介
+├── index.html                  # 唯一頁面
+├── sitemap.xml、robots.txt     # 給搜尋引擎
 ├── assets/
 │   ├── css/
-│   │   ├── theme.css           # ① 主題變數（色票、陰影、深/淺色 token）
-│   │   ├── base.css            # ② 基礎層（reset、html/body、字體、.container）
-│   │   ├── layout.css          # ③ 版面層（Header、Hero、Section、Grid）
-│   │   ├── components.css      # ④ 元件層（.btn、.card、.tabs、.badge 等）
-│   │   ├── responsive.css      # ⑥ 響應式（共用斷點）
-│   │   └── features/
-│   │       ├── scene.css       # 夜釣湖畔場景（天空、樹林、湖水、岸邊人物）
-│   │       ├── coin.css        # 硬幣互動（閃爍/浮動/收集）
-│   │       ├── fishing.css     # 釣魚小遊戲進度條與結果泡泡
-│   │       ├── shop-inventory.css  # 商店與儲物欄 UI
-│   │       ├── mosaic.css      # 馬賽克遮罩、上浮提示
-│   │       ├── timeline.css    # 時間線（compact 版）
-│   │       └── cat.css         # 網頁寵物貓繪製
+│   │   ├── theme.css           # ① 所有顏色與共用變數
+│   │   ├── base.css            # ② reset、字體、.container、焦點樣式
+│   │   ├── layout.css          # ③ Header、Hero、Section、Grid
+│   │   ├── components.css      # ④ 可重用元件：.btn、.card、.tabs、.badge、.chip
+│   │   ├── features/           # ⑤ 各功能自己的樣式
+│   │   │   ├── scene.css       #   天空、樹林、湖水、岸邊人物
+│   │   │   ├── coin.css        #   硬幣與金幣計數
+│   │   │   ├── fishing.css     #   釣魚條與浮字
+│   │   │   ├── shop-inventory.css  # 商店、儲物欄、計數列
+│   │   │   ├── mosaic.css      #   馬賽克遮罩
+│   │   │   ├── timeline.css    #   工作經歷時間線
+│   │   │   ├── cat.css         #   貓咪
+│   │   │   ├── contact.css     #   聯絡我（釣竿、釣線、魚標）
+│   │   │   └── effects.css     #   捲動淡入、點擊漣漪、3D 傾斜
+│   │   └── responsive.css      # ⑥ 跨檔案的斷點與減少動態，放最後才蓋得過前面
 │   ├── js/
-│   │   ├── main.js             # 主邏輯（硬幣、馬賽克、釣魚、分頁、頁籤）
-│   │   ├── inventory.js        # 儲物欄模組
-│   │   ├── shop.js             # 商店模組
-│   │   └── webcat.js           # 網頁寵物貓行為
+│   │   ├── analytics.js        # Google Analytics 設定
+│   │   ├── site.js             # 頁面功能：螢幕報讀、年份、頁籤、手機選單、履歷按鈕
+│   │   ├── mosaic.js           # 硬幣收集與馬賽克解鎖
+│   │   ├── fishing.js          # 釣魚小遊戲、餵貓、浮字提示
+│   │   ├── shop.js             # 商店、金錢、存檔同意
+│   │   ├── inventory.js        # 儲物欄
+│   │   ├── webcat.js           # 貓咪
+│   │   └── effects.js          # 頁面動態視效
 │   ├── og-image.jpg            # 社群分享預覽圖（1200×630）
 │   └── img/
 │       ├── avatar.png          # 方形頭像原圖（社群與結構化資料用）
 │       ├── scene/              # 場景素材與像素標題，由 tools/make_scene.py 產生
-│       ├── favicon.ico         # 16/32/48 多尺寸
-│       ├── apple-touch-icon.png
-│       ├── sharing/            # 作品分享縮圖（.webp 給頁面用，.png 是原始檔）
-│       └── writing/            # 寫作文章縮圖（同上）
-├── tools/
-│   └── make_scene.py           # 產生場景素材（只在改素材時手動執行）
-└── .github/workflows/
-    └── static.yml              # GitHub Pages 自動部署
+│       ├── favicon.ico、apple-touch-icon.png
+│       ├── sharing/、writing/  # 縮圖：.webp 給頁面用，.png 是原始檔（不會部署）
+├── tools/                      # 不會部署
+│   ├── make_scene.py           # 產生場景素材與像素標題
+│   ├── check_site.py           # 靜態檢查
+│   ├── run_checks.py           # 跑全部檢查
+│   └── checks/                 # 瀏覽器測試
+└── .github/workflows/static.yml  # 自動部署
 ```
 
----
-
-## CSS 架構（六層載入順序）
-
-```html
-① theme.css        → 所有自訂屬性（--brand、--bg、--border…）
-② base.css         → Reset、字體、.container 寬度
-③ layout.css       → Header、Hero、Section、.grid 12欄
-④ components.css   → 可重用 UI：.btn、.card、.tabs、.badge、.chip、聯絡欄
-features/*.css     → 功能模組（場景/硬幣/釣魚/商店/馬賽克/時間線/貓）
-⑥ responsive.css   → 媒體查詢（共用斷點 ≤768px、≤640px）
-```
-
-**規則**：不得在 feature CSS 內定義全域通用元件；不得在 components.css 內加入特定功能的動畫邏輯。
+**CSS 規則**：顏色放 `theme.css`；可重用的元件放 `components.css`；只有單一功能用到的放 `features/`，不要回頭覆蓋別層的規則。只屬於某個元件的斷點，寫在該元件旁邊。
 
 ---
 
-## 頁面區塊結構（index.html）
+## 模組間通訊
 
-| Section ID  | 功能           | 主要元件                           |
-|-------------|----------------|------------------------------------|
-| `#top`      | Hero / 自我介紹 | `.hero-grid`、`.coin-row`、釣魚頭像 |
-| `#about`    | 關於我         | `.timeline.compact`、馬賽克解鎖卡   |
-| `#sharing`  | 作品分享       | `.tabs` + `.tab-panel`             |
-| `#writing`  | 寫作／研究     | `.tabs` + `.tab-panel`             |
-| `#contact`  | 聯絡我         | `.contact-list` + `.contact-row`   |
+每個腳本都用 IIFE 隔離，彼此只透過下面這些介面溝通，而且都是使用者操作時才呼叫，所以載入順序沒有硬性要求。
 
----
+| 介面 | 提供者 | 使用者 |
+|------|--------|--------|
+| `window.__announce(text)` | `site.js` | 遊戲回饋的螢幕報讀 |
+| `window.__fishing` | `fishing.js` | `shop.js`、`site.js`（浮字提示）、測試 |
+| `window.__cat` | `webcat.js` | `fishing.js`（餵食）、測試 |
+| `window.__inventory` | `inventory.js` | `shop.js` |
+| `window.__shop` | `shop.js` | 測試 |
+| `storage:consent`、`storage:clear` 事件 | `shop.js` | `shop.js`、`inventory.js` |
 
-## 頁籤元件（Tabs）規範
+`fishing:ready`、`fishing:stats`、`shop:money`、`inventory:changed` 這幾個事件會發出，但目前沒有人監聽。
 
-### HTML 結構
+### 動態視效（effects.js）
 
-```html
-<div class="tabs" role="tablist" aria-label="清單名稱">
-  <button class="tab-btn" type="button" role="tab" aria-selected="true"
-          aria-controls="panel-id" id="tab-id">標籤名</button>
-  …
-</div>
+| 效果 | 來源 | 位置 |
+|------|------|------|
+| 視差捲動 | Motion Prompt #073 | 星空、遠樹、近樹 |
+| 水面起伏 | Motion Prompt #165 | 岸與水的交界，以半格方塊、每秒 12 格繪製 |
+| 捲動淡入 | Motion Prompt #074 | 標題、頁籤、面板、經歷卡、聯絡列 |
+| 點擊漣漪 | Motion Prompt #085 | `.btn`、`.tab-btn`、`.contact-card` |
+| 3D 傾斜 | Motion Prompt #153 | 作品封面圖（只在有游標的裝置） |
 
-<div class="tab-panel is-active" id="panel-id"
-     role="tabpanel" tabindex="0" aria-labelledby="tab-id">
-  <div class="tab-panel-header">          <!-- 可選：封面圖 + 標題 -->
-    <div class="tab-panel-cover"><img …></div>
-    <div class="tab-panel-meta"><h3>…</h3><div>chips…</div></div>
-  </div>
-  <p class="tab-panel-desc">簡述</p>
-  <div class="tab-update-box">
-    <strong>更新說明</strong>
-    <p>更新內容</p>
-  </div>
-  <div class="tab-links">
-    <a class="btn" href="…" target="_blank" rel="noopener">連結</a>
-  </div>
-</div>
-```
-
-### 行為
-
-- 初始狀態：第一個 tab `aria-selected="true"`，對應 panel 加 `.is-active`；其餘 tab 加 `tabindex="-1"`。
-- 鍵盤：←／→ 切換（循環），Home／End 跳到頭尾，只有選中的 tab 在 Tab 順序內。
-- 切換由 `main.js` 的 Tabs IIFE 處理：更新所有 `aria-selected`，移除／加上 `.is-active`。
-- 每個 `[role="tablist"]` 都會自動被初始化，無需手動掛載。
-
----
-
-## JavaScript 模組說明
-
-### main.js（主 IIFE + 附加 IIFE）
-
-| 功能區塊          | 說明                                              |
-|-------------------|---------------------------------------------------|
-| 硬幣收集          | `.coin` 按鈕點擊 → `flyCoin()` 動畫 → `coins++`；計數固定在右下角 |
-| 馬賽克解鎖        | 投幣動畫 → `stage--` → `applyMosaicStage()`       |
-| 釣魚小遊戲        | 點擊頭像 → RAF 進度條 → 再點判定 → 結果泡泡       |
-| 頁籤切換          | `querySelectorAll('[role="tablist"]')` 批次初始化  |
-| 螢幕報讀          | `window.__announce()` 寫入 `#srStatus`，遊戲回饋都走這裡 |
-| 行動導覽          | `.nav-toggle` 點擊展開 / 收合                     |
-| 年份自動更新      | `#y` 寫入當年年份                                 |
-
-### 模組間通訊
-
-- 釣魚模組對外掛載 `window.__fishing`（`getFish`、`setFish`、`addFish` 等）。
-- 商店模組監聽 `fishing:ready` / `fishing:stats` CustomEvent。
-- 貓咪模組透過 `window.__cat.feedFish(n)` 接受餵食。
+這些效果都不碰遊戲狀態與貓咪。`prefers-reduced-motion` 時全部關閉，水面只留靜止畫面。
 
 ### 貓咪的硬性限制
 
@@ -159,13 +198,22 @@ features/*.css     → 功能模組（場景/硬幣/釣魚/商店/馬賽克/時�
 |-----------------|------------------------|-----------------------------------|
 | 收集硬幣        | 點擊 Hero 的硬幣按鈕   | 最多 3 枚，已收集即禁用            |
 | 解鎖馬賽克      | 點擊關於卡片的遮罩     | 消耗硬幣，分 3 階段揭示            |
-| 釣魚小遊戲      | 點擊頭像或按 Enter／Space | 一次開始、再一次判定收穫        |
+| 釣魚小遊戲      | 點擊人物或按 Enter／Space | 一次開始、再一次判定收穫        |
 | 餵貓            | 點擊魚計數器 🐟        | 消耗 1 魚，貓咪體力 +5             |
 | 賣垃圾          | 點擊垃圾計數器 🗑️      | 全部賣出，每個 3 💰               |
 | 商店            | 點擊金錢計數器 💰      | 透過 shop.js 管理                 |
 | 儲物欄          | 點擊背包計數器 🎒      | 透過 inventory.js 管理            |
-| 頁籤切換        | 點擊 .tab-btn          | 展開對應的說明、更新日誌與連結     |
+| 頁籤切換        | 點擊 .tab-btn 或方向鍵 | 展開對應內容                       |
 | 行動導覽        | 點擊 ☰ 按鈕           | 展開 / 收合 nav                   |
+
+---
+
+## 安全與隱私
+
+- **CSP**：`index.html` 開頭的 meta 禁止所有內嵌腳本。不要加 `<script>…</script>` 或 `onclick=`，腳本一律放獨立檔案。新增外部資源時要同步放行，`tools/checks/csp.js` 會檢查。
+- **存檔**：只有使用者勾選才會寫入 localStorage；讀取時一律檢查內容，因為 `keroro6262.github.io` 底下的專案共用同一個網域。
+- **動態內容**：放進 `innerHTML` 的文字一律先經過 `escapeHtml`。
+- **Commit 信箱**：這個 repo 使用 GitHub noreply 信箱（`git config user.email`）。
 
 ---
 
@@ -176,13 +224,14 @@ features/*.css     → 功能模組（場景/硬幣/釣魚/商店/馬賽克/時�
 | `https://keroro6262.github.io/`                                      | 個人主頁（本專案）               |
 | `https://keroro6262.github.io/unit-power-scorer-40k.github.io/`      | 戰鎚 40K 單位戰力計算工具        |
 | `https://keroro6262.github.io/40k-WAROGAN-PDF-Model-Parser/`         | WAROGAN PDF 名冊解析工具         |
+| `https://keroro6262.github.io/ru-learning.github.io/`                | 俄語字母學習                     |
 
 ---
 
 ## SEO / 結構化資料
 
 - `index.html` 內嵌 JSON-LD（`@graph`），涵蓋 `WebSite`、`WebPage`、`Person`、`Organization`、`ItemList`。
-- `sitemap.xml` 列出三個主要 URL，`priority` 主頁 1.0，子站 0.8。
+- `sitemap.xml` 列出主頁與子站，`priority` 主頁 1.0，子站 0.8。
 - `robots.txt` 允許全部爬取，指向 sitemap。
 
 ---
@@ -190,8 +239,7 @@ features/*.css     → 功能模組（場景/硬幣/釣魚/商店/馬賽克/時�
 ## 開發約定
 
 1. **不引入框架或打包工具**：保持零建置、直接部署的原則。
-2. **CSS 分層**：新元件加入 `components.css`；新功能模組建立 `features/xxx.css`。
-3. **JavaScript**：以 IIFE 隔離作用域；模組間透過 `window.__xxx` 或 CustomEvent 通訊。
-4. **無障礙**：互動元素須有 `aria-label` 或 `role`；頁籤需符合 ARIA Tabs Pattern。
-5. **圖片**：放置於 `assets/img/` 對應子目錄，頁面引用約 800px 寬的 WebP，並標上 `width`、`height`、`alt`；首屏以外加 `loading="lazy"`。
-6. **注釋**：僅在 WHY 不明顯時才寫；不寫 WHAT 型注釋。
+2. **JavaScript**：以 IIFE 隔離作用域；模組間透過 `window.__xxx` 或 CustomEvent 通訊。
+3. **無障礙**：互動元素優先用原生 `<button>` 和 `<a>`；頁籤需符合 ARIA Tabs Pattern。
+4. **圖片**：頁面引用約 800px 寬的 WebP，並標上 `width`、`height`、`alt`；首屏以外加 `loading="lazy"`。
+5. **注釋**：說明為什麼，而不是在做什麼。

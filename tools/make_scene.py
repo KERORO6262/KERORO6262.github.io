@@ -3,9 +3,11 @@
     python tools/make_scene.py
 
 需要 Pillow；像素標題用系統的微軟正黑體，只能在 Windows 上重新產生。
+改了標題文字後，執行這支程式會印出可以直接貼進 index.html 的 <img>。
 所有輸出都是原生像素大小，由 CSS 以 image-rendering: pixelated 放大，場景和人物才會是同一種方塊大小。
 """
 import random
+import sys
 from collections import deque
 from pathlib import Path
 
@@ -90,23 +92,23 @@ def make_stars(rng):
     tile.save(OUT / 'stars.png', optimize=True)
 
 
-def make_trees(rng):
+def make_trees(rng, color=TEAL, name='trees', lo=4, hi=11):
     """和頭像裡同樣階梯狀的樹影，左右可無縫接續。"""
     h = 16
     tile = Image.new('RGBA', (TILE_W, h), CLEAR)
     px = tile.load()
     x = 0
     while x < TILE_W:
-        tree_h = rng.randint(4, 11)
+        tree_h = rng.randint(lo, hi)
         width = rng.choice((1, 1, 2, 2, 3))
         for col in range(x, min(x + width, TILE_W)):
             for y in range(h - tree_h, h):
-                px[col, y] = TEAL
+                px[col, y] = color
         x += width + rng.choice((0, 1, 1, 2))
     for col in range(TILE_W):  # 底部連成一片，接上水面
         for y in range(h - 3, h):
-            px[col, y] = TEAL
-    tile.save(OUT / 'trees.png', optimize=True)
+            px[col, y] = color
+    tile.save(OUT / f'{name}.png', optimize=True)
 
 
 def make_water(rng):
@@ -131,6 +133,18 @@ def make_water(rng):
     tile.save(OUT / 'water.png', optimize=True)
 
 
+def make_lure():
+    """「聯絡我」釣線尾端的魚標。"""
+    rows = ['..oo..', '.oWWo.', '.oooo.', '.rrrr.', '..rr..', '...k..', '..kk..']
+    colors = {'o': (0xff, 0xb5, 0x70, 255), 'W': (255, 255, 255, 255), 'r': (0xd9, 0x53, 0x4f, 255), 'k': STAR}
+    img = Image.new('RGBA', (6, 7), CLEAR)
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in colors:
+                img.putpixel((x, y), colors[ch])
+    img.save(OUT / 'lure.png', optimize=True)
+
+
 def pixel_heading(text, name, size):
     """用很小的字級畫字再硬切門檻，得到像素字。回傳原生寬高給 HTML 用。"""
     font = ImageFont.truetype(r'C:\Windows\Fonts\msjhbd.ttc', size)
@@ -141,10 +155,12 @@ def pixel_heading(text, name, size):
     img = Image.new('RGBA', glyphs.size, (255, 255, 255, 0))
     img.putalpha(glyphs)
     img.save(OUT / f'{name}.png', optimize=True)
-    print(f'{name}.png {img.width}x{img.height}')
+    scale = 3 if name == 'h-name' else 2
+    print(f'<img src="assets/img/scene/{name}.png" width="{img.width * scale}" height="{img.height * scale}" alt="{text}">')
 
 
 if __name__ == '__main__':
+    sys.stdout.reconfigure(encoding='utf-8')
     rng = random.Random(6262)
     make_figure()
     make_stars(rng)
@@ -155,3 +171,5 @@ if __name__ == '__main__':
     pixel_heading('作品分享', 'h-sharing', 16)
     pixel_heading('寫作／研究', 'h-writing', 16)
     pixel_heading('聯絡我', 'h-contact', 16)
+    make_trees(rng, color=(0x20, 0x31, 0x38, 255), name='trees-far', lo=7, hi=14)  # 視差用的遠景
+    make_lure()

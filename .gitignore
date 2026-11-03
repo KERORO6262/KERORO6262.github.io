@@ -26,6 +26,7 @@ yarn-error.log*
 # Build output (if ever used)
 dist/
 build/
+_site/
 
 # Temp / backup
 *.tmp

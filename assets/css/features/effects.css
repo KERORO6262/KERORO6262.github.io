@@ -1,0 +1,55 @@
+/* 頁面動態視效，邏輯在 assets/js/effects.js */
+
+/* Motion Prompt #074 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#074 */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s cubic-bezier(.33, 1, .68, 1), transform .7s cubic-bezier(.33, 1, .68, 1);
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Motion Prompt #085 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#085 */
+.btn,
+.tab-btn,
+.contact-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  pointer-events: none;
+  animation:
+    rippleGrow .6s cubic-bezier(.33, 1, .68, 1) both,
+    rippleFade .8s linear both;
+}
+
+@keyframes rippleGrow {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+@keyframes rippleFade {
+  0%, 37.5% { opacity: .4; }
+  100% { opacity: 0; }
+}
+
+/* Motion Prompt #153 · MIT License (c) 2026 Shohei Ohtaki · https://showheyohtaki.github.io/motion-prompt/#153 */
+.tab-panel-cover {
+  position: relative;
+  will-change: transform;
+}
+
+.tab-panel-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(130px at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, var(--glare, 0)), transparent);
+}

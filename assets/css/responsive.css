@@ -1,6 +1,5 @@
 @media (max-width:960px) {
   .hero-grid { grid-template-columns: 1fr; }
-  .card { grid-column: span 12; }
 }
 
 /* 放在最後才蓋得過各元件的動態。只關裝飾性動態：
@@ -9,7 +8,9 @@
   html { scroll-behavior: auto; }
   .btn,
   .card,
-  .contact-row { transition: none; }
+  .contact-row::before,
+  .contact-row::after,
+  .contact-card { transition: none; }
   .btn:hover,
   .card:hover { transform: none; }
   .tab-panel { animation: none; }

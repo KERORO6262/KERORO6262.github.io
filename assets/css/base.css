@@ -54,7 +54,6 @@ a,
   top: -64px;
   z-index: 100;
   padding: 8px 14px;
-  border-radius: 10px;
   background: var(--card);
   color: var(--text);
   border: 1px solid var(--border);

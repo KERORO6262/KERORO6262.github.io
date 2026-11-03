@@ -8,7 +8,7 @@
   pointer-events: none;
 }
 
-/* 底下是深色像素圖，不隨深淺主題變色 */
+/* 疊在像素人物上，顏色固定 */
 .fishing-bar{
   position: relative;
   height: 14px;

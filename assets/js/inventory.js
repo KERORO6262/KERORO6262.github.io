@@ -204,7 +204,7 @@
               <div class="inv-row__name">${escapeHtml(it.name)}${tag}</div>
               <div class="inv-row__meta">${escapeHtml(it.id)}</div>
             </div>
-            <div class="inv-row__count">× ${Number(it.count) || 0}</div>
+            <div class="inv-row__count">× ${it.count}</div>
           </div>
         `;
             }).join('');
@@ -269,12 +269,28 @@
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (!raw) return {};
-            const obj = JSON.parse(raw);
-            if (!obj || typeof obj !== 'object') return {};
-            return obj;
+            return sanitizeInv(JSON.parse(raw));
         } catch (err) {
             return {};
         }
+    }
+
+    // 存檔可能損壞，同網域的其他專案也寫得到，只留下格式正確的物品
+    function sanitizeInv(obj) {
+        if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return {};
+        const clean = {};
+        for (const [id, it] of Object.entries(obj)) {
+            if (!it || typeof it !== 'object') continue;
+            const count = Number(it.count);
+            if (!Number.isInteger(count) || count <= 0) continue;
+            clean[id] = {
+                id: String(id),
+                name: typeof it.name === 'string' ? it.name : String(id),
+                count,
+                oneTime: !!it.oneTime,
+            };
+        }
+        return clean;
     }
 
     function saveInvToLocalStorage(obj) {

@@ -1,29 +1,4 @@
-/* Shop + Inventory UI (獨立檔，方便維護)
-*/
-
-:root{
-  --ui-z-base: 20000;
-  --ui-z-menu: 20010;
-  --ui-z-modal: 20020;
-  --ui-shadow: 0 10px 26px rgba(0,0,0,.24);
-
-  /* ===== UI Panel Color System (Default: follow dark-ish neutral) ===== */
-  --ui-panel-bg: rgba(18, 18, 20, 0.92);
-  --ui-panel-text: rgba(255, 255, 255, 0.92);
-  --ui-panel-muted: rgba(255, 255, 255, 0.66);
-  --ui-panel-border: rgba(255, 255, 255, 0.16);
-
-  --ui-item-bg: rgba(255, 255, 255, 0.06);
-  --ui-item-border: rgba(255, 255, 255, 0.12);
-
-  --ui-btn-bg: rgba(255, 255, 255, 0.10);
-  --ui-btn-hover: rgba(255, 255, 255, 0.14);
-
-  --ui-accent: var(--brand);
-  --ui-accent-weak: color-mix(in srgb, var(--brand) 22%, transparent);
-
-  --ui-overlay-bg: rgba(0,0,0,.45);
-}
+/* 商店與儲物欄 UI，色票在 theme.css */
 
 /* ===== 商店：下拉選單（實際用 fixed 置於 body） ===== */
 .shop-menu{
@@ -305,7 +280,7 @@
   appearance: none;
   margin: 0;
   padding: 6px 10px;
-  background: none;
+  background: var(--card); /* 計數列會壓到樹林，要有自己的底色 */
   font: inherit;
   font-size: 12px;
   font-variant-numeric: tabular-nums;

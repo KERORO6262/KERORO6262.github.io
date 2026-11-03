@@ -4,18 +4,22 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border-radius: 12px;
-  color: var(--text);
+  color: #fff;
+  font-weight: 600;
   text-decoration: none;
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, var(--bg-soft), var(--card));
-  box-shadow: var(--shadow-sm);
-  transition: transform .15s ease, border-color .15s ease, color .15s ease;
+  border: 0;
+  background: var(--btn-bg);
+  box-shadow: var(--bevel);
+  transition: transform .15s ease, color .15s ease;
 }
 
 .btn:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--brand) 55%, var(--border));
+  background: var(--btn-hover);
+}
+
+header .btn {
+  padding: 6px 12px;
 }
 
 .btn:active {
@@ -28,13 +32,11 @@
 
 /* Card */
 .card {
-  grid-column: span 6;
+  grid-column: span 12;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
   padding: 24px;
-  box-shadow: var(--shadow);
-  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease;
+  transition: border-color 0.3s ease;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -42,8 +44,6 @@
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
   border-color: color-mix(in srgb, var(--brand) 50%, var(--border));
 }
 
@@ -61,95 +61,10 @@
   flex-grow: 1;
 }
 
-/* =====================================================
-   聯絡我 — Editorial Row Style
-====================================================== */
-.contact-list {
-  margin-top: 32px;
-}
-
-.contact-row {
-  display: flex;
-  align-items: center;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--border);
-  text-decoration: none;
-  color: var(--text);
-  gap: 24px;
-  position: relative;
-  overflow: hidden;
-  transition: padding-left 0.22s ease;
-}
-
-.contact-row:first-child {
-  border-top: 1px solid var(--border);
-}
-
-.contact-row::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 0%;
-  background: linear-gradient(180deg, var(--brand), var(--brand-2));
-  border-radius: 1px;
-  transition: height 0.22s ease;
-}
-
-.contact-row:hover {
-  padding-left: 14px;
-}
-
-.contact-row:hover::before {
-  height: 60%;
-}
-
-.contact-platform {
-  font-size: clamp(17px, 4.6vw, 21px);
-  font-weight: 700;
-  min-width: clamp(96px, 24vw, 130px);
-  letter-spacing: -0.02em;
-  transition: color 0.2s ease;
-}
-
-.contact-handle {
-  flex: 1;
-  min-width: 0;
-  overflow-wrap: anywhere;
-  font-size: 13px;
-  color: var(--muted);
-  font-family: ui-monospace, 'SF Mono', 'Fira Code', monospace;
-  letter-spacing: 0.03em;
-  transition: color 0.2s ease;
-}
-
-.contact-arrow {
-  font-size: 18px;
-  color: var(--muted);
-  flex-shrink: 0;
-  transition: transform 0.25s ease, color 0.2s ease;
-}
-
-.contact-row:hover .contact-platform {
-  color: var(--brand);
-}
-
-.contact-row:hover .contact-handle {
-  color: var(--text);
-}
-
-.contact-row:hover .contact-arrow {
-  transform: translateX(8px);
-  color: var(--brand);
-}
-
 /* Badge & Chip */
 .badge {
   font-size: 12px;
   padding: 4px 8px;
-  border-radius: 999px;
   border: 1px solid var(--border);
   color: var(--muted);
 }
@@ -157,7 +72,6 @@
 .chip {
   display: inline-block;
   padding: 4px 8px;
-  border-radius: 8px;
   border: 1px solid var(--border);
   margin-right: 6px;
   margin-top: 6px;
@@ -187,7 +101,6 @@ footer {
   padding: 9px 16px;
   border: 1px solid transparent;
   border-bottom: none;
-  border-radius: 10px 10px 0 0;
   background: transparent;
   color: var(--muted);
   font-size: 13px;
@@ -219,7 +132,6 @@ footer {
   background: var(--card);
   border: 1px solid var(--border);
   border-top: none;
-  border-radius: 0 0 16px 16px;
   padding: 28px;
   animation: tabFadeIn 0.2s ease;
 }
@@ -242,7 +154,6 @@ footer {
 .tab-panel-cover {
   width: 220px;
   flex-shrink: 0;
-  border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--border);
   background: var(--bg);
@@ -277,7 +188,6 @@ footer {
 .tab-update-box {
   padding: 14px 16px;
   background: var(--bg-soft);
-  border-radius: 10px;
   border: 1px solid var(--border);
   margin-bottom: 20px;
 }
@@ -296,6 +206,26 @@ footer {
   font-size: 13px;
   line-height: 1.6;
   margin: 0;
+}
+
+/* 沒有封面圖的作品，標籤和說明之間也要留白 */
+.tab-panel-meta + .tab-panel-desc {
+  margin-top: 14px;
+}
+
+/* 作品功能條列 */
+.tab-features {
+  margin: 0 0 20px;
+  padding-left: 1.2em;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.tab-features code {
+  padding: 1px 5px;
+  background: var(--bg-soft);
+  color: var(--text);
 }
 
 .tab-links {
@@ -317,7 +247,6 @@ footer {
     padding: 8px 12px;
     margin-bottom: 0;
     border: 1px solid var(--border);
-    border-radius: 999px;
   }
 
   .tab-btn[aria-selected="true"] {
@@ -327,7 +256,6 @@ footer {
   .tab-panel {
     padding: 20px 16px;
     border-top: 1px solid var(--border);
-    border-radius: 16px;
   }
 
   .tab-panel-header {

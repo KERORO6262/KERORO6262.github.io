@@ -1,25 +1,65 @@
+/* 網站固定是夜色。改顏色只需要改這個檔案。
+   人物與場景圖片的顏色寫在 tools/make_scene.py，若改了 --sky 要一起改，也要改 index.html 的 theme-color。 */
 :root {
   color-scheme: dark;
 
   /* 取自頭像的色票 */
   --sky: #272736;
-  --teal: #234041;
   --star: #c2c2d1;
   --robe: #4b5bab;
   --lure: #ffb570;
 
-  --bg: #0f1838;           /* 湖底 */
+  /* 文字與面板 */
+  --bg: #0f1838;           /* 湖底，也是頁尾的底色 */
   --bg-soft: #1a2550;
   --text: #e8ebf4;
   --muted: #c3cde2;
   --brand: var(--lure);    /* 互動強調色：魚標的橘 */
-  --brand-2: var(--robe);
   --card: #131c42;
   --border: #3a4a86;
-  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+
+  /* 湖水由淺到深；--water-1 也是波浪的顏色 */
+  --water-1: #1f3f4c;
+  --water-2: #1c3650;
+  --water-3: #192f52;
+  --water-4: #172a52;
+  --water-5: #15254e;
+  --water-6: #132148;
+  --water-7: #111c40;
+  --water-crest: rgba(47, 92, 108, .45);
+
+  /* 按鈕與聯絡卡的階梯狀邊框 */
+  --btn-bg: #2e3560;
+  --btn-hover: #3a4375;
+  --bevel-dark: #171b38;
+  --bevel:
+    0 -3px 0 var(--robe),
+    0 3px 0 var(--bevel-dark),
+    -3px 0 0 var(--robe),
+    3px 0 0 var(--bevel-dark);
+
+  /* 聯絡我的釣竿 */
+  --rod-wood: #6d4f34;
+
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, .3);
   --header-h: 64px;
   --px: 12px;              /* 場景的一格像素，和人物同尺寸 */
+
+  /* 商店與儲物欄 */
+  --ui-z-menu: 20010;
+  --ui-z-modal: 20020;
+  --ui-shadow: 0 10px 26px rgba(0,0,0,.24);
+  --ui-panel-bg: rgba(18, 18, 20, 0.92);
+  --ui-panel-text: rgba(255, 255, 255, 0.92);
+  --ui-panel-muted: rgba(255, 255, 255, 0.66);
+  --ui-panel-border: rgba(255, 255, 255, 0.16);
+  --ui-item-bg: rgba(255, 255, 255, 0.06);
+  --ui-item-border: rgba(255, 255, 255, 0.12);
+  --ui-btn-bg: rgba(255, 255, 255, 0.10);
+  --ui-btn-hover: rgba(255, 255, 255, 0.14);
+  --ui-accent: var(--brand);
+  --ui-accent-weak: color-mix(in srgb, var(--brand) 22%, transparent);
+  --ui-overlay-bg: rgba(0,0,0,.45);
 }
 
 @media (max-width: 768px) {

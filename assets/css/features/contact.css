@@ -1,0 +1,120 @@
+/* =====================================================
+   聯絡我：一根釣竿垂下四條釣線，每個魚標勾著一個聯絡方式。
+   釣竿畫在每個連結的背景上，換行時每一排都有自己的釣竿
+====================================================== */
+.contact-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 28px;
+}
+
+.contact-row {
+  --rod: 8px;
+  --rod-color: var(--rod-wood);
+  --lure-h: 35px;
+  --lift: 0px;
+  position: relative;
+  display: block;
+  padding: calc(var(--rod) + var(--line) + var(--lure-h) - 6px) 8px 8px;
+  margin-right: -1px; /* 欄寬有小數時，釣竿中間才不會露出細縫 */
+  background: linear-gradient(var(--rod-color), var(--rod-color)) top / 100% var(--rod) no-repeat;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.contact-row:nth-child(1) { --line: 130px; }
+.contact-row:nth-child(2) { --line: 230px; }
+.contact-row:nth-child(3) { --line: 90px; }
+.contact-row:nth-child(4) { --line: 190px; }
+
+/* 釣線 */
+.contact-row::before {
+  content: "";
+  position: absolute;
+  top: var(--rod);
+  left: 50%;
+  width: 4px;
+  margin-left: -2px;
+  height: calc(var(--line) - var(--lift));
+  background: var(--star);
+  transition: height .25s steps(3);
+}
+
+/* 魚標 */
+.contact-row::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--rod) + var(--line));
+  left: 50%;
+  width: 30px;
+  height: var(--lure-h);
+  margin-left: -15px;
+  background: url("../../img/scene/lure.png") center / 100% 100% no-repeat;
+  image-rendering: pixelated;
+  translate: 0 calc(-1 * var(--lift));
+  transition: translate .25s steps(3);
+}
+
+.contact-row:hover,
+.contact-row:focus-visible {
+  --lift: 12px;
+}
+
+.contact-card {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 12px 10px;
+  background: var(--card);
+  text-align: center;
+  box-shadow: var(--bevel);
+  translate: 0 calc(-1 * var(--lift));
+  transition: translate .25s steps(3), background-color .15s ease;
+}
+
+.contact-row:hover .contact-card,
+.contact-row:focus-visible .contact-card {
+  background: var(--bg-soft);
+}
+
+.contact-platform {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.contact-handle {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+/* 窄螢幕排成兩排，釣線跟著變短 */
+@media (max-width: 640px) {
+  .contact-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 20px;
+  }
+
+  .contact-row:nth-child(1) { --line: 50px; }
+  .contact-row:nth-child(2) { --line: 90px; }
+  .contact-row:nth-child(3) { --line: 80px; }
+  .contact-row:nth-child(4) { --line: 40px; }
+
+  .contact-row {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .contact-card {
+    padding: 10px 6px;
+  }
+
+  .contact-handle {
+    font-size: 11px;
+  }
+}
