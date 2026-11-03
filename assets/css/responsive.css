@@ -2,3 +2,17 @@
   .hero-grid { grid-template-columns: 1fr; }
   .card { grid-column: span 12; }
 }
+
+/* 放在最後才蓋得過各元件的動態。只關裝飾性動態：
+   貓咪與遊戲流程不在此列，它們的動作本身就是內容 */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn,
+  .card,
+  .contact-row { transition: none; }
+  .btn:hover,
+  .card:hover { transform: none; }
+  .tab-panel { animation: none; }
+  .coin,
+  .coin:hover { animation: none; }
+}

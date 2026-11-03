@@ -7,6 +7,7 @@
 
 (function InventoryModule() {
     let prevOverflow = '';
+    let returnFocusTo = null;
 
     const STORAGE_KEY = 'silence_inventory_v1';
     const STORAGE_KEY_SAVE_PREF = 'silence_save_enabled_v1';
@@ -22,26 +23,17 @@
     }
 
     // DOM 參考
-    let $statRow = null;
     let $invChip = null;
 
     // modal 參考
     let $overlay = null;
-    let onEsc = null;
+    let onKeydown = null;
 
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
-        $statRow = document.querySelector('.stat-row');
-        if (!$statRow) return;
-
-        // 建立儲物欄入口（chip）
-        $invChip = document.createElement('span');
-        $invChip.className = 'chip inv-chip';
-        $invChip.id = 'invCount';
-        $invChip.title = '點我打開儲物欄';
-        $invChip.style.cursor = 'pointer';
-        $statRow.appendChild($invChip);
+        $invChip = document.getElementById('invCount');
+        if (!$invChip) return;
 
         updateChip();
 
@@ -78,7 +70,9 @@
 
     function updateChip() {
         if (!$invChip) return;
-        $invChip.textContent = `🎒 ${totalCount()}`;
+        const n = totalCount();
+        $invChip.textContent = `🎒 ${n}`;
+        $invChip.setAttribute('aria-label', `儲物欄 ${n} 件，按下開啟`);
     }
 
     function addItem(item, qty = 1) {
@@ -123,14 +117,15 @@
         $overlay.className = 'inv-overlay';
         $overlay.setAttribute('role', 'dialog');
         $overlay.setAttribute('aria-label', '儲物欄');
+        $overlay.setAttribute('aria-modal', 'true');
 
         $overlay.innerHTML = `
-      <div class="inv-panel" role="document">
+      <div class="inv-panel">
         <div class="inv-header">
           <div class="inv-title"><span aria-hidden="true">🎒</span><span>儲物欄</span></div>
           <button class="shop-menu__close" type="button" aria-label="關閉儲物欄" title="關閉">×</button>
         </div>
-        <div class="inv-body"></div>
+        <div class="inv-body" tabindex="0"></div>
       </div>
     `;
 
@@ -138,21 +133,31 @@
 
         // 點背景關閉（點到 panel 內不關）
         $overlay.addEventListener('click', (e) => {
-            const panel = $overlay.querySelector('.inv-panel');
-            if (panel && !panel.contains(e.target)) close();
+            if (e.target === e.currentTarget) close();
         });
 
         // 關閉按鈕
-        $overlay.querySelector('button')?.addEventListener('click', close);
+        const $close = $overlay.querySelector('button');
+        $close.addEventListener('click', close);
 
-        // ESC 關閉
-        onEsc = (e) => { if (e.key === 'Escape') close(); };
-        document.addEventListener('keydown', onEsc, true);
+        // ESC 關閉；Tab 只在關閉鈕與可捲動的內容區之間循環
+        const $scroll = $overlay.querySelector('.inv-body');
+        onKeydown = (e) => {
+            if (e.key === 'Escape') close();
+            else if (e.key === 'Tab') {
+                e.preventDefault();
+                (document.activeElement === $close ? $scroll : $close).focus();
+            }
+        };
+        document.addEventListener('keydown', onKeydown, true);
         // 鎖捲動
         prevOverflow = document.documentElement.style.overflow;
         document.documentElement.style.overflow = 'hidden';
 
         renderBody();
+
+        returnFocusTo = document.activeElement;
+        $close.focus();
     }
 
     function close() {
@@ -163,10 +168,13 @@
         // 還原捲動
         document.documentElement.style.overflow = prevOverflow || '';
 
-        if (onEsc) {
-            document.removeEventListener('keydown', onEsc, true);
-            onEsc = null;
+        if (onKeydown) {
+            document.removeEventListener('keydown', onKeydown, true);
+            onKeydown = null;
         }
+
+        returnFocusTo?.focus();
+        returnFocusTo = null;
     }
 
     function renderBody() {
@@ -196,7 +204,7 @@
               <div class="inv-row__name">${escapeHtml(it.name)}${tag}</div>
               <div class="inv-row__meta">${escapeHtml(it.id)}</div>
             </div>
-            <div class="inv-row__count">× ${it.count}</div>
+            <div class="inv-row__count">× ${Number(it.count) || 0}</div>
           </div>
         `;
             }).join('');

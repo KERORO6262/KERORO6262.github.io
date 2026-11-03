@@ -29,7 +29,6 @@
   }
 
   // DOM
-  let $statRow = null;
   let $moneyChip = null;
 
   // menu
@@ -41,16 +40,8 @@
   document.addEventListener('DOMContentLoaded', init);
 
   function init() {
-    $statRow = document.querySelector('.stat-row');
-    if (!$statRow) return;
-
-    // 建立金錢 chip
-    $moneyChip = document.createElement('span');
-    $moneyChip.className = 'chip shop-money';
-    $moneyChip.id = 'moneyCount';
-    $moneyChip.title = '點我打開商店';
-    $moneyChip.style.cursor = 'pointer';
-    $statRow.appendChild($moneyChip);
+    $moneyChip = document.getElementById('moneyCount');
+    if (!$moneyChip) return;
     updateMoneyUI();
 
     // 點擊金錢 chip 開關商店
@@ -86,9 +77,6 @@
   }
 
   function bindSellTrash($trash) {
-    $trash.style.cursor = 'pointer';
-    $trash.setAttribute('title', '點我出售垃圾（每個 3💰）');
-
     $trash.addEventListener('click', () => {
       const api = window.__fishing;
       if (!api || typeof api.getTrash !== 'function' || typeof api.consumeTrashAll !== 'function') {
@@ -100,6 +88,7 @@
 
       const trashCount = api.getTrash();
       if (trashCount <= 0) {
+        window.__announce('沒有垃圾可以賣');
         $trash.classList.remove('deny'); void $trash.offsetWidth; $trash.classList.add('deny');
         setTimeout(() => $trash.classList.remove('deny'), 300);
         return;
@@ -118,6 +107,7 @@
   function updateMoneyUI() {
     if (!$moneyChip) return;
     $moneyChip.textContent = `💰 ${money}`;
+    $moneyChip.setAttribute('aria-label', `金錢 ${money}，按下開關商店`);
   }
 
   function addMoney(amount) {
@@ -172,20 +162,15 @@
         點垃圾可賣錢，點金錢可開店，剩下的就交給人類的意志力。
       </div>
 
-      <div class="shop-menu__persist" style="display:flex; flex-direction:column; gap:8px; margin:10px 0;">
-        <label style="display:flex; align-items:center; gap:8px; font-size:12px; user-select:none; cursor:pointer;">
+      <div class="shop-menu__persist">
+        <label>
           <input id="saveProgressToggle" type="checkbox">
           <span>保存進度到本機（localStorage）</span>
         </label>
 
-        <button id="clearLocalSavesBtn" type="button"
-          style="font-size:12px; padding:6px 10px; border-radius:10px; border:1px solid var(--ui-item-border, rgba(255,255,255,.12)); background: var(--ui-btn-bg, rgba(255,255,255,.10)); cursor:pointer;">
-          清除本機存檔
-        </button>
+        <button id="clearLocalSavesBtn" class="shop-menu__clear" type="button">清除本機存檔</button>
 
-        <div style="font-size:12px; opacity:.75; line-height:1.5;">
-          未勾選時，本頁面不會寫入任何存檔資料，重整後會回到初始狀態。
-        </div>
+        <div class="shop-menu__note">未勾選時，本頁面不會寫入任何存檔資料，重整後會回到初始狀態。</div>
       </div>
 
       <div class="shop-menu__list"></div>
@@ -194,9 +179,10 @@
     document.body.appendChild($menu);
 
     // 關閉按鈕
-    $menu.querySelector('.shop-menu__close')?.addEventListener('click', (e) => {
+    const $close = $menu.querySelector('.shop-menu__close');
+    $close?.addEventListener('click', (e) => {
       e.stopPropagation();
-      closeMenu();
+      closeAndRefocus();
     });
 
     // 初始化 toggle 與 clear
@@ -266,19 +252,29 @@
     document.addEventListener('click', onDocClick, true);
 
     // ESC 關閉
-    onEsc = (ev) => { if (ev.key === 'Escape') closeMenu(); };
+    onEsc = (ev) => { if (ev.key === 'Escape') closeAndRefocus(); };
     document.addEventListener('keydown', onEsc, true);
 
     // 捲動 / resize 時重定位，確保永遠浮在正確位置
-    onReposition = () => { if ($menu) repositionMenu(); };
+    // 面板自己捲動時位置不會變，不必重算
+    onReposition = (ev) => { if ($menu && ev.target !== $menu) repositionMenu(); };
     window.addEventListener('scroll', onReposition, true);
     window.addEventListener('resize', onReposition, true);
+
+    $moneyChip?.setAttribute('aria-expanded', 'true');
+    $close?.focus();
+  }
+
+  function closeAndRefocus() {
+    closeMenu();
+    $moneyChip?.focus();
   }
 
   function closeMenu() {
     if (!$menu) return;
     $menu.remove();
     $menu = null;
+    $moneyChip?.setAttribute('aria-expanded', 'false');
 
     if (onDocClick) {
       document.removeEventListener('click', onDocClick, true);
@@ -317,6 +313,7 @@
       const btn = document.createElement('button');
       btn.className = 'shop-item__buy';
       btn.type = 'button';
+      btn.dataset.item = item.id;
       btn.textContent = owned ? '已擁有' : '購買';
       btn.disabled = owned || !canBuy;
 
@@ -359,6 +356,10 @@
     if (api && typeof api.showBubble === 'function') api.showBubble(`-${item.price} 💰`);
 
     renderMenuItems();
+
+    // 重繪會換掉剛按的按鈕，鍵盤焦點要接回來；這次買完按不了就交給關閉鈕
+    const $next = $menu?.querySelector(`[data-item="${item.id}"]:not([disabled])`) || $menu?.querySelector('.shop-menu__close');
+    $next?.focus();
   }
 
   function repositionMenu() {

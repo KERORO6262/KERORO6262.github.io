@@ -3,6 +3,7 @@
 
 /* 遮罩本體：覆蓋比例用 --mosaic-cover */
 .mosaic-cover {
+  appearance: none; border: 0; padding: 0; width: 100%;
   position: absolute; inset: 0; height: var(--mosaic-cover, 100%);
   cursor: pointer; pointer-events: auto; z-index: 5;
   background:
@@ -15,6 +16,9 @@
   display: flex; align-items: center; justify-content: center;
   transition: height .28s ease, transform .12s ease;
 }
+
+/* 卡片會裁切超出範圍的外框，所以往內畫 */
+.mosaic-cover:focus-visible { outline-offset: -4px; }
 
 /* 完成解鎖：收起遮罩與投幣孔視覺 */
 .mosaic-cover.done { height: 0%; pointer-events: none; border-bottom: 0; }

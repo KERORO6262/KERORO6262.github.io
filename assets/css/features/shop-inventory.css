@@ -19,28 +19,10 @@
   --ui-btn-bg: rgba(255, 255, 255, 0.10);
   --ui-btn-hover: rgba(255, 255, 255, 0.14);
 
-  --ui-accent: var(--primary, #4aa3ff);
-  --ui-accent-weak: rgba(74, 163, 255, 0.22);
+  --ui-accent: var(--brand);
+  --ui-accent-weak: color-mix(in srgb, var(--brand) 22%, transparent);
 
   --ui-overlay-bg: rgba(0,0,0,.45);
-}
-
-/* Light scheme: 更乾淨、玻璃感少一點，字更深 */
-@media (prefers-color-scheme: light){
-  :root{
-    --ui-panel-bg: rgba(255, 255, 255, 0.94);
-    --ui-panel-text: rgba(18, 18, 20, 0.92);
-    --ui-panel-muted: rgba(18, 18, 20, 0.62);
-    --ui-panel-border: rgba(18, 18, 20, 0.14);
-
-    --ui-item-bg: rgba(18, 18, 20, 0.04);
-    --ui-item-border: rgba(18, 18, 20, 0.10);
-
-    --ui-btn-bg: rgba(18, 18, 20, 0.06);
-    --ui-btn-hover: rgba(18, 18, 20, 0.10);
-
-    --ui-overlay-bg: rgba(0,0,0,.34);
-  }
 }
 
 /* ===== 商店：下拉選單（實際用 fixed 置於 body） ===== */
@@ -49,11 +31,16 @@
   z-index: var(--ui-z-menu);
   min-width: 240px;
   max-width: min(320px, calc(100vw - 16px));
+  /* 矮螢幕（手機橫放）商店比視窗高時，面板本身可以捲動，標題不會被切掉 */
+  max-height: calc(100vh - 16px);
+  max-height: calc(100dvh - 16px);
+  overflow: auto;
+  overscroll-behavior: contain;
   padding: 10px;
 
   /* 顏色 */
   border: 1px solid var(--ui-panel-border);
-  border-radius: 12px;
+  border-radius: 0;
   background: var(--ui-panel-bg);
   color: var(--ui-panel-text);
 
@@ -106,6 +93,40 @@
   margin-bottom: 8px;
 }
 
+.shop-menu__persist{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 12px;
+}
+
+.shop-menu__persist label{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.shop-menu__note{
+  line-height: 1.5;
+  color: var(--ui-panel-muted);
+}
+
+.shop-menu__clear{
+  appearance: none;
+  padding: 6px 10px;
+  border: 1px solid var(--ui-item-border);
+  border-radius: 0;
+  background: var(--ui-btn-bg);
+  color: var(--ui-panel-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.shop-menu__clear:hover{ background: var(--ui-btn-hover); }
+
 .shop-menu__list{
   display:flex;
   flex-direction:column;
@@ -123,7 +144,7 @@
   padding: 8px;
 
   border: 1px solid var(--ui-item-border);
-  border-radius: 10px;
+  border-radius: 0;
   background: var(--ui-item-bg);
 }
 
@@ -142,7 +163,7 @@
 .shop-item__buy{
   appearance:none;
   border: 1px solid var(--ui-item-border);
-  border-radius: 10px;
+  border-radius: 0;
   padding: 6px 10px;
   cursor: pointer;
 
@@ -197,7 +218,7 @@
 
 .inv-panel{
   width: min(520px, 100%);
-  border-radius: 16px;
+  border-radius: 0;
 
   border: 1px solid var(--ui-panel-border);
   background: var(--ui-panel-bg);
@@ -226,6 +247,9 @@
 
 .inv-body{
   padding: 12px 14px 14px 14px;
+  max-height: 70vh;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .inv-empty{
@@ -247,7 +271,7 @@
   gap: 12px;
 
   padding: 10px;
-  border-radius: 12px;
+  border-radius: 0;
 
   border: 1px solid var(--ui-item-border);
   background: var(--ui-item-bg);
@@ -269,7 +293,32 @@
   white-space: nowrap;
 }
 
-/* 若你原本就有 .deny 動畫，這段會被覆蓋；沒有的話就當保底 */
+/* Hero 下方的計數列：第一次釣魚才出現 */
+.stat-row{
+  display: none;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.stat-row .chip{
+  appearance: none;
+  margin: 0;
+  padding: 6px 10px;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color .15s ease, color .15s ease;
+}
+
+.stat-row .chip:hover{
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--brand) 55%, var(--border));
+}
+
 .chip.deny{
   animation: chipDeny .26s ease-in-out;
 }

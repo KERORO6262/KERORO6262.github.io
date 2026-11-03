@@ -9,11 +9,17 @@
   text-decoration: none;
   border: 1px solid var(--border);
   background: linear-gradient(180deg, var(--bg-soft), var(--card));
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-sm);
+  transition: transform .15s ease, border-color .15s ease, color .15s ease;
 }
 
 .btn:hover {
   transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--brand) 55%, var(--border));
+}
+
+.btn:active {
+  transform: translateY(0);
 }
 
 .cta .btn {
@@ -41,12 +47,6 @@
   border-color: color-mix(in srgb, var(--brand) 50%, var(--border));
 }
 
-@media (prefers-color-scheme: light) {
-  .card:hover {
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
-  }
-}
-
 .card h3 {
   margin: 0 0 12px;
   font-size: 20px;
@@ -59,75 +59,6 @@
   color: var(--muted);
   line-height: 1.6;
   flex-grow: 1;
-}
-
-/* Card Image Wrapper */
-.card-img-wrapper {
-  margin: -24px -24px 20px -24px;
-  overflow: hidden;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-}
-
-.card-img-wrapper img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.card:hover .card-img-wrapper img {
-  transform: scale(1.05);
-}
-
-.card-actions {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-}
-
-/* Slim editorial text links — override chunky .btn inside card-actions */
-.card-actions .btn {
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  gap: 0;
-  transition: color 0.2s ease;
-}
-
-.card-actions .btn::after {
-  content: '→';
-  display: inline-block;
-  margin-left: 6px;
-  transition: transform 0.25s ease;
-}
-
-.card-actions .btn:hover {
-  color: var(--brand);
-  transform: none;
-}
-
-.card-actions .btn:hover::after {
-  transform: translateX(5px);
-}
-
-/* Contact Grid (legacy — kept for fallback) */
-.contact-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-top: 24px;
 }
 
 /* =====================================================
@@ -176,15 +107,17 @@
 }
 
 .contact-platform {
-  font-size: 21px;
+  font-size: clamp(17px, 4.6vw, 21px);
   font-weight: 700;
-  min-width: 130px;
+  min-width: clamp(96px, 24vw, 130px);
   letter-spacing: -0.02em;
   transition: color 0.2s ease;
 }
 
 .contact-handle {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 13px;
   color: var(--muted);
   font-family: ui-monospace, 'SF Mono', 'Fira Code', monospace;
@@ -212,28 +145,6 @@
   color: var(--brand);
 }
 
-/* =====================================================
-   Section 標題 Accent Bar — 分享 / 寫作 / 聯絡
-====================================================== */
-#sharing h2,
-#writing h2,
-#contact h2 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#sharing h2::before,
-#writing h2::before,
-#contact h2::before {
-  content: '';
-  width: 3px;
-  height: 1.1em;
-  background: linear-gradient(180deg, var(--brand), var(--brand-2));
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
 /* Badge & Chip */
 .badge {
   font-size: 12px;
@@ -259,70 +170,6 @@ footer {
   padding: 60px 0;
   text-align: center;
   color: var(--muted);
-}
-
-/* === 通用：清單分頁控制 (list-pager) =================== */
-.list-pager {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.list-pager .btn {
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border-radius: 50%;
-  justify-content: center;
-  font-size: 13px;
-  background: transparent;
-  box-shadow: none;
-  color: var(--muted);
-}
-
-.list-pager .btn:hover:not([disabled]) {
-  background: var(--brand);
-  color: var(--bg);
-  border-color: var(--brand);
-  transform: none;
-  box-shadow: 0 0 12px color-mix(in srgb, var(--brand) 50%, transparent);
-}
-
-.list-pager .btn[disabled] {
-  opacity: .35;
-  cursor: not-allowed;
-}
-
-.list-pager [data-pager="status"] {
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  font-variant-numeric: tabular-nums;
-}
-
-/* 對被 JS 管控分頁的區塊加上視覺限制（避免整串滑動） */
-.section-paginated .grid {
-  position: relative;
-}
-
-.section-paginated[data-scroll-lock="true"] .grid {
-  overflow: hidden;
-}
-
-/* 可選的提示（預設顯示；手機關閉） */
-.section-paginated .grid::after {
-  content: "使用滑鼠滾輪或 ↑/↓ 切換";
-  position: absolute;
-  right: 8px;
-  bottom: -20px;
-  font-size: 12px;
-  color: var(--muted, #888);
-}
-
-@media (max-width: 640px) {
-  .section-paginated .grid::after {
-    display: none;
-  }
 }
 
 /* =====================================================
@@ -410,6 +257,7 @@ footer {
 
 .tab-panel-meta {
   flex: 1;
+  min-width: 0;
 }
 
 .tab-panel-meta h3 {
@@ -457,13 +305,29 @@ footer {
 }
 
 @media (max-width: 640px) {
+  /* 頁籤換行後，「黏在面板上」的分頁造型會斷開，窄螢幕改成膠囊 */
+  .tabs {
+    gap: 6px;
+    border-bottom: 0;
+    margin-bottom: 12px;
+  }
+
   .tab-btn {
-    font-size: 12px;
-    padding: 8px 10px;
+    font-size: 13px;
+    padding: 8px 12px;
+    margin-bottom: 0;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+
+  .tab-btn[aria-selected="true"] {
+    border-color: var(--brand);
   }
 
   .tab-panel {
     padding: 20px 16px;
+    border-top: 1px solid var(--border);
+    border-radius: 16px;
   }
 
   .tab-panel-header {

@@ -1,0 +1,235 @@
+/* 夜釣湖畔：整頁是同一片湖。Hero 是岸上，往下捲就是往水裡潛。
+   所有素材都是原生像素，用 --px 放大，人物和背景才是同一種方塊大小。 */
+
+/* --px 為整數倍才不會切出粗細不一的像素；100vw 含捲軸寬度，要裁掉多出來的部分（clip 不影響 sticky） */
+body {
+  overflow-x: clip;
+  background: var(--bg) linear-gradient(var(--sky), var(--sky)) top / 100% 160px no-repeat;
+}
+
+main {
+  position: relative;
+}
+
+/* 湖水：顏色愈往下愈深，波紋與魚影鋪在上面 */
+main::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  background:
+    url("../../img/scene/water.png") center top / calc(256 * var(--px) / 2) auto repeat,
+    linear-gradient(180deg,
+      #1f3f4c 0 26%, #1c3650 26% 36%, #192f52 36% 46%, #172a52 46% 56%,
+      #15254e 56% 66%, #132148 66% 76%, #111c40 76% 88%, var(--bg) 88% 100%);
+  image-rendering: pixelated;
+}
+
+/* 岸上：星空鋪滿，樹林貼著水面 */
+.hero {
+  isolation: auto;
+  padding: clamp(32px, 6vw, 56px) 0 0;
+  border-top: 0;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  background:
+    url("../../img/scene/trees.png") center bottom / calc(128 * var(--px)) auto repeat-x,
+    url("../../img/scene/stars.png") center top / calc(128 * var(--px)) auto repeat,
+    var(--sky);
+  image-rendering: pixelated;
+}
+
+/* 文字底下鋪天空色蓋掉星星，和背景同色所以看不出邊界 */
+.title img,
+.hero .subtitle {
+  background: var(--sky);
+}
+
+.hero .subtitle {
+  color: var(--text);
+}
+
+/* 計數列會壓到樹林，要有自己的底色 */
+.stat-row .chip {
+  background: var(--card);
+}
+
+.hero-grid {
+  align-items: end;
+}
+
+.hero-grid > :first-child {
+  padding-bottom: calc(5 * var(--px));
+}
+
+.title img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+section > h2 img {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* 人物直接站在岸上，圖片底部就是水面 */
+.photo {
+  position: relative;
+  width: calc(32 * var(--px));
+  max-width: none;
+  justify-self: end;
+  margin-right: calc(4 * var(--px));
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  image-rendering: pixelated;
+}
+
+.photo img:focus-visible {
+  outline-offset: 2px;
+}
+
+/* 水中倒影 */
+.photo::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: calc(7 * var(--px));
+  background: url("../../img/scene/figure.png") center bottom / 100% auto no-repeat;
+  image-rendering: pixelated;
+  transform: scaleY(-1);
+  opacity: .16;
+  pointer-events: none;
+}
+
+/* 釣線垂進水裡，尾端是魚標 */
+.photo::after {
+  content: "";
+  position: absolute;
+  left: calc(1.5 * var(--px));
+  top: 100%;
+  width: calc(.5 * var(--px));
+  height: calc(5 * var(--px));
+  background: linear-gradient(var(--star) 0 80%, var(--lure) 80% 100%);
+  pointer-events: none;
+  animation: lureBob 2.4s steps(2, jump-none) infinite;
+}
+
+@keyframes lureBob {
+  0%, 100% { height: calc(5 * var(--px)); }
+  50% { height: calc(6 * var(--px)); }
+}
+
+/* 水面到第一段內容留出倒影的空間 */
+#about {
+  padding-top: calc(9 * var(--px));
+  border-top: 0;
+}
+
+section {
+  border-top: 0;
+}
+
+/* 按鈕：階梯狀的像素邊框 */
+.btn {
+  border: 0;
+  border-radius: 0;
+  background: #2e3560;
+  color: #fff;
+  font-weight: 600;
+  box-shadow:
+    0 -3px 0 var(--robe),
+    0 3px 0 #171b38,
+    -3px 0 0 var(--robe),
+    3px 0 0 #171b38;
+}
+
+.btn:hover {
+  background: #3a4375;
+}
+
+header .btn {
+  padding: 6px 12px;
+}
+
+header {
+  background: color-mix(in srgb, var(--sky) 92%, transparent);
+  border-bottom: 0;
+}
+
+.card,
+.tab-panel,
+.tab-btn,
+.tab-update-box,
+.tab-panel-cover,
+.chip,
+.badge,
+.tag,
+.coin-float,
+.nav-toggle,
+.skip-link {
+  border-radius: 0;
+}
+
+/* 面板邊框不用陰影暈開，看起來才像放在水裡的木牌 */
+.card,
+.tab-panel {
+  box-shadow: none;
+}
+
+.card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.tag {
+  background: var(--sky);
+}
+
+.contact-row {
+  border-color: rgba(195, 205, 226, .25);
+}
+
+@media (max-width: 960px) {
+  .hero-grid > :first-child {
+    padding-bottom: 0;
+  }
+
+  .photo {
+    justify-self: center;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .title img {
+    width: 326px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo::after {
+    animation: none;
+  }
+}

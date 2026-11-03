@@ -1,24 +1,30 @@
 :root {
-  --bg: #0b1020;           /* 背景(深) */
-  --bg-soft: #11172e;
-  --text: #e6e9f2;         /* 文字(亮) */
-  --muted: #a9b1c7;
-  --brand: #7aa2ff;        /* 主色 */
-  --brand-2: #a07cff;      /* 輔色 */
-  --card: #0f152b;         /* 卡片底色 */
-  --border: #223054;
+  color-scheme: dark;
+
+  /* 取自頭像的色票 */
+  --sky: #272736;
+  --teal: #234041;
+  --star: #c2c2d1;
+  --robe: #4b5bab;
+  --lure: #ffb570;
+
+  --bg: #0f1838;           /* 湖底 */
+  --bg-soft: #1a2550;
+  --text: #e8ebf4;
+  --muted: #c3cde2;
+  --brand: var(--lure);    /* 互動強調色：魚標的橘 */
+  --brand-2: var(--robe);
+  --card: #131c42;
+  --border: #3a4a86;
   --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .3);
+  --header-h: 64px;
+  --px: 12px;              /* 場景的一格像素，和人物同尺寸 */
 }
 
-/* 系統偏好：淺色系 */
-@media (prefers-color-scheme: light) {
+@media (max-width: 768px) {
   :root {
-    --bg: #f7f7fb;
-    --bg-soft: #ffffff;
-    --text: #0d1220;
-    --muted: #5a647a;
-    --card: #ffffff;
-    --border: #e6e8f0;
-    --shadow: 0 10px 30px rgba(0, 0, 0, .08);
+    --header-h: 56px;
+    --px: 8px;
   }
 }

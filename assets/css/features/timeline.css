@@ -1,31 +1,55 @@
-/* 啟用 .timeline.compact 時套用 */
 .timeline.compact {
-  margin: 2px 0 0; padding-left: 14px; border-left: 1px solid var(--border);
+  --tl-indent: 18px;
+  margin: 2px 0 0;
+  padding-left: var(--tl-indent);
+  border-left: 1px solid var(--border);
 }
 
-/* 節點縮排與圓點 */
-.timeline.compact .tl-item { padding: 6px 0 8px 2px; }
+/* 日期固定一欄，每段經歷的標題才會對齊 */
+.timeline.compact .tl-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  column-gap: 12px;
+  padding: 10px 0;
+}
+
 .timeline.compact .tl-dot {
-  left: -6px; top: 12px; width: 8px; height: 8px; box-shadow: none;
+  position: absolute;
+  left: calc(-1 * var(--tl-indent) - 4.5px); /* 圓點中心壓在 1px 主線上 */
+  top: 19px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand);
 }
 
-/* 年份/內容/標題/描述 */
-.timeline.compact .tl-date { min-width: 58px; font-size: 13px; color: var(--muted); transform: translateY(-1px); }
-.timeline.compact .tl-content { display: inline; margin-left: 6px; padding: 0; border: 0; background: transparent; box-shadow: none; }
-.timeline.compact .tl-title { display: inline; margin: 0; font-size: 14px; font-weight: 600; }
-.timeline.compact .tl-desc { display: inline; margin: 0 0 0 6px; font-size: 13px; color: var(--muted); }
+.timeline.compact .tl-date {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
 
-/* hover 簡化 */
-.timeline.compact .tl-item:hover .tl-dot { transform: none; filter: none; }
+.timeline.compact .tl-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
 
-/* 邊界微調 */
+.timeline.compact .tl-desc {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
 .timeline.compact .tl-item:first-child { padding-top: 2px; }
+.timeline.compact .tl-item:first-child .tl-dot { top: 11px; }
 .timeline.compact .tl-item:last-child { padding-bottom: 0; }
 
-/* 手機端（時間線專用） */
-@media (max-width:600px) {
-  .timeline.compact { padding-left: 12px; }
-  .timeline.compact .tl-date { min-width: 52px; font-size: 12px; }
-  .timeline.compact .tl-title { font-size: 13.5px; }
-  .timeline.compact .tl-desc { font-size: 12.5px; }
+@media (max-width: 600px) {
+  .timeline.compact { --tl-indent: 14px; }
+  .timeline.compact .tl-item { grid-template-columns: minmax(0, 1fr); }
+  .timeline.compact .tl-date { font-size: 12px; }
 }

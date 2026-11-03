@@ -10,7 +10,7 @@
 - **部署方式**：GitHub Pages（branch: `main`，靜態站點）
 - **無框架、無建置步驟**：純 HTML + CSS + Vanilla JavaScript，直接部署。
 - **語言**：繁體中文（`lang="zh-Hant-TW"`）
-- **色彩方案**：支援系統深/淺色（`prefers-color-scheme`），以 CSS 自訂屬性實作。
+- **視覺**：夜釣湖畔場景，整頁是同一片湖（固定夜色，不分深淺色模式）。色票取自頭像，定義於 `theme.css`。
 
 ---
 
@@ -31,6 +31,7 @@ KERORO6262.github.io-main/
 │   │   ├── components.css      # ④ 元件層（.btn、.card、.tabs、.badge 等）
 │   │   ├── responsive.css      # ⑥ 響應式（共用斷點）
 │   │   └── features/
+│   │       ├── scene.css       # 夜釣湖畔場景（天空、樹林、湖水、岸邊人物）
 │   │       ├── coin.css        # 硬幣互動（閃爍/浮動/收集）
 │   │       ├── fishing.css     # 釣魚小遊戲進度條與結果泡泡
 │   │       ├── shop-inventory.css  # 商店與儲物欄 UI
@@ -42,11 +43,16 @@ KERORO6262.github.io-main/
 │   │   ├── inventory.js        # 儲物欄模組
 │   │   ├── shop.js             # 商店模組
 │   │   └── webcat.js           # 網頁寵物貓行為
+│   ├── og-image.jpg            # 社群分享預覽圖（1200×630）
 │   └── img/
-│       ├── avatar.png          # 頭像（點擊觸發釣魚）
-│       ├── favicon.ico
-│       ├── sharing/            # 作品分享縮圖
-│       └── writing/            # 寫作文章縮圖
+│       ├── avatar.png          # 方形頭像原圖（社群與結構化資料用）
+│       ├── scene/              # 場景素材與像素標題，由 tools/make_scene.py 產生
+│       ├── favicon.ico         # 16/32/48 多尺寸
+│       ├── apple-touch-icon.png
+│       ├── sharing/            # 作品分享縮圖（.webp 給頁面用，.png 是原始檔）
+│       └── writing/            # 寫作文章縮圖（同上）
+├── tools/
+│   └── make_scene.py           # 產生場景素材（只在改素材時手動執行）
 └── .github/workflows/
     └── static.yml              # GitHub Pages 自動部署
 ```
@@ -60,7 +66,7 @@ KERORO6262.github.io-main/
 ② base.css         → Reset、字體、.container 寬度
 ③ layout.css       → Header、Hero、Section、.grid 12欄
 ④ components.css   → 可重用 UI：.btn、.card、.tabs、.badge、.chip、聯絡欄
-features/*.css     → 功能模組（硬幣/釣魚/商店/馬賽克/時間線/貓）
+features/*.css     → 功能模組（場景/硬幣/釣魚/商店/馬賽克/時間線/貓）
 ⑥ responsive.css   → 媒體查詢（共用斷點 ≤768px、≤640px）
 ```
 
@@ -86,13 +92,13 @@ features/*.css     → 功能模組（硬幣/釣魚/商店/馬賽克/時間線/�
 
 ```html
 <div class="tabs" role="tablist" aria-label="清單名稱">
-  <button class="tab-btn" role="tab" aria-selected="true"
+  <button class="tab-btn" type="button" role="tab" aria-selected="true"
           aria-controls="panel-id" id="tab-id">標籤名</button>
   …
 </div>
 
 <div class="tab-panel is-active" id="panel-id"
-     role="tabpanel" aria-labelledby="tab-id">
+     role="tabpanel" tabindex="0" aria-labelledby="tab-id">
   <div class="tab-panel-header">          <!-- 可選：封面圖 + 標題 -->
     <div class="tab-panel-cover"><img …></div>
     <div class="tab-panel-meta"><h3>…</h3><div>chips…</div></div>
@@ -110,7 +116,8 @@ features/*.css     → 功能模組（硬幣/釣魚/商店/馬賽克/時間線/�
 
 ### 行為
 
-- 初始狀態：第一個 tab `aria-selected="true"`，對應 panel 加 `.is-active`。
+- 初始狀態：第一個 tab `aria-selected="true"`，對應 panel 加 `.is-active`；其餘 tab 加 `tabindex="-1"`。
+- 鍵盤：←／→ 切換（循環），Home／End 跳到頭尾，只有選中的 tab 在 Tab 順序內。
 - 切換由 `main.js` 的 Tabs IIFE 處理：更新所有 `aria-selected`，移除／加上 `.is-active`。
 - 每個 `[role="tablist"]` 都會自動被初始化，無需手動掛載。
 
@@ -122,10 +129,11 @@ features/*.css     → 功能模組（硬幣/釣魚/商店/馬賽克/時間線/�
 
 | 功能區塊          | 說明                                              |
 |-------------------|---------------------------------------------------|
-| 硬幣收集          | `.coin` 按鈕點擊 → `flyCoin()` 動畫 → `coins++`  |
+| 硬幣收集          | `.coin` 按鈕點擊 → `flyCoin()` 動畫 → `coins++`；計數固定在右下角 |
 | 馬賽克解鎖        | 投幣動畫 → `stage--` → `applyMosaicStage()`       |
 | 釣魚小遊戲        | 點擊頭像 → RAF 進度條 → 再點判定 → 結果泡泡       |
 | 頁籤切換          | `querySelectorAll('[role="tablist"]')` 批次初始化  |
+| 螢幕報讀          | `window.__announce()` 寫入 `#srStatus`，遊戲回饋都走這裡 |
 | 行動導覽          | `.nav-toggle` 點擊展開 / 收合                     |
 | 年份自動更新      | `#y` 寫入當年年份                                 |
 
@@ -135,6 +143,14 @@ features/*.css     → 功能模組（硬幣/釣魚/商店/馬賽克/時間線/�
 - 商店模組監聽 `fishing:ready` / `fishing:stats` CustomEvent。
 - 貓咪模組透過 `window.__cat.feedFish(n)` 接受餵食。
 
+### 貓咪的硬性限制
+
+- 貓咪隨時都要能走動，`prefers-reduced-motion` 也不例外：減少動態只關裝飾性動畫（見 `responsive.css`）。
+- 不要用 `alert()`、`confirm()` 這類會凍結頁面的對話框，貓會跟著停住。
+- 貓咪會造訪 `p, img, a, button`。新增不想讓牠造訪的元素時加上 `data-cat-ignore`（計數列 `.stat-row`、馬賽克遮罩、略過連結都有）。動態產生的面板也要注意：`p`、`a`、`button` 都會變成目標。
+- 人物要維持 `<img>`，貓咪才會把它當圖片造訪，所以它用 `role="button"` 加自己的鍵盤處理。
+- 標題是圖片，所以 `h1`、`h2` 都有 `data-cat-ignore`；新增像素標題時也要加。
+
 ---
 
 ## 互動功能清單
@@ -143,9 +159,11 @@ features/*.css     → 功能模組（硬幣/釣魚/商店/馬賽克/時間線/�
 |-----------------|------------------------|-----------------------------------|
 | 收集硬幣        | 點擊 Hero 的硬幣按鈕   | 最多 3 枚，已收集即禁用            |
 | 解鎖馬賽克      | 點擊關於卡片的遮罩     | 消耗硬幣，分 3 階段揭示            |
-| 釣魚小遊戲      | 點擊頭像               | 點一次開始、再點判定收穫           |
+| 釣魚小遊戲      | 點擊頭像或按 Enter／Space | 一次開始、再一次判定收穫        |
 | 餵貓            | 點擊魚計數器 🐟        | 消耗 1 魚，貓咪體力 +5             |
-| 商店            | 使用垃圾換取道具       | 透過 shop.js 管理                 |
+| 賣垃圾          | 點擊垃圾計數器 🗑️      | 全部賣出，每個 3 💰               |
+| 商店            | 點擊金錢計數器 💰      | 透過 shop.js 管理                 |
+| 儲物欄          | 點擊背包計數器 🎒      | 透過 inventory.js 管理            |
 | 頁籤切換        | 點擊 .tab-btn          | 展開對應的說明、更新日誌與連結     |
 | 行動導覽        | 點擊 ☰ 按鈕           | 展開 / 收合 nav                   |
 
@@ -175,5 +193,5 @@ features/*.css     → 功能模組（硬幣/釣魚/商店/馬賽克/時間線/�
 2. **CSS 分層**：新元件加入 `components.css`；新功能模組建立 `features/xxx.css`。
 3. **JavaScript**：以 IIFE 隔離作用域；模組間透過 `window.__xxx` 或 CustomEvent 通訊。
 4. **無障礙**：互動元素須有 `aria-label` 或 `role`；頁籤需符合 ARIA Tabs Pattern。
-5. **圖片**：放置於 `assets/img/` 對應子目錄，banner 建議 800×600 以上，`object-fit: cover`。
+5. **圖片**：放置於 `assets/img/` 對應子目錄，頁面引用約 800px 寬的 WebP，並標上 `width`、`height`、`alt`；首屏以外加 `loading="lazy"`。
 6. **注釋**：僅在 WHY 不明顯時才寫；不寫 WHAT 型注釋。

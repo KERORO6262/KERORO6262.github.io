@@ -7,19 +7,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>遊戲設計 & 互動敘事 | Badr — Silence Studio</title>
   <meta name="description" content="互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#272736">
+  <link rel="canonical" href="https://keroro6262.github.io/">
   <!-- Open Graph -->
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:site_name" content="Silence Studio">
   <meta property="og:title" content="遊戲設計 & 互動敘事 | Badr — Silence Studio">
   <meta property="og:description" content="互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。">
-  <meta property="og:image" content="/assets/og-image.jpg">
-  <meta property="og:url" content="https://KERORO6262.github.io/">
+  <meta property="og:image" content="https://keroro6262.github.io/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="吳宗華（Badr）的像素頭像與個人簡介">
+  <meta property="og:url" content="https://keroro6262.github.io/">
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="遊戲設計 & 互動敘事 | Badr — Silence Studio">
   <meta name="twitter:description" content="互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。">
-  <meta name="twitter:image" content="/assets/og-image.jpg">
-  <link rel="icon" href="./assets/img/favicon.ico">
+  <meta name="twitter:image" content="https://keroro6262.github.io/assets/og-image.jpg">
+  <link rel="icon" href="./assets/img/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png">
   <!-- CSS order matters -->
   <!-- ① 主題變數（色票、陰影、共用 token；深/淺色模式） -->
   <link rel="stylesheet" href="./assets/css/theme.css">
@@ -29,6 +37,8 @@
   <link rel="stylesheet" href="./assets/css/layout.css">
   <!-- ④ 元件層（.btn、.card、.badge、.chip、.photo 等可重用 UI） -->
   <link rel="stylesheet" href="./assets/css/components.css">
+  <!-- ⑤ 特色模組：夜釣湖畔場景（天空、樹林、湖水、岸邊的人物） -->
+  <link rel="stylesheet" href="./assets/css/features/scene.css">
   <!-- ⑤ 特色模組：硬幣互動（閃爍/浮動/收集狀態） -->
   <link rel="stylesheet" href="./assets/css/features/coin.css">
   <!-- ⑤ 特色模組：釣魚（釣魚的互動繪製） -->
@@ -43,6 +53,7 @@
   <link rel="stylesheet" href="./assets/css/features/cat.css">
   <!-- ⑥ 響應式（共用斷點：Hero 改單欄、卡片跨欄等） -->
   <link rel="stylesheet" href="./assets/css/responsive.css">
+  <noscript><style>.mosaic-cover, .mosaic-guard, .coin-row { display: none; }</style></noscript>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SJJLC4XGHE"></script>
@@ -56,11 +67,12 @@
 </head>
 
 <body>
+  <a class="skip-link" href="#top" data-cat-ignore>跳到主要內容</a>
   <header>
     <div class="container nav">
       <div class="brand"><a href="#top">遊戲設計 & 互動敘事 | Badr — Silence Studio</a></div>
-      <button class="nav-toggle" aria-label="開啟選單" aria-expanded="false">☰</button>
-      <nav>
+      <button class="nav-toggle" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="siteNav">☰</button>
+      <nav id="siteNav" aria-label="主要導覽">
         <a href="#about">關於</a>
         <a href="#sharing">分享</a>
         <a href="#writing">寫作</a>
@@ -70,40 +82,42 @@
     </div>
   </header>
 
-  <main id="top" class="container">
+  <main id="top" class="container" tabindex="-1">
     <!-- Hero / Intro -->
     <section class="hero">
       <div class="hero-grid">
         <div>
           <span class="tag">👋 Hi，我是</span>
-          <h1 class="title">吳宗華（Badr）</h1>
+          <h1 class="title" data-cat-ignore><img src="assets/img/scene/h-name.png" width="489" height="72" alt="吳宗華（Badr）"></h1>
           <p class="subtitle">在寂靜裡構築故事的開發者，以遊戲與文字記錄那些未被聽見的聲音。</p>
           <div class="cta">
             <a class="btn" href="mailto:slinceblue@gmail.com">Email</a>
             <a class="btn" href="https://github.com/KERORO6262" target="_blank" rel="noopener">GitHub</a>
-            <a class="btn" href="https://linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">Linkedin</a>
+            <a class="btn" href="https://linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">LinkedIn</a>
           </div>
-          <div class="coin-row" aria-label="可收集硬幣">
+          <div class="coin-row" role="group" aria-label="可收集硬幣">
             <button class="coin" aria-label="收集硬幣 1" data-coin></button>
             <button class="coin" aria-label="收集硬幣 2" data-coin></button>
             <button class="coin" aria-label="收集硬幣 3" data-coin></button>
           </div>
-          <div class="stat-row" aria-live="polite" style="margin-top:8px; display:flex; gap:8px;">
-            <span class="chip" id="fishCount" title="漁獲數量">🐟 0</span>
-            <span class="chip" id="trashCount" title="釣上的垃圾數">🗑️ 0</span>
+          <div class="stat-row" data-cat-ignore>
+            <button class="chip" id="fishCount" type="button" title="點我餵食（每次消耗 1 🐟，恢復體力 +5）">🐟 0</button>
+            <button class="chip" id="trashCount" type="button" title="點我出售垃圾（每個 3💰）">🗑️ 0</button>
+            <button class="chip inv-chip" id="invCount" type="button" title="點我打開儲物欄" aria-haspopup="dialog">🎒 0</button>
+            <button class="chip shop-money" id="moneyCount" type="button" title="點我打開商店" aria-haspopup="dialog" aria-expanded="false">💰 0</button>
           </div>
         </div>
 
         <div class="photo">
-          <!-- 建議 800×600 ~ 1200×900 -->
-          <img id="avatar" src="assets/img/avatar.png" alt="Badr's Representative photos" style="cursor:pointer;">
+          <img id="avatar" src="assets/img/scene/figure.png" width="64" height="70" fetchpriority="high"
+               role="button" tabindex="0" alt="Badr 的像素人像：夜裡站在湖邊釣魚的人。按下開始釣魚小遊戲，再按一次收竿">
         </div>
       </div>
     </section>
 
     <!-- About -->
     <section id="about">
-      <h2>關於我</h2>
+      <h2 data-cat-ignore><img src="assets/img/scene/h-about.png" width="94" height="32" alt="關於我"></h2>
       <p class="muted">
         我主要使用Unity進行遊戲開發、互動敘事系統設計與C#遊戲邏輯撰寫。擬定原型製作流程、撰寫企劃文檔與QA測試標準，並在原型階段快速驗證遊戲機制與敘事節奏。
       </p>
@@ -113,11 +127,11 @@
       <div class="grid">
         <div class="card" style="grid-column:span 12">
           <!-- 馬賽克遮罩（可互動解鎖） -->
-          <div class="mosaic-cover" id="mosaicCover" role="button" aria-label="解鎖覆蓋層"></div>
+          <button class="mosaic-cover" id="mosaicCover" type="button" data-cat-ignore aria-label="投入硬幣，揭開被遮住的經歷"></button>
           <!-- 透明互動防護層：覆蓋整張卡片，阻擋選取/拖曳/複製 -->
           <div class="mosaic-guard" id="mosaicGuard" aria-hidden="true"></div>
           <!-- 你想直接用原始碼查看我也是沒辦法阻止你啦 -->
-          <strong>歷史痕跡</strong>
+          <h3>歷史痕跡</h3>
           <div class="timeline compact" role="list" aria-label="工作與學習里程">
             <!-- 每個節點一個 .tl-item；用 time 搭配 datetime 便於機器理解 -->
             <article class="tl-item" role="listitem">
@@ -189,21 +203,21 @@
 
     <!-- Projects -->
     <section id="sharing">
-      <h2>作品分享</h2>
+      <h2 data-cat-ignore><img src="assets/img/scene/h-sharing.png" width="126" height="28" alt="作品分享"></h2>
       <p class="muted">記錄正在做的東西、學到的技巧、還在試驗的點子。</p>
 
       <div class="tabs" role="tablist" aria-label="作品分享清單">
-        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="sp-ups40k" id="tb-ups40k">Unit Power Scorer 40K</button>
-        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="sp-warogan" id="tb-warogan">WAROGAN PDF Parser</button>
-        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="sp-fvtt" id="tb-fvtt">FVTT NPC生成器</button>
-        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="sp-lexad" id="tb-lexad">詞靈冒險者</button>
-        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="sp-lockeye" id="tb-lockeye">Lock-Eye</button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="sp-ups40k" id="tb-ups40k">Unit Power Scorer 40K</button>
+        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-warogan" id="tb-warogan">WAROGAN PDF Parser</button>
+        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-fvtt" id="tb-fvtt">FVTT NPC生成器</button>
+        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-lexad" id="tb-lexad">詞靈冒險者</button>
+        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="sp-lockeye" id="tb-lockeye">Lock-Eye</button>
       </div>
 
-      <div class="tab-panel is-active" id="sp-ups40k" role="tabpanel" aria-labelledby="tb-ups40k">
+      <div class="tab-panel is-active" id="sp-ups40k" role="tabpanel" tabindex="0" aria-labelledby="tb-ups40k">
         <div class="tab-panel-header">
           <div class="tab-panel-cover">
-            <img src="./assets/img/sharing/banner.png" alt="戰鎚 40K 單位戰力計算工具">
+            <img src="./assets/img/sharing/banner.webp" width="800" height="436" loading="lazy" decoding="async" alt="戰鎚 40K 單位戰力計算工具">
           </div>
           <div class="tab-panel-meta">
             <h3>Unit Power Scorer 40K</h3>
@@ -220,7 +234,7 @@
         </div>
       </div>
 
-      <div class="tab-panel" id="sp-warogan" role="tabpanel" aria-labelledby="tb-warogan">
+      <div class="tab-panel" id="sp-warogan" role="tabpanel" tabindex="0" aria-labelledby="tb-warogan">
         <div class="tab-panel-meta">
           <h3>WAROGAN PDF Model Parser</h3>
           <div><span class="chip">Web Tool</span><span class="chip">JavaScript</span><span class="chip">Warhammer 40K</span><span class="chip">PDF Parser</span></div>
@@ -236,10 +250,10 @@
         </div>
       </div>
 
-      <div class="tab-panel" id="sp-fvtt" role="tabpanel" aria-labelledby="tb-fvtt">
+      <div class="tab-panel" id="sp-fvtt" role="tabpanel" tabindex="0" aria-labelledby="tb-fvtt">
         <div class="tab-panel-header">
           <div class="tab-panel-cover">
-            <img src="./assets/img/sharing/fvttMod_dnd5e.png" alt="FVTT中DND5E的MOD: NPC生成器banner">
+            <img src="./assets/img/sharing/fvttMod_dnd5e.webp" width="505" height="336" loading="lazy" decoding="async" alt="FVTT 中 DND5E 的 MOD：NPC 生成器橫幅">
           </div>
           <div class="tab-panel-meta">
             <h3>FVTT MOD：DND5E NPC生成器</h3>
@@ -256,7 +270,7 @@
         </div>
       </div>
 
-      <div class="tab-panel" id="sp-lexad" role="tabpanel" aria-labelledby="tb-lexad">
+      <div class="tab-panel" id="sp-lexad" role="tabpanel" tabindex="0" aria-labelledby="tb-lexad">
         <div class="tab-panel-meta">
           <h3>詞靈冒險者</h3>
           <div><span class="chip">Unity</span><span class="chip">C#</span><span class="chip">ScriptableObject</span></div>
@@ -268,7 +282,7 @@
         </div>
       </div>
 
-      <div class="tab-panel" id="sp-lockeye" role="tabpanel" aria-labelledby="tb-lockeye">
+      <div class="tab-panel" id="sp-lockeye" role="tabpanel" tabindex="0" aria-labelledby="tb-lockeye">
         <div class="tab-panel-meta">
           <h3>Lock-Eye / Chain-Break</h3>
           <div><span class="chip">Unity Physics2D</span><span class="chip">Events</span><span class="chip">Modular</span></div>
@@ -284,17 +298,17 @@
 
     <!-- Writing -->
     <section id="writing">
-      <h2>寫作／研究</h2>
+      <h2 data-cat-ignore><img src="assets/img/scene/h-writing.png" width="158" height="32" alt="寫作／研究"></h2>
 
       <div class="tabs" role="tablist" aria-label="寫作與研究清單">
-        <button class="tab-btn" role="tab" aria-selected="true" aria-controls="wr-lockpick" id="tb-lockpick">開鎖原型設計實作</button>
-        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="wr-review" id="tb-review">差評如潮？好評如潮？</button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="wr-lockpick" id="tb-lockpick">開鎖原型設計實作</button>
+        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="wr-review" id="tb-review">差評如潮？好評如潮？</button>
       </div>
 
-      <div class="tab-panel is-active" id="wr-lockpick" role="tabpanel" aria-labelledby="tb-lockpick">
+      <div class="tab-panel is-active" id="wr-lockpick" role="tabpanel" tabindex="0" aria-labelledby="tb-lockpick">
         <div class="tab-panel-header">
           <div class="tab-panel-cover">
-            <img src="./assets/img/writing/ES5_lock.png" alt="上古卷軸5開鎖分析圖">
+            <img src="./assets/img/writing/ES5_lock.webp" width="800" height="800" loading="lazy" decoding="async" alt="上古卷軸5開鎖分析圖">
           </div>
           <div class="tab-panel-meta">
             <h3>借鑒《上古卷軸5》式經典開鎖原型設計實作</h3>
@@ -311,7 +325,7 @@
         </div>
       </div>
 
-      <div class="tab-panel" id="wr-review" role="tabpanel" aria-labelledby="tb-review">
+      <div class="tab-panel" id="wr-review" role="tabpanel" tabindex="0" aria-labelledby="tb-review">
         <div class="tab-panel-meta">
           <h3>差評如潮？好評如潮？</h3>
           <div><span class="badge">文章</span></div>
@@ -330,29 +344,29 @@
 
     <!-- Contact -->
     <section id="contact">
-      <h2>聯絡我</h2>
+      <h2 data-cat-ignore><img src="assets/img/scene/h-contact.png" width="96" height="30" alt="聯絡我"></h2>
       <p class="muted">有合作、工作機會或單純聊天，歡迎來信！</p>
       
       <div class="contact-list">
         <a class="contact-row" href="mailto:slinceblue@gmail.com">
           <span class="contact-platform">Email</span>
           <span class="contact-handle">slinceblue@gmail.com</span>
-          <span class="contact-arrow">→</span>
+          <span class="contact-arrow" aria-hidden="true">→</span>
         </a>
         <a class="contact-row" href="https://github.com/KERORO6262" target="_blank" rel="noopener">
           <span class="contact-platform">GitHub</span>
           <span class="contact-handle">@KERORO6262</span>
-          <span class="contact-arrow">→</span>
+          <span class="contact-arrow" aria-hidden="true">→</span>
         </a>
         <a class="contact-row" href="https://linkedin.com/in/bbmps-badr" target="_blank" rel="noopener">
           <span class="contact-platform">LinkedIn</span>
           <span class="contact-handle">bbmps-badr</span>
-          <span class="contact-arrow">→</span>
+          <span class="contact-arrow" aria-hidden="true">→</span>
         </a>
         <a class="contact-row" href="https://t.me/KERORO6262" target="_blank" rel="noopener">
           <span class="contact-platform">Telegram</span>
           <span class="contact-handle">@KERORO6262</span>
-          <span class="contact-arrow">→</span>
+          <span class="contact-arrow" aria-hidden="true">→</span>
         </a>
       </div>
     </section>
@@ -371,63 +385,58 @@
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://KERORO6262.github.io/#website",
-      "url": "https://KERORO6262.github.io/",
+      "@id": "https://keroro6262.github.io/#website",
+      "url": "https://keroro6262.github.io/",
       "name": "遊戲設計 & 互動敘事 | Badr — Silence Studio",
       "inLanguage": "zh-Hant-TW",
       "description": "吳宗華（Badr）的個人主頁：互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。",
-      "publisher": { "@id": "https://KERORO6262.github.io/#silence_studio" },
-      "about": { "@id": "https://KERORO6262.github.io/#me" },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://www.google.com/search?q=site:KERORO6262.github.io%20{search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "publisher": { "@id": "https://keroro6262.github.io/#silence_studio" },
+      "about": { "@id": "https://keroro6262.github.io/#me" }
     },
     {
       "@type": "Organization",
-      "@id": "https://KERORO6262.github.io/#silence_studio",
+      "@id": "https://keroro6262.github.io/#silence_studio",
       "name": "Silence Studio",
-      "url": "https://KERORO6262.github.io/",
-      "founder": { "@id": "https://KERORO6262.github.io/#me" }
+      "url": "https://keroro6262.github.io/",
+      "founder": { "@id": "https://keroro6262.github.io/#me" }
     },
     {
       "@type": ["WebPage", "ProfilePage"],
-      "@id": "https://KERORO6262.github.io/#webpage",
-      "url": "https://KERORO6262.github.io/",
-      "name": "遊戲原型設計 & 互動敘事 | Badr — Silence Studio",
-      "isPartOf": { "@id": "https://KERORO6262.github.io/#website" },
+      "@id": "https://keroro6262.github.io/#webpage",
+      "url": "https://keroro6262.github.io/",
+      "name": "遊戲設計 & 互動敘事 | Badr — Silence Studio",
+      "isPartOf": { "@id": "https://keroro6262.github.io/#website" },
       "inLanguage": "zh-Hant-TW",
       "description": "吳宗華（Badr）的個人主頁：互動敘事、遊戲企劃與 QA。展示個人作品、技術研究、系統設計與開發筆記。",
       "primaryImageOfPage": {
         "@type": "ImageObject",
-        "url": "https://KERORO6262.github.io/assets/img/avatar.png"
+        "url": "https://keroro6262.github.io/assets/img/avatar.png"
       },
-      "breadcrumb": { "@id": "https://KERORO6262.github.io/#breadcrumb" },
-      "mainEntity": { "@id": "https://KERORO6262.github.io/#me" }
+      "breadcrumb": { "@id": "https://keroro6262.github.io/#breadcrumb" },
+      "mainEntity": { "@id": "https://keroro6262.github.io/#me" }
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://KERORO6262.github.io/#breadcrumb",
+      "@id": "https://keroro6262.github.io/#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
           "position": 1,
           "name": "首頁",
-          "item": "https://KERORO6262.github.io/"
+          "item": "https://keroro6262.github.io/"
         }
       ]
     },
     {
       "@type": "Person",
-      "@id": "https://KERORO6262.github.io/#me",
+      "@id": "https://keroro6262.github.io/#me",
       "name": "吳宗華 (Badr)",
       "alternateName": "Badr",
-      "url": "https://KERORO6262.github.io/",
-      "image": "https://KERORO6262.github.io/assets/img/avatar.png",
+      "url": "https://keroro6262.github.io/",
+      "image": "https://keroro6262.github.io/assets/img/avatar.png",
       "jobTitle": ["電商營運", "獨立遊戲開發者"],
-      "worksFor": { "@id": "https://KERORO6262.github.io/#org_acme" },
-      "affiliation": { "@id": "https://KERORO6262.github.io/#silence_studio" },
+      "worksFor": { "@id": "https://keroro6262.github.io/#org_acme" },
+      "affiliation": { "@id": "https://keroro6262.github.io/#silence_studio" },
       "sameAs": [
         "https://github.com/KERORO6262",
         "https://www.linkedin.com/in/bbmps-badr",
@@ -439,20 +448,20 @@
       "contactPoint": [{
         "@type": "ContactPoint",
         "contactType": "聯絡",
-        "email": "mailto:slinceblue@gmail.com",
+        "email": "slinceblue@gmail.com",
         "availableLanguage": ["zh-Hant", "en"]
       }],
-      "mainEntityOfPage": { "@id": "https://KERORO6262.github.io/#webpage" }
+      "mainEntityOfPage": { "@id": "https://keroro6262.github.io/#webpage" }
     },
     {
       "@type": "Organization",
-      "@id": "https://KERORO6262.github.io/#org_acme",
+      "@id": "https://keroro6262.github.io/#org_acme",
       "name": "Acme Filter Mask Inc.",
-      "employee": { "@id": "https://KERORO6262.github.io/#me" }
+      "employee": { "@id": "https://keroro6262.github.io/#me" }
     },
     {
       "@type": "ItemList",
-      "@id": "https://KERORO6262.github.io/#writing",
+      "@id": "https://keroro6262.github.io/#writing",
       "name": "寫作／研究",
       "itemListOrder": "http://schema.org/ItemListOrderDescending",
       "numberOfItems": 5,
@@ -467,8 +476,8 @@
             "headline": "借鑒《上古卷軸5》式經典開鎖原型設計實作",
             "description": "觀察《上古卷軸5》開鎖機制並實作基本原型的設計筆記。",
             "inLanguage": "zh-Hant",
-            "author": { "@id": "https://KERORO6262.github.io/#me" },
-            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+            "author": { "@id": "https://keroro6262.github.io/#me" },
+            "isPartOf": { "@id": "https://keroro6262.github.io/#website" }
           }
         },
         {
@@ -481,8 +490,8 @@
             "headline": "差評如潮？好評如潮？",
             "description": "解析《活俠傳》上市初期的玩家評論與社群現象。",
             "inLanguage": "zh-Hant",
-            "author": { "@id": "https://KERORO6262.github.io/#me" },
-            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+            "author": { "@id": "https://keroro6262.github.io/#me" },
+            "isPartOf": { "@id": "https://keroro6262.github.io/#website" }
           }
         },
         {
@@ -495,10 +504,10 @@
             "name": "FVTT MOD：DND5E NPC生成器",
             "description": "一個FoundryVTT模組，可快速生成帶有名字、背景、個性、怪癖、外觀、年齡與裝備的D&D 5e NPC。",
             "inLanguage": "zh-Hant",
-            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "author": { "@id": "https://keroro6262.github.io/#me" },
             "codeRepository": "https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/",
             "programmingLanguage": "JavaScript",
-            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+            "isPartOf": { "@id": "https://keroro6262.github.io/#website" }
           }
         },
         {
@@ -511,10 +520,10 @@
             "name": "Unit Power Scorer 40K",
             "description": "戰鎚 40K 單位戰力計算工具，用於評估戰棋單位強度。",
             "inLanguage": "zh-Hant",
-            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "author": { "@id": "https://keroro6262.github.io/#me" },
             "applicationCategory": "GameUtility",
             "operatingSystem": "Web",
-            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+            "isPartOf": { "@id": "https://keroro6262.github.io/#website" }
           }
         },
         {
@@ -527,11 +536,11 @@
             "name": "WAROGAN PDF Model Parser",
             "description": "將 WAROGAN 匯出的戰鎚 40K 名冊 PDF 解析為可搜尋結構化資料，支援雙視圖、跨欄搜尋與多格式匯出，完全在瀏覽器端執行。",
             "inLanguage": "zh-Hant",
-            "author": { "@id": "https://KERORO6262.github.io/#me" },
+            "author": { "@id": "https://keroro6262.github.io/#me" },
             "codeRepository": "https://github.com/KERORO6262/40k-WAROGAN-PDF-Model-Parser",
             "applicationCategory": "GameUtility",
             "operatingSystem": "Web",
-            "isPartOf": { "@id": "https://KERORO6262.github.io/#website" }
+            "isPartOf": { "@id": "https://keroro6262.github.io/#website" }
           }
         }
       ]
@@ -541,8 +550,10 @@
 </script>
 
 
+  <!-- 螢幕報讀用：遊戲回饋多半只在畫面上飄過 -->
+  <div id="srStatus" class="sr-only" role="status"></div>
   <!-- Coin Counter 浮動計數 -->
-  <div id="coinFloat" class="coin-float" aria-live="polite" title="目前金幣"></div>
+  <div id="coinFloat" class="coin-float" aria-live="polite"></div>
   <!-- Web Pet: CSS Cat -->
   <div id="catPet" class="css-cat is-idle" role="img" aria-label="網頁寵物：一隻在頁面活動的貓" data-say=""></div>
 

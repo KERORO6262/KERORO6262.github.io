@@ -1,15 +1,20 @@
-/* 釣魚條容器：會被動態插在 .photo 內、貼在 avatar 下方 */
+/* 釣魚條疊在人物下半身：不佔版面，開始釣魚時 Hero 不會被撐高。
+   不吃滑鼠事件，點到條上也算點到人物 */
 .fishing-wrap{
-  position: relative;
-  margin-top: 8px;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(5 * var(--px));
+  pointer-events: none;
 }
 
+/* 底下是深色像素圖，不隨深淺主題變色 */
 .fishing-bar{
   position: relative;
-  height: 12px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  height: 14px;
+  border: 1px solid rgba(255, 255, 255, .55);
+  background: rgba(11, 16, 32, .85);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
   overflow: hidden;
 }
 
@@ -17,8 +22,8 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  background: color-mix(in srgb, var(--primary) 35%, transparent);
-  outline: 1px dashed color-mix(in srgb, var(--primary) 60%, black 0%);
+  background: rgba(122, 162, 255, .55);
+  outline: 1px dashed rgba(255, 255, 255, .7);
   outline-offset: -2px;
 }
 
@@ -26,28 +31,27 @@
   position: absolute;
   top: -2px;
   bottom: -2px;
-  width: 2px;
-  background: var(--primary);
-  box-shadow: 0 0 6px var(--primary);
+  width: 3px;
+  margin-left: -1.5px;
+  background: #fff;
+  box-shadow: 0 0 6px #7aa2ff;
 }
 
-.fishing-hint{
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 4px;
-  user-select: none;
-}
-
-/* 釣魚結果浮字 */
+/* 釣魚結果浮字（位置由 JS 依頭像或按鈕計算） */
 .fish-pop{
-  padding: 6px 10px;
+  position: fixed;
+  z-index: 9999;
+  width: max-content;
+  max-width: calc(100vw - 16px);
+  padding: 6px 12px;
   border-radius: 999px;
   font-weight: 700;
   font-size: 14px;
-  color: white;
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--primary) 65%, black),
-    color-mix(in srgb, var(--primary) 50%, black)
-  );
+  color: #fff;
+  background: rgba(13, 18, 32, .9);
   box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 0);
+  transition: transform .5s ease, opacity .5s ease;
 }

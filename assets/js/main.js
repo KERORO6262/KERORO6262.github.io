@@ -1,3 +1,12 @@
+// === 螢幕報讀播報 ===
+// 先清空再寫入：同一句話連續出現時（例如連續沒釣到），報讀器才會再念一次
+window.__announce = (text) => {
+  const el = document.getElementById('srStatus');
+  if (!el) return;
+  el.textContent = '';
+  setTimeout(() => { el.textContent = text; }, 50);
+};
+
 (function () {
   // --- 狀態變數 ---
   let coins = 0;   // 目前金幣數
@@ -90,6 +99,7 @@
     tip.className = 'mosaic-tip';
     tip.setAttribute('aria-hidden', 'true');
     tip.textContent = '需要閃亮的物件才可以揭示隱藏的內容';
+    window.__announce(tip.textContent);
 
     const card = $mosaic.closest('#about .card') || $mosaic.parentElement;
     card.appendChild(tip);
@@ -153,8 +163,14 @@
     }
 
     // 解鎖完成時，讓遮罩不可點
-    if (stage <= 0) {
-      $mosaic?.classList.add('done');
+    if (stage <= 0 && $mosaic) {
+      const hadFocus = document.activeElement === $mosaic;
+      $mosaic.classList.add('done');
+      $mosaic.disabled = true;
+      if (hadFocus && card) {
+        card.setAttribute('tabindex', '-1');
+        card.focus();
+      }
     }
   }
 
@@ -171,84 +187,33 @@
     card.addEventListener('cut', e => { if (shouldBlock()) e.preventDefault(); });
   })();
 
-  // ===== 通用分頁顯示（每頁 N 張；預設 4） ==================
-  (function () {
-
-    function initPager(sectionEl, pageSize = 4) {
-      if (!sectionEl) return;
-
-      const grid = sectionEl.querySelector('.grid');
-      if (!grid) return;
-
-      const cards = Array.from(grid.querySelectorAll('.card'));
-      const prevBtn = sectionEl.querySelector('[data-pager="prev"]');
-      const nextBtn = sectionEl.querySelector('[data-pager="next"]');
-      const statusEl = sectionEl.querySelector('[data-pager="status"]');
-
-      // 若卡片小於等於一頁，隱藏控制列並略過
-      if (cards.length <= pageSize) {
-        sectionEl.querySelector('.list-pager')?.setAttribute('hidden', 'hidden');
-        return;
-      }
-
-      // 標記這個 section 為「被分頁管控」
-      sectionEl.classList.add('section-paginated');
-      sectionEl.setAttribute('data-scroll-lock', 'true');
-      sectionEl.setAttribute('tabindex', '0'); // 讓 section 可接鍵盤事件
-
-      let page = 0; // 0-based
-      const totalPages = Math.max(1, Math.ceil(cards.length / pageSize));
-
-      function render() {
-        const start = page * pageSize;
-        const end = start + pageSize;
-
-        cards.forEach((el, i) => {
-          el.style.display = (i >= start && i < end) ? '' : 'none';
-        });
-
-        if (prevBtn) prevBtn.disabled = (page === 0);
-        if (nextBtn) nextBtn.disabled = (page >= totalPages - 1);
-        if (statusEl) statusEl.textContent = `${page + 1} / ${totalPages}`;
-      }
-
-      function go(delta) {
-        const newPage = Math.min(Math.max(0, page + delta), totalPages - 1);
-        if (newPage !== page) { page = newPage; render(); }
-      }
-
-      prevBtn?.addEventListener('click', () => go(-1));
-      nextBtn?.addEventListener('click', () => go(1));
-
-
-      // 初始繪製
-      render();
-    }
-
-    // 套用到 sharing 與 writing（可依需要擴增）
-    initPager(document.querySelector('#sharing'), 4);
-    initPager(document.querySelector('#writing'), 4);
-
-  })();
-
 })();
 // === 頁籤切換 (Tabs) ===
 (() => {
   document.querySelectorAll('[role="tablist"]').forEach(tablist => {
     const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
-    const section = tablist.closest('section');
-    if (!section) return;
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const targetId = tab.getAttribute('aria-controls');
+    const select = (tab) => tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.setAttribute('tabindex', on ? '0' : '-1');
+      document.getElementById(t.getAttribute('aria-controls'))?.classList.toggle('is-active', on);
+    });
 
-        tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
-        tab.setAttribute('aria-selected', 'true');
-
-        section.querySelectorAll('[role="tabpanel"]').forEach(p => p.classList.remove('is-active'));
-        const target = document.getElementById(targetId);
-        if (target) target.classList.add('is-active');
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (e) => {
+        if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+        const next = {
+          ArrowRight: tabs[(i + 1) % tabs.length],
+          ArrowLeft: tabs[(i - 1 + tabs.length) % tabs.length],
+          Home: tabs[0],
+          End: tabs[tabs.length - 1],
+        }[e.key];
+        if (!next) return;
+        e.preventDefault();
+        select(next);
+        next.focus();
       });
     });
   });
@@ -260,25 +225,29 @@
   const nav = document.querySelector('header .nav nav');
   if (!btn || !nav) return;
 
-  btn.addEventListener('click', () => {
-    const open = nav.classList.toggle('is-open');
+  const setOpen = (open) => {
+    nav.classList.toggle('is-open', open);
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
+    btn.setAttribute('aria-label', open ? '關閉選單' : '開啟選單');
+  };
+
+  btn.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
 
   // 點了連結就收合
   nav.addEventListener('click', (e) => {
-    if (e.target.closest('a')) {
-      nav.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
+    if (e.target.closest('a')) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+      setOpen(false);
+      btn.focus();
     }
   });
 
   // 回到桌機尺寸時自動收起
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) {
-      nav.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
-    }
+    if (window.innerWidth > 768) setOpen(false);
   });
 })();
 
@@ -310,15 +279,7 @@
   let zoneWidth = 18;   // %
 
   // UI 節點（在開始時動態建立）
-  let wrap = null, bar = null, zone = null, needle = null, hint = null;
-
-  if ($statRow) $statRow.style.display = 'none';
-  let statsRevealed = false;
-  function revealStatsOnce() {
-    if (!$statRow || statsRevealed) return;
-    $statRow.style.display = 'flex';
-    statsRevealed = true;
-  }
+  let wrap = null, needle = null;
 
   function emitStats() {
     // 將魚與垃圾的最新數量廣播出去，讓商店/儲物欄能同步 UI
@@ -326,8 +287,14 @@
   }
 
   function updateStats() {
-    if ($fish) $fish.textContent = `🐟 ${fish}`;
-    if ($trash) $trash.textContent = `🗑️ ${trash}`;
+    if ($fish) {
+      $fish.textContent = `🐟 ${fish}`;
+      $fish.setAttribute('aria-label', `漁獲 ${fish} 條，按下餵貓`);
+    }
+    if ($trash) {
+      $trash.textContent = `🗑️ ${trash}`;
+      $trash.setAttribute('aria-label', `垃圾 ${trash} 個，按下全部出售`);
+    }
     emitStats();
   }
   updateStats();
@@ -344,66 +311,32 @@
   }
 
   function buildUI() {
-    if (!wrap) {
-      wrap = document.createElement('div');
-      wrap.className = 'fishing-wrap';
-      $photo.appendChild(wrap);
-    } else {
-      wrap.innerHTML = '';
-    }
+    wrap = document.createElement('div');
+    wrap.className = 'fishing-wrap';
+    $photo.appendChild(wrap);
 
-    bar = document.createElement('div');
+    const bar = document.createElement('div');
     bar.className = 'fishing-bar';
 
-    // 保底樣式
-    bar.style.position = 'relative';
-    bar.style.height = '12px';
-    bar.style.border = '1px solid var(--border, #999)';
-    bar.style.borderRadius = '999px';
-    bar.style.background = 'rgba(0,0,0,0.06)';
-    bar.style.overflow = 'hidden';
-
-    // 與 avatar 同寬
-    const r = $avatar.getBoundingClientRect();
-    bar.style.width = Math.round(r.width) + 'px';
-
     // 命中區塊
-    zone = document.createElement('div');
+    const zone = document.createElement('div');
     zone.className = 'fishing-zone';
-    zone.style.position = 'absolute';
-    zone.style.top = '0';
-    zone.style.bottom = '0';
     zone.style.left = `${zoneStart}%`;
     zone.style.width = `${zoneWidth}%`;
-    zone.style.background = 'rgba(0, 128, 255, 0.25)';
-    zone.style.outline = '1px dashed rgba(0, 128, 255, 0.6)';
-    zone.style.outlineOffset = '-2px';
 
     // 指針
     needle = document.createElement('div');
     needle.className = 'fishing-pointer';
-    needle.style.position = 'absolute';
-    needle.style.top = '-2px';
-    needle.style.bottom = '-2px';
-    needle.style.width = '2px';
-    needle.style.background = 'rgb(0, 128, 255)';
-    needle.style.boxShadow = '0 0 6px rgba(0, 128, 255, 0.9)';
     needle.style.left = `0%`;
 
     bar.appendChild(zone);
     bar.appendChild(needle);
-
-    // 只放進度條（不再建立/插入 hint）
     wrap.appendChild(bar);
   }
 
-
-
   function destroyUI() {
-    if (wrap && wrap.parentNode) {
-      wrap.remove();
-    }
-    wrap = bar = zone = needle = hint = null;
+    wrap?.remove();
+    wrap = needle = null;
   }
 
   function endRound() {
@@ -419,6 +352,7 @@
     // 檢查自動結束
     if (ts - startedAt >= ROUND_MS) {
       endRound(); // 沒點就作廢
+      window.__announce('魚跑掉了，再按一次頭像重新開始');
       return;
     }
 
@@ -438,7 +372,7 @@
 
   function startRound() {
     if (playing || !$avatar || !$photo) return;
-    revealStatsOnce();
+    if ($statRow) $statRow.style.display = 'flex';
     playing = true;
     pointer = 0;
     dir = +1;
@@ -465,9 +399,6 @@
       if (isFish) { fish += gained; text = `+${gained} 🐟`; }
       else { trash += gained; text = `+${gained} 🗑️`; }
       updateStats();
-
-      if (zone) { zone.style.transition = 'filter .15s'; zone.style.filter = 'brightness(1.6)'; setTimeout(() => zone && (zone.style.filter = ''), 200); }
-      if (needle) { needle.style.transition = 'box-shadow .15s'; needle.style.boxShadow = '0 0 10px var(--primary)'; setTimeout(() => needle && (needle.style.boxShadow = ''), 200); }
     }
 
     // ★ 同步作法：立刻結束一輪（條消失），同時秀結果泡泡
@@ -479,36 +410,21 @@
   }
 
 
-  function showResultBubble(text, onDone) {
-    // 以 viewport 定位到頭像上方
-    const r = $avatar.getBoundingClientRect();
+  function showResultBubble(text, onDone, { anchor = $avatar, top = r => r.top + r.height * 0.25, hold = 650 } = {}) {
+    window.__announce(text);
+
+    const r = anchor.getBoundingClientRect();
     const pop = document.createElement('div');
     pop.className = 'fish-pop';
     pop.textContent = text;
-
-    // 初始位置：頭像正上方微偏上
-    const x = r.left + r.width / 2;
-    const y = r.top + r.height * 0.25;
-
-    Object.assign(pop.style, {
-      position: 'fixed',
-      left: (x) + 'px',
-      top: (y) + 'px',
-      transform: 'translate(-50%, 0)',
-      pointerEvents: 'none',
-      zIndex: 9999,
-      // 保底樣式（若外部 CSS 沒載入）
-      padding: '4px 8px',
-      borderRadius: '999px',
-      fontWeight: '600',
-      fontSize: '14px',
-      background: 'rgba(0,0,0,.75)',
-      color: '#fff',
-      opacity: '0',
-      transition: 'transform .5s ease, opacity .5s ease'
-    });
-
+    pop.style.top = top(r) + 'px';
     document.body.appendChild(pop);
+
+    // 水平置中於錨點，但不超出視窗（文字較長或錨點貼邊時）
+    const half = pop.offsetWidth / 2;
+    const x = r.left + r.width / 2;
+    const vw = document.documentElement.clientWidth;
+    pop.style.left = Math.max(half + 8, Math.min(x, vw - half - 8)) + 'px';
 
     // 觸發進場 → 往上浮、淡入
     requestAnimationFrame(() => {
@@ -516,15 +432,16 @@
       pop.style.transform = 'translate(-50%, -24px)';
     });
 
-    // 於 650ms 後淡出並移除
+    // 淡出後移除。onDone 會解開釣魚鎖，不能等 transitionend（分頁在背景時可能不觸發），
+    // 500 對應 fishing.css 的 .fish-pop 淡出時間
     setTimeout(() => {
       pop.style.opacity = '0';
       pop.style.transform = 'translate(-50%, -42px)';
-      pop.addEventListener('transitionend', () => {
+      setTimeout(() => {
         pop.remove();
         onDone && onDone();
-      }, { once: true });
-    }, 650);
+      }, 500);
+    }, hold);
   }
 
 
@@ -536,24 +453,21 @@
       else tryCatch();              // 進行判定（只吃一次）
     });
 
-    // 視窗尺寸改變時，若條存在則跟著 avatar 更新寬度
-    window.addEventListener('resize', () => {
-      if (playing && bar && $avatar) {
-        const r = $avatar.getBoundingClientRect();
-        bar.style.width = Math.round(r.width) + 'px';
-      }
+    // 頭像維持 <img>，貓咪才會把它當圖片造訪，所以鍵盤操作要自己接
+    $avatar.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      if (!e.repeat) $avatar.click();
     });
   }
 
   // === 餵食互動：點擊 🐟 計數餵貓 =========================
   let feedingLock = false;
   if ($fish) {
-    $fish.style.cursor = 'pointer';
-    $fish.setAttribute('title', '點我餵食（每次消耗 1 🐟，恢復體力 +5）');
-    $fish.setAttribute('role', 'button');
     $fish.addEventListener('click', () => {
       if (feedingLock) return;          // 外層防連點
       if (fish <= 0) {
+        window.__announce('沒有魚可以餵');
         // 視覺回饋：抖一下
         $fish.classList.remove('deny'); void $fish.offsetWidth; $fish.classList.add('deny');
         setTimeout(() => $fish.classList.remove('deny'), 300);
@@ -567,6 +481,7 @@
         if (ok) {
           fish = Math.max(0, fish - 1);
           updateStats();
+          window.__announce(`餵了貓一條魚，還剩 ${fish} 條`);
         }
         // 內外雙鎖：0.5s 冷卻避免連點
         setTimeout(() => feedingLock = false, 500);
@@ -613,19 +528,9 @@
   // 通知其他模組：釣魚 API 已經可用（商店可以開始綁定事件）
   window.dispatchEvent(new CustomEvent('fishing:ready'));
 
-  // 履歷按鈕：阻止跳頁，改用彈窗提示
-  document.addEventListener('DOMContentLoaded', () => {
-    const resumeBtn = document.getElementById('resumeBtn');
-    if (!resumeBtn) return;
-
-    resumeBtn.addEventListener('click', (e) => {
-      // 防止 a 標籤預設行為（跳到 #）
-      e.preventDefault();
-
-      // 彈出訊息
-      window.alert('你在想甚麼?我的履歷就在這個網站裡面🤣');
-    });
+  // 履歷按鈕：阻止跳頁，改用浮字提示（alert 會凍結整頁，貓也會停住）
+  document.getElementById('resumeBtn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showResultBubble('你在想甚麼?我的履歷就在這個網站裡面🤣', null, { anchor: e.currentTarget, top: r => r.bottom + 36, hold: 2400 });
   });
-
-
 })();
