@@ -9,7 +9,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 (async () => {
   const b = await chromium.launch();
   const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
-  await c.route(/google-analytics\.com|analytics\.google\.com|\/collect/, r => r.abort());
+  await c.route(/google-analytics\.com|analytics\.google\.com|doubleclick\.net|www\.google\.com|\/collect/, r => r.abort());
   await c.addInitScript(() => {
     window.__violations = [];
     document.addEventListener('securitypolicyviolation', e => window.__violations.push(`${e.violatedDirective} ${e.blockedURI}`));
@@ -45,7 +45,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   check('cat walks with CSP on', a !== await p.evaluate(() => document.getElementById('catPet').getBoundingClientRect().left));
 
   const v = await p.evaluate(() => window.__violations);
-  const real = v.filter(x => !/google-analytics|analytics\.google/.test(x));
+  const real = v;
   check('no CSP violations while playing', real.length === 0, real.join(' | '));
   check('no page errors', errs.length === 0, errs.join(' | '));
   await b.close();

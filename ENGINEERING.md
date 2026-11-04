@@ -210,7 +210,7 @@ python tools/check_site.py
 
 ## 安全與隱私
 
-- **CSP**：`index.html` 開頭的 meta 禁止所有內嵌腳本。不要加 `<script>…</script>` 或 `onclick=`，腳本一律放獨立檔案。新增外部資源時要同步放行，`tools/checks/csp.js` 會檢查。
+- **CSP**：`index.html` 開頭的 meta 禁止所有內嵌腳本。不要加 `<script>…</script>` 或 `onclick=`，腳本一律放獨立檔案。新增外部資源時要同步放行，`tools/checks/csp.js` 會檢查。Google Analytics 需要的網域依[官方清單](https://developers.google.com/tag-platform/security/guides/csp)放行，只在本機測試看不到 `www.google.com/g/collect` 這類請求，上線後要再確認。
 - **存檔**：只有使用者勾選才會寫入 localStorage；讀取時一律檢查內容，因為 `keroro6262.github.io` 底下的專案共用同一個網域。
 - **動態內容**：放進 `innerHTML` 的文字一律先經過 `escapeHtml`。
 - **Commit 信箱**：這個 repo 使用 GitHub noreply 信箱（`git config user.email`）。
