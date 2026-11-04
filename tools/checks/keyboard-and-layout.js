@@ -111,7 +111,7 @@ const active = p => p.evaluate(() => document.activeElement.id || document.activ
   await p.keyboard.press('ArrowRight');
   check('tabs: ArrowRight moves + selects', (await active(p)) === 'tb-warogan' && await p.locator('#sp-warogan.is-active').count() === 1);
   await p.keyboard.press('End');
-  check('tabs: End', (await active(p)) === 'tb-ru');
+  check('tabs: End', (await active(p)) === 'tb-pacase');
   await p.keyboard.press('ArrowRight');
   check('tabs: wraps around', (await active(p)) === 'tb-fvtt');
   check('tabs: roving tabindex', (await p.getAttribute('#tb-fvtt', 'tabindex')) === '0' && (await p.getAttribute('#tb-warogan', 'tabindex')) === '-1');
