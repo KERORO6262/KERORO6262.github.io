@@ -72,6 +72,15 @@ python tools/check_site.py
 
 頁籤不用寫程式，新增後會自動運作。
 
+### 新增一篇站內文章
+
+不想放 Notion、想自己追蹤流量時，文章可以直接放在 repo 裡：
+
+1. 建立 `writing/<代號>/index.html`，可以複製 `writing/ms-wonder/index.html` 當範本（已接好 Google Analytics、CSP、OG 圖）。
+2. 文章用的圖放在同資料夾的 `img/`（WebP、MP4 都可以）。影片不自動播放，寫 `controls muted loop playsinline preload="metadata"` 並加 `poster` 封面，讓讀者自己按播放。
+3. 照「新增一個作品」的方式在 `#writing` 加一張卡片，按鈕連到 `./writing/<代號>/`，並更新結構化資料和 `sitemap.xml`。
+4. 部署流程（`.github/workflows/static.yml`）已經會複製整個 `writing/` 資料夾。
+
 ### 修改章節標題或姓名
 
 標題是像素字圖片，要重新產生（需要 Windows 和 Pillow）：
@@ -222,6 +231,7 @@ python tools/check_site.py
 | 站點                                                                 | 說明                            |
 |----------------------------------------------------------------------|---------------------------------|
 | `https://keroro6262.github.io/`                                      | 個人主頁（本專案）               |
+| `https://keroro6262.github.io/writing/ms-wonder/`                    | 文章：用 Claude 做 AI 動畫（本 repo 的 `writing/ms-wonder/`） |
 | `https://keroro6262.github.io/unit-power-scorer-40k.github.io/`      | 戰鎚 40K 單位戰力計算工具        |
 | `https://keroro6262.github.io/40k-WAROGAN-PDF-Model-Parser/`         | WAROGAN PDF 名冊解析工具         |
 | `https://keroro6262.github.io/ru-learning.github.io/`                | 俄語字母學習                     |

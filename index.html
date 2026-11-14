@@ -375,12 +375,33 @@
       <h2 data-cat-ignore><img src="assets/img/scene/h-writing.png" width="158" height="32" alt="寫作／研究"></h2>
 
       <div class="tabs" role="tablist" aria-label="寫作與研究清單">
-        <button class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="wr-lockpick" id="tb-lockpick">開鎖原型設計實作</button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="true" aria-controls="wr-mswonder" id="tb-mswonder">用 Claude 做 AI 動畫</button>
+        <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="wr-lockpick" id="tb-lockpick">開鎖原型設計實作</button>
         <button class="tab-btn" type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="wr-review" id="tb-review">差評如潮？好評如潮？</button>
       </div>
 
       <div class="tab-panels">
-      <div class="tab-panel is-active" id="wr-lockpick" role="tabpanel" tabindex="0" aria-labelledby="tb-lockpick">
+      <div class="tab-panel is-active" id="wr-mswonder" role="tabpanel" tabindex="0" aria-labelledby="tb-mswonder">
+        <div class="tab-panel-header">
+          <div class="tab-panel-cover">
+            <img src="./assets/img/writing/ms-wonder.webp" width="800" height="800" loading="lazy" decoding="async" alt="《Rewind》中神奇小姐直視鏡頭的一格，畫面上有家用攝影機的 REC 與對焦框">
+          </div>
+          <div class="tab-panel-meta">
+            <h3>用 Claude 做一支 AI 動畫：成本、流程與限制</h3>
+            <div><span class="badge">製作心得</span></div>
+          </div>
+        </div>
+        <p class="tab-panel-desc">7 天、兩個 Claude Pro、一個 GPT Plus、一張 RTX 4090，生成一支 32 秒、9:16 的動畫短片《Rewind》。寫實際成本、可用的流程、配樂與後製怎麼做，以及哪些事還得轉人工。</p>
+        <div class="tab-update-box">
+          <strong>更新說明</strong>
+          <p>2026 年 11 月發佈，附成片、前後對照圖、意見表與虛擬片場截圖。</p>
+        </div>
+        <div class="tab-links">
+          <a class="btn" href="./writing/ms-wonder/index.html">閱讀文章</a>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="wr-lockpick" role="tabpanel" tabindex="0" aria-labelledby="tb-lockpick">
         <div class="tab-panel-header">
           <div class="tab-panel-cover">
             <img src="./assets/img/writing/ES5_lock.webp" width="800" height="800" loading="lazy" decoding="async" alt="上古卷軸5開鎖分析圖">
@@ -545,11 +566,25 @@
       "@id": "https://keroro6262.github.io/#writing",
       "name": "作品與寫作",
       "itemListOrder": "http://schema.org/ItemListOrderDescending",
-      "numberOfItems": 6,
+      "numberOfItems": 7,
       "itemListElement": [
         {
           "@type": "ListItem",
           "position": 1,
+          "item": {
+            "@type": "Article",
+            "@id": "https://keroro6262.github.io/writing/ms-wonder/",
+            "url": "https://keroro6262.github.io/writing/ms-wonder/",
+            "headline": "用 Claude 做一支 AI 動畫：成本、流程與限制",
+            "description": "7 天、兩個 Claude Pro、一個 GPT Plus、一張 RTX 4090，製作 32 秒循環動畫《Rewind》的成本、流程與限制。",
+            "inLanguage": "zh-Hant",
+            "author": { "@id": "https://keroro6262.github.io/#me" },
+            "isPartOf": { "@id": "https://keroro6262.github.io/#website" }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
           "item": {
             "@type": "Article",
             "@id": "https://cedar-shield-b8c.notion.site/5-8955a4ea1e3c4a18852dcf68c373185d",
@@ -563,7 +598,7 @@
         },
         {
           "@type": "ListItem",
-          "position": 2,
+          "position": 3,
           "item": {
             "@type": "Article",
             "@id": "https://cedar-shield-b8c.notion.site/e3e25c94493c420dbcb405ee73586998?pvs=74",
@@ -577,7 +612,7 @@
         },
         {
           "@type": "ListItem",
-          "position": 3,
+          "position": 4,
           "item": {
             "@type": "SoftwareSourceCode",
             "@id": "https://github.com/KERORO6262/npc-generator-dnd5e-fvtt/",
@@ -593,7 +628,7 @@
         },
         {
           "@type": "ListItem",
-          "position": 4,
+          "position": 5,
           "item": {
             "@type": "WebApplication",
             "@id": "https://keroro6262.github.io/unit-power-scorer-40k.github.io/",
@@ -609,7 +644,7 @@
         },
         {
           "@type": "ListItem",
-          "position": 5,
+          "position": 6,
           "item": {
             "@type": "WebApplication",
             "@id": "https://keroro6262.github.io/40k-WAROGAN-PDF-Model-Parser/",
@@ -626,7 +661,7 @@
         },
         {
           "@type": "ListItem",
-          "position": 6,
+          "position": 7,
           "item": {
             "@type": "WebApplication",
             "@id": "https://keroro6262.github.io/ru-learning.github.io/",

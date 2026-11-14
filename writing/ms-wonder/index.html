@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+
+<head>
+  <meta charset="utf-8">
+  <!-- frame-src 只開給 YouTube，成片嵌入用；若改用其他平台，把那個平台的網域加進 frame-src -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com; media-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>用 Claude 做一支 AI 動畫：成本、流程與限制 | Badr — Silence Studio</title>
+  <meta name="description" content="7 天、兩個 Claude Pro、一個 GPT Plus、一張 RTX 4090，生成一支 32 秒、9:16 的動畫短片。實際成本、可用的流程、配樂與後製怎麼做，以及哪些事還得轉人工。">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#272736">
+  <link rel="canonical" href="https://keroro6262.github.io/writing/ms-wonder/">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:site_name" content="Silence Studio">
+  <meta property="og:title" content="用 Claude 做一支 AI 動畫：成本、流程與限制">
+  <meta property="og:description" content="7 天、兩個 Claude Pro、一個 GPT Plus、一張 RTX 4090，生成一支 32 秒、9:16 的動畫短片。">
+  <meta property="og:image" content="https://keroro6262.github.io/writing/ms-wonder/img/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="《Rewind》五個關鍵格與文章標題">
+  <meta property="og:url" content="https://keroro6262.github.io/writing/ms-wonder/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="用 Claude 做一支 AI 動畫：成本、流程與限制">
+  <meta name="twitter:description" content="7 天、兩個 Claude Pro、一個 GPT Plus、一張 RTX 4090，生成一支 32 秒、9:16 的動畫短片。">
+  <meta name="twitter:image" content="https://keroro6262.github.io/writing/ms-wonder/img/og.jpg">
+  <link rel="icon" href="../../assets/img/favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../../assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <style>
+    body { background: linear-gradient(180deg, var(--sky) 0, var(--water-3) 520px, var(--bg) 1400px); }
+    .topbar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--sky) 92%, transparent); border-bottom: 1px solid var(--border); }
+    .topbar .container { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 56px; }
+    .topbar a { color: var(--text); text-decoration: none; font-weight: 600; }
+    .topbar a:hover { color: var(--brand); }
+    article { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+    article h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.3; margin: 8px 0 12px; }
+    .meta { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+    .meta .badge { margin-right: 8px; }
+    .lead { font-size: 18px; color: var(--text); }
+    article h2 { font-size: 26px; margin: 56px 0 14px; padding-top: 12px; border-top: 1px solid var(--border); scroll-margin-top: 72px; }
+    article h3 { font-size: 19px; margin: 28px 0 8px; color: var(--brand); }
+    article p, article li { color: var(--muted); }
+    article strong { color: var(--text); }
+    article a { color: var(--brand); overflow-wrap: anywhere; }
+    article ul, article ol { padding-left: 1.4em; }
+    article li { margin: 6px 0; }
+    figure { margin: 24px 0; }
+    figure img, figure video { display: block; width: 100%; height: auto; border: 1px solid var(--border); background: var(--card); }
+    figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; }
+    .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .pair figure { margin: 0; }
+    .table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    table.wide { min-width: 720px; }
+    .flow-scroll { overflow-x: auto; }
+    .flow-scroll svg { min-width: 600px; }
+    th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg-soft); color: var(--text); white-space: nowrap; }
+    td { color: var(--muted); }
+    td:first-child { color: var(--text); font-weight: 600; }
+    .toc { background: var(--card); border: 1px solid var(--border); padding: 14px 18px; margin: 28px 0; }
+    .toc strong { display: block; margin-bottom: 6px; }
+    .toc ol { margin: 0; }
+    .note { padding: 14px 16px; background: var(--bg-soft); border-left: 3px solid var(--brand); margin: 20px 0; }
+    .note p { margin: 0; }
+    blockquote { margin: 16px 0; padding: 8px 16px; border-left: 3px solid var(--robe); color: var(--text); background: color-mix(in srgb, var(--card) 70%, transparent); }
+    .yt { aspect-ratio: 9 / 16; max-width: 360px; margin: 24px auto; }
+    .yt iframe { width: 100%; height: 100%; border: 1px solid var(--border); display: block; }
+    .video-slot { aspect-ratio: 9 / 16; max-width: 360px; margin: 0 auto; display: grid; place-items: center; text-align: center; border: 1px dashed var(--border); color: var(--muted); padding: 20px; }
+    .flow svg { width: 100%; height: auto; }
+    .back { margin-top: 48px; }
+    @media (max-width: 560px) { .pair { grid-template-columns: 1fr; } article h2 { font-size: 22px; } }
+  </style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SJJLC4XGHE"></script>
+  <script defer src="../../assets/js/analytics.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+  <div class="topbar">
+    <div class="container">
+      <a href="../../index.html">← Badr — Silence Studio</a>
+      <a href="../../index.html#writing">寫作／研究</a>
+    </div>
+  </div>
+
+  <main id="main">
+    <article>
+      <span class="badge">製作心得</span>
+      <h1>用 Claude 做一支 AI 動畫：成本、流程與限制</h1>
+      <p class="meta">Badr ・ 2026 年 11 月 ・ 作品《Rewind》</p>
+
+      <p class="lead">我花 7 天、兩個 Claude Pro 帳號、一個 GPT Plus 和一張 RTX 4090，生成出一支 32 秒、9:16 畫面比例的動畫短片。</p>
+      <p>最開始簡單的發想是：有一個角色在行走時被拍，然後發動能力。</p>
+
+      <div class="yt">
+        <iframe src="https://www.youtube-nocookie.com/embed/ubgrI46EG4I" title="《Rewind》成片" width="360" height="640" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p style="text-align:center"><a href="https://youtube.com/shorts/ubgrI46EG4I" target="_blank" rel="noopener">在 YouTube 觀看成片</a></p>
+
+      <nav class="toc" aria-label="文章目錄">
+        <strong>目錄</strong>
+        <ol>
+          <li><a href="#design">起點：人設稿</a></li>
+          <li><a href="#cost">實際成本</a></li>
+          <li><a href="#flow">可用的流程</a></li>
+          <li><a href="#music">配樂怎麼做出來</a></li>
+          <li><a href="#post">後製怎麼做出來</a></li>
+          <li><a href="#limits">限制：哪些還得轉人工</a></li>
+          <li><a href="#direct">我怎麼帶</a></li>
+          <li><a href="#result">成品</a></li>
+        </ol>
+      </nav>
+
+      <h2 id="design">起點：人設稿</h2>
+      <p>其實角色的存在先於動畫發想。我將很久以前的一張手繪素描，用 GPT 生成人設稿、三視圖、外套等 8 張服飾配件、20 種表情的圖檔，最後收成一張固定色值的平塗頭像。這張平塗頭像就是整支動畫的畫風基準，之後每一張首尾幀都對著它和三視圖畫。</p>
+      <figure>
+        <img src="img/design-sheet.webp" width="1400" height="782" alt="人設稿總覽：原始素描、GPT 生成的三視圖、服飾配件、表情、深淵眼與平塗頭像" loading="lazy" decoding="async">
+        <figcaption>從手繪素描到動畫畫風：三視圖、服飾、表情、深淵眼、平塗頭像都由 GPT 生成。</figcaption>
+      </figure>
+
+      <h2 id="cost">實際成本</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>項目</th><th>實際情況</th></tr></thead>
+          <tbody>
+            <tr><td>時間</td><td>7 天（11/06–11/12）。每天至少在電腦前 10 小時以上等待結果，最長一段從 11/08 中午到 11/09 晚上幾乎沒停，約 33 小時</td></tr>
+            <tr><td>訂閱</td><td>Claude Pro ×2、GPT Plus ×1；沒有其他付費，其餘模型（影片 MiniMax H3、音樂 ACE-Step 1.5 XL、音效 Stable Audio 3）都在本機 ComfyUI 跑</td></tr>
+            <tr><td>硬體</td><td>RTX 4090（24 GB）。影片模型已經貼著記憶體上限，電腦在生成開跑的瞬間硬關機好幾次</td></tr>
+            <tr><td>Claude 工作量</td><td>我發了約 140 則訊息；Claude 做了 3,000 次以上工具呼叫、約 50 小時有紀錄的運作；兩個帳號都撞過用量上限</td></tr>
+            <tr><td>重做次數</td><td>畫面 10 版、配樂 4 版、後製兩套共 12 版</td></tr>
+            <tr><td>丟掉的比例</td><td>影片模型產生約 170 個資料夾、一萬四千多張格，成片只用到 23 個資料夾</td></tr>
+            <tr><td>硬碟</td><td>專案資料夾約 14 GB，另加約 38 GB 的配樂模型</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="flow">可用的流程</h2>
+      <p>我最後總結的分工流程是「GPT 畫、MiniMax H3 動、Claude 做和查、我判斷」，而且一層定案才做下一層。</p>
+      <figure class="flow">
+        <div class="flow-scroll"><svg viewBox="0 0 760 300" role="img" aria-label="製作流程：GPT 畫首尾幀，H3 生成，Claude 量測不合格就重跑，補幀與眼睛重畫，畫面定案，配樂定稿，紀錄器後製，成品">
+          <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#3a4a86"/></marker></defs>
+          <g fill="none" stroke="#3a4a86" stroke-width="1.5">
+            <path d="M176 116H204" marker-end="url(#ar)"/><path d="M356 116H384" marker-end="url(#ar)"/><path d="M536 116H564" marker-end="url(#ar)"/>
+            <path d="M640 144V224" marker-end="url(#ar)"/>
+            <path d="M564 252H536" marker-end="url(#ar)"/><path d="M384 252H356" marker-end="url(#ar)"/><path d="M204 252H176" marker-end="url(#ar)"/>
+            <path d="M460 88V60H280V88" marker-end="url(#ar)"/>
+          </g>
+          <text x="370" y="52" text-anchor="middle" font-size="13" fill="#c3cde2">不合格就重跑</text>
+          <g font-size="15" text-anchor="middle">
+            <rect x="24" y="88" width="152" height="56" fill="#131c42" stroke="#3a4a86"/><text x="100" y="112" fill="#e8ebf4" font-weight="700">GPT 畫首尾幀</text><text x="100" y="132" fill="#c3cde2" font-size="12.5">與關鍵幀、接觸幀</text>
+            <rect x="204" y="88" width="152" height="56" fill="#131c42" stroke="#3a4a86"/><text x="280" y="112" fill="#e8ebf4" font-weight="700">MiniMax H3</text><text x="280" y="132" fill="#c3cde2" font-size="12.5">本機 ComfyUI 生成</text>
+            <rect x="384" y="88" width="152" height="56" fill="#131c42" stroke="#3a4a86"/><text x="460" y="112" fill="#e8ebf4" font-weight="700">Claude 量測</text><text x="460" y="132" fill="#c3cde2" font-size="12.5">逐格對照 GPT 幀</text>
+            <rect x="564" y="88" width="152" height="56" fill="#131c42" stroke="#3a4a86"/><text x="640" y="112" fill="#e8ebf4" font-weight="700">補幀、重排</text><text x="640" y="132" fill="#c3cde2" font-size="12.5">眼睛虹膜重畫</text>
+            <rect x="564" y="224" width="152" height="56" fill="#131c42" stroke="#3a4a86"/><text x="640" y="248" fill="#e8ebf4" font-weight="700">畫面 R10 定案</text><text x="640" y="268" fill="#c3cde2" font-size="12.5">770 格・可循環</text>
+            <rect x="384" y="224" width="152" height="56" fill="#131c42" stroke="#3a4a86"/><text x="460" y="248" fill="#e8ebf4" font-weight="700">配樂 V4 定稿</text><text x="460" y="268" fill="#c3cde2" font-size="12.5">phonk／暗黑電子</text>
+            <rect x="204" y="224" width="152" height="56" fill="#131c42" stroke="#3a4a86"/><text x="280" y="248" fill="#e8ebf4" font-weight="700">紀錄器後製</text><text x="280" y="268" fill="#c3cde2" font-size="12.5">磁帶攝影機觀景窗</text>
+            <rect x="24" y="224" width="152" height="56" fill="#3d2f2a" stroke="#ffb570" stroke-width="2"/><text x="100" y="248" fill="#e8ebf4" font-weight="700">成品</text><text x="100" y="268" fill="#e8ebf4" font-size="12.5">32 秒循環短片</text>
+          </g>
+        </svg></div>
+        <figcaption>最後採用的製作流程。前一層鎖死，後一層才有共同的時間基準。</figcaption>
+      </figure>
+      <ol>
+        <li><strong>GPT 畫端點</strong>：用 GPT Codex 呼叫圖像生成，畫每一鏡的首幀、尾幀和關鍵幀。首幀是這鏡開始的狀態，尾幀是結束的狀態，故事板只是中間過程。</li>
+        <li><strong>H3 在本機生成動態</strong>：ComfyUI 跑 MiniMax H3，一次只跑一段。</li>
+        <li><strong>Claude 先自己檢查</strong>：量動作有沒有頓挫、是不是一拍二、首尾對不對得上 GPT 的圖，不合格當場重跑。</li>
+        <li><strong>擬定意見表逐鏡回饋</strong>：讓 Claude 做一份可以逐格看的意見表，由我填完後回一句「已填」，它讀了就做下一版。</li>
+        <li><strong>一層定案才做下一層</strong>：畫面 10 版定案 → 配樂 4 版定稿 → 再疊後製有 6 版。</li>
+      </ol>
+      <p>意見表和虛擬片場是這套流程裡最有用的兩個工具：前者讓我不必用文字描述「第幾格哪裡不對」，後者讓機位和時間先定下來再生成，直接利用商用模型的多模態優勢，透過影像讀取。</p>
+      <div class="pair">
+        <figure>
+          <img src="img/feedback-sheet.webp" width="1400" height="875" alt="逐鏡意見表：左邊是成片和 GPT 首尾幀，右邊是 Claude 想問我的問題與勾選欄" loading="lazy" decoding="async">
+          <figcaption>逐鏡意見表：每鏡可逐格看，右邊是 Claude 想問我的問題。</figcaption>
+        </figure>
+        <figure>
+          <img src="img/previs.webp" width="1400" height="875" alt="虛擬片場：替身人偶、GPT 參考幀、片場俯視與側視，下方是逐格時間軸" loading="lazy" decoding="async">
+          <figcaption>虛擬片場：替身、GPT 參考幀、片場俯視與側視、逐格時間軸。</figcaption>
+        </figure>
+      </div>
+
+      <h2 id="music">配樂怎麼做出來</h2>
+      <p>配樂在畫面定案後才開始做，走了四個版本。定稿的音樂全部由本機 ComfyUI 的 ACE-Step 1.5 XL 生成，音效用 Stable Audio 3，Claude 負責挑素材、對拍、剪接和混音。</p>
+      <ol>
+        <li><strong>三個版本都不行</strong>：Claude 先自己寫譜、用程式合成，再試真實樂器取樣和 ACE-Step。Claude 聽不到聲音，只能透過頻譜量測，合成音色還有很好認的 AI 味「叮」的聲音。</li>
+        <li><strong>改變配樂流程</strong>：讓 Claude 先列參考曲風讓我挑方向。</li>
+        <li><strong>從短樣本挑</strong>：ACE-Step 每個方向生成多條 10 秒樣本，由我挑選其中一份。</li>
+        <li><strong>用配樂檢查表逐段改</strong>：每一段都透過檢查表逐分鏡、逐幀回饋意見，填完檢查表就讓 Claude 操作 ComfyUI 重新生成。</li>
+        <li><strong>盲測定稿</strong>：長前奏做了兩輪盲測，我分不出差別，就定稿用原版。</li>
+      </ol>
+
+      <h2 id="post">後製怎麼做出來</h2>
+      <p>後製是疊在「定案畫面＋定稿配樂」上的圖層，全部由 Claude 寫的 Python 程式離線算出來，不用 ComfyUI、不吃顯卡。</p>
+      <p>特效做了兩套：第一套做到第六版整套作廢，第二套從敘事開始，五輪意見就完成。</p>
+      <figure>
+        <img src="img/post-compare.webp" width="1400" height="354" alt="同樣三格在兩套後製裡的樣子：第一套第四版、第六版，和第二套紀錄器測試版 06" loading="lazy" decoding="async">
+        <figcaption>同樣的第 240、470、520 格：第一套第四版、第六版，和最後採用的紀錄器。</figcaption>
+      </figure>
+      <h3>第一套：新粗野主義 × NASA 朋克（作廢）</h3>
+      <ol>
+        <li>我想要畫面上有明顯的互動視效，先試新粗野主義，再加上 NASA 朋克。</li>
+        <li>我要一張能標位置的意見表，Claude 做了「後製編輯器」：可以在原片上框位置、標格數，還有 51 種效果表，每種都用片中畫面做範例，我不懂名詞也能直接挑。</li>
+        <li>我說效果與配樂不搭，所以全部拉掉重做。</li>
+      </ol>
+      <div class="pair">
+        <figure>
+          <img src="img/vfx-editor.webp" width="1400" height="819" alt="後製編輯器：可以逐鏡或逐格標記、在畫面上框位置" loading="lazy" decoding="async">
+          <figcaption>後製編輯器：逐鏡或逐格標記，直接在畫面上框位置。</figcaption>
+        </figure>
+        <figure>
+          <img src="img/fx-table.webp" width="1400" height="875" alt="效果表：51 種效果都用片中畫面做範例，可以挑想要、可以試或不要" loading="lazy" decoding="async">
+          <figcaption>效果表：51 種效果都用片中畫面做範例。</figcaption>
+        </figure>
+      </div>
+      <h3>第二套：紀錄器（採用版本）</h3>
+      <ol>
+        <li>將舊視效當作沒發生過，從敘事開始重談。讓 Claude 採用一問一答的策略提了四個方向（催眠、視線、畫布、滑不走），最後把「眼睛」變成類似紀錄器的介面，再選定家用磁帶攝影機風格。</li>
+        <li>規則：畫面上只出現一台攝影機會顯示的東西（REC、時間碼、電池、日期、對焦框、變焦條、倒帶），故事靠這些介面「怎麼壞掉」敘事。</li>
+        <li>先做觀景窗語彙示意，再做整片測試版 01，之後用逐鏡意見表改了五輪到 06，每輪要改的鏡數從 7 鏡降到 1 鏡。</li>
+      </ol>
+      <figure>
+        <img src="img/viewfinder.webp" width="1400" height="1045" alt="觀景窗語彙示意：REC 紅點、時間碼、對焦框、變焦條在不同關鍵格上的樣子" loading="lazy" decoding="async">
+        <figcaption>先做的觀景窗語彙示意。</figcaption>
+      </figure>
+      <figure>
+        <img src="img/camcorder-sheet.webp" width="1400" height="875" alt="紀錄器逐鏡意見表：左邊逐格看影片、時間軸標著配樂節點；右邊每鏡列出這版做了什麼，可選保留、小改、大改、重做並寫改動方向" loading="lazy" decoding="async">
+        <figcaption>紀錄器的逐鏡意見表：左邊逐格看影片，右邊每鏡選「保留／小改／大改／重做」並寫改動方向。圖中是我第一輪寫的意見。</figcaption>
+      </figure>
+
+      <h2 id="limits">限制：哪些還得轉人工</h2>
+      <ul>
+        <li><strong>品味和最後判斷</strong>：AI 模型聽不到聲音，配樂只能量響度和拍點；Claude 無法有效判斷畫面的連續性，對 AI 來說影片只是排列好的圖片，前後幀部分出現破圖或破綻，得逐幀修改。AI 無法理解美感，好不好看也需要人類看。</li>
+        <li><strong>角色本身</strong>：Claude 的影像生成能力其實很差，圖片只能來自 GPT 的生成圖片模型或 H3。</li>
+        <li><strong>H3 不聽話的地方</strong>：只靠文字演不出多步驟動作、物件的運動無法預期，或是場景出現其他物件或人物，人物也很難依照故事板演出，常常一拍二拍三拍四。解法都是「給更多圖」當關鍵參考，而不是「寫更多字」。</li>
+        <li><strong>先講敘事再做特效</strong>：第一套後製做到第六版才發現沒有故事，整套作廢重來。</li>
+        <li><strong>硬體與環境</strong>：4090 也只能一次跑一段；生成開跑的瞬間硬關機好幾次。</li>
+        <li><strong>人要一直在</strong>：每一輪都要我看、填、重開 ComfyUI；兩個帳號的線上頁面互相打不開，交接靠本機文件。</li>
+      </ul>
+      <figure>
+        <img src="img/grab-compare.webp" width="1320" height="514" alt="抓鏡頭的前後對照：只靠文字提示時，手還沒碰到鏡頭就先拉近；定案版給 GPT 的首幀、接觸幀和尾幀，手伸出畫外，518 格抓住後才被拽成俯視近景" loading="lazy" decoding="async">
+        <figcaption>同一個「抓鏡頭」：只寫文字時鏡頭先拉近（左）；給了首幀、接觸幀、尾幀，518 格抓住後才被拽近（右）。</figcaption>
+      </figure>
+      <figure>
+        <img src="img/eyes-compare.webp" width="680" height="754" alt="眼睛漩渦前後對照：第四版是細線漩渦，定案版統一成粗旋臂樣式" loading="lazy" decoding="async">
+        <figcaption>眼睛漩渦：上是第四版的細線漩渦，下是定案版的粗旋臂樣式。</figcaption>
+      </figure>
+
+      <h2 id="direct">我怎麼帶</h2>
+      <ul>
+        <li><strong>工作環境規則定義</strong>：Claude 先提案，我說「開始」才動手；永久刪除這類不可逆的事一律先問。</li>
+        <li><strong>對話講不清楚時就要求做工具</strong>：我說希望它「逐分鏡或逐幀問我」，之後每一輪都有意見表；我說「就像真的片場一樣」，就有了可交互的虛擬片場。</li>
+        <li>我說「不要做完才讓我挑東挑西」之後，每段輸出都先自查。</li>
+        <li><strong>授權一步步放大</strong>：從可以改腳本，到可以自己改 ComfyUI 節點，到後製「打掉重練，由你主導」。</li>
+      </ul>
+
+      <h2 id="result">成品</h2>
+      <p>畫面 10 版、配樂 4 版定稿，再疊上「家用磁帶攝影機介面」的 6 版後製。</p>
+      <p><a href="https://youtube.com/shorts/ubgrI46EG4I" target="_blank" rel="noopener">https://youtube.com/shorts/ubgrI46EG4I</a></p>
+      <figure>
+        <img src="img/post-layer.webp" width="770" height="794" alt="同一格的定案畫面與紀錄器後製並排：後製加上 REC、時間碼、對焦框與鏡片碎紋" loading="lazy" decoding="async">
+        <figcaption>同一格（她抓住鏡頭）：左邊是定案畫面，右邊疊上紀錄器後製。</figcaption>
+      </figure>
+      <div class="pair">
+        <figure>
+          <video src="img/grab.mp4" poster="img/grab-poster.webp" width="360" height="640" controls muted loop playsinline preload="metadata" aria-label="她伸手抓住鏡頭，鏡片從邊緣裂開"></video>
+          <figcaption>抓住鏡頭，鏡片從邊緣裂開。</figcaption>
+        </figure>
+        <figure>
+          <video src="img/dive.mp4" poster="img/dive-poster.webp" width="360" height="640" controls muted loop playsinline preload="metadata" aria-label="鏡頭被吸進她的眼睛，介面跟著放大衝出畫框"></video>
+          <figcaption>被吸進眼睛，介面跟著衝出畫框。</figcaption>
+        </figure>
+      </div>
+
+      <p class="back"><a class="btn" href="../../index.html#writing">回到寫作／研究</a></p>
+    </article>
+  </main>
+</body>
+
+</html>
